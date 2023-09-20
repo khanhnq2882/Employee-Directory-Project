@@ -11,12 +11,18 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class AuthController {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @RequestMapping("/login")
+    public String loginForm() {
+        return "login";
+    }
 
     @GetMapping("/registration")
     public String registrationForm(Model model) {
@@ -40,13 +46,7 @@ public class AuthController {
             return "/registration";
         }
         employeeService.saveEmployee(registrationDto);
-        return "redirect:/registration?success";
+        return "redirect:/edit_profile";
     }
-
-
-
-
-
-
 
 }

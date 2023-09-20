@@ -1,11 +1,9 @@
 package com.example.employeedirectoryproject.repository;
 
-import com.example.employeedirectoryproject.model.Employee;
+import com.example.employeedirectoryproject.model.Position;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    Employee findByEmail(String email);
-
+public interface PositionRepository extends JpaRepository<Position, Long> {
 }

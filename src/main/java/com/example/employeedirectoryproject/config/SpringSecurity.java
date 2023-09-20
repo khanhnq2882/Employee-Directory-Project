@@ -1,5 +1,6 @@
 package com.example.employeedirectoryproject.config;
 
+import com.example.employeedirectoryproject.util.TbConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,16 +24,15 @@ public class SpringSecurity {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/registration/**").permitAll()
                         .requestMatchers("/login/**").permitAll()
-//                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-//                        .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/edit_profile/**").hasAnyRole("EMPLOYEE","ADMIN")
                         .anyRequest().authenticated()
                 )
-//                .formLogin((form) -> form
-//                        .loginPage("/login")
-////                        .loginProcessingUrl("/login")
-////                        .defaultSuccessUrl("/user/")
-//                        .permitAll()
-//                )
+                .formLogin((form) -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/edit_profile/")
+                        .permitAll()
+                )
                 .logout((logout) -> logout.permitAll())
                 .exceptionHandling().accessDeniedPage("/access-denied");
         return http.build();

@@ -45,9 +45,6 @@ public class Employee {
     private Date startWork;
 
     @Column(nullable = true)
-    private Date endWork;
-
-    @Column(nullable = true)
     private Double coefficientsSalary;
 
     @Column(nullable = true)
