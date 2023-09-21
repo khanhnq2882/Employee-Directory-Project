@@ -29,25 +29,28 @@ public class Employee {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Boolean gender;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Date dateOfBirth;
 
     @Column(nullable = false)
     private String phoneNumber;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String address;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Date startWork;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
+    private Date endWork;
+
+    @Column(nullable = false)
     private Double coefficientsSalary;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Boolean status;
 
     @ManyToOne
@@ -95,13 +98,24 @@ public class Employee {
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles = new ArrayList<>();
 
-    public Employee(String firstName, String lastName, String email, String password, String phoneNumber, List<Role> roles) {
+    public Employee(String firstName, String lastName, String email, String password,
+                    Boolean gender, Date dateOfBirth, String phoneNumber, String address,
+                    Date startWork, Date endWork, Double coefficientsSalary, Boolean status,
+                    Department department, Position position, List<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
         this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.startWork = startWork;
+        this.endWork = endWork;
+        this.coefficientsSalary = coefficientsSalary;
+        this.status = status;
+        this.department = department;
+        this.position = position;
         this.roles = roles;
     }
-
 }

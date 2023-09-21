@@ -4,6 +4,7 @@ import com.example.employeedirectoryproject.model.Employee;
 import com.example.employeedirectoryproject.repository.DepartmentRepository;
 import com.example.employeedirectoryproject.repository.EmployeeRepository;
 import com.example.employeedirectoryproject.repository.PositionRepository;
+import com.example.employeedirectoryproject.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/edit_profile")
 public class EmployeeController {
 
     @Autowired
@@ -25,7 +25,10 @@ public class EmployeeController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    @GetMapping("/")
+    @Autowired
+    private EmployeeService employeeService;
+
+    @GetMapping("/edit_profile")
     public String editProfile(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Employee currentEmployee = employeeRepository.findByEmail(authentication.getName());
@@ -35,6 +38,10 @@ public class EmployeeController {
         return "edit_profile";
     }
 
-
+    @GetMapping("/list_employees")
+    public String getAllDepartments(Model model) {
+        model.addAttribute("employees", employeeService.getAllEmployees());
+        return "list_employees";
+    }
 
 }

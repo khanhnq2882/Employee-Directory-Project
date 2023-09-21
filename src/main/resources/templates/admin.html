@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+<!--    <h1>Hello <span th:text="${currentEmployee.getFirstName()} +' '+${currentEmployee.getLastName()}" /></h1>-->
+    <div class="mt-5"><a class="link-primary" th:href="@{/logout}">Logout</a></div>
+    <form method="post">
+        <div class="row">
+            <div class="form-group col-md-6">
+                <a th:href="@{/add_new_employee}" class="btn btn-info" role="button">Add New Employee</a>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>
