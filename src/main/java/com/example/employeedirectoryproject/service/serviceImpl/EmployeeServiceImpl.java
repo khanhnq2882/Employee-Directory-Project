@@ -60,4 +60,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.getAllEmployees();
     }
 
+    @Override
+    public Employee getEmployeeById(Long id) {
+        return employeeRepository.findById(id).orElse(null);
+    }
+
 }

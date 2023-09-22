@@ -44,4 +44,9 @@ public class EmployeeController {
         return "list_employees";
     }
 
+    @GetMapping("/home")
+    public String admin(Model model){
+        return "home";
+    }
+
 }

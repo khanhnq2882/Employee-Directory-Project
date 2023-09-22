@@ -23,6 +23,7 @@ public class SpringSecurity {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/login/**").permitAll()
+                        .requestMatchers("/admin").hasAnyRole("ADMIN")
                         .requestMatchers("/add_new_employee/**").hasAnyRole("ADMIN")
                         .requestMatchers("/edit_profile/**").hasAnyRole("EMPLOYEE","ADMIN")
                         .requestMatchers("/list_employees/**").hasAnyRole("ADMIN")
@@ -31,7 +32,7 @@ public class SpringSecurity {
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/admin")
+                        .defaultSuccessUrl("/home")
                         .permitAll()
                 )
                 .logout((logout) -> logout.permitAll())
