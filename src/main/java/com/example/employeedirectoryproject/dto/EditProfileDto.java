@@ -16,10 +16,8 @@ public class EditProfileDto {
     private String lastName;
     private Date dateOfBirth;
     private Boolean gender;
+    private String phoneNumber;
     private String address;
-    private Department department;
-    private Position position;
-    private Date startWork;
     private List<Skill> skills;
     private List<Certification> certifications;
     private List<Experience> experiences;
