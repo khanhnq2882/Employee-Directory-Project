@@ -16,7 +16,7 @@ import java.util.List;
 public class Skill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long skillId;
 
     @Column(nullable = false)
     private String skillName;
@@ -40,7 +40,7 @@ public class Skill {
 //    private Date updatedDay;
 
     @ManyToMany(mappedBy = "skills")
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
     private List<Employee> employees;
 }

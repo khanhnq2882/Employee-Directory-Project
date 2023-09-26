@@ -4,31 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
-
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-    <script>
-        $( function() {
-            $( "#dateOfBirth" ).datepicker();
-            $( "#startWork" ).datepicker();
-            $( "#endWork" ).datepicker();
-        } );
-    </script>
 </head>
 
 <body>
 <div class="container">
     <div class="mt-5"><a class="link-primary" th:href="@{/logout}">Logout</a></div>
     <h1>Add New Employee</h1>
-    <form th:action="@{/add_new_employee}" method="post" th:object="${addEmployeeDto}">
+    <form th:action="@{/save_employee}" method="post" th:object="${saveEmployeeDto}">
         <div class="row">
             <div class="form-group col-md-6">
                 <label for="email">Email:</label>
@@ -105,7 +87,7 @@
                 <select id="department" name="department" class="selectpicker form-control" th:field="*{department}">
                     <option th:each="department: ${departments}"
                             th:text="${department.getDepartmentName()}"
-                            th:value="${department.getId()}">
+                            th:value="${department.getDepartmentId()}">
                     </option>
                 </select>
             </div>
@@ -115,7 +97,7 @@
                 <select name="type" class="selectpicker form-control" th:field="*{position}">
                     <option th:each="position: ${positions}"
                             th:text="${position.getPositionName()}"
-                            th:value="${position.getId()}">
+                            th:value="${position.getPositionId()}">
                     </option>
                 </select>
             </div>
@@ -125,5 +107,23 @@
     </form>
 <div>
 </body>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<script>
+    $( function() {
+        $( "#dateOfBirth" ).datepicker();
+        $( "#startWork" ).datepicker();
+        $( "#endWork" ).datepicker();
+    } );
+</script>
 
 </html>

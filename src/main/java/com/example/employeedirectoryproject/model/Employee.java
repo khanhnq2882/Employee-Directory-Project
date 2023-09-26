@@ -2,20 +2,25 @@ package com.example.employeedirectoryproject.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "employee")
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long employeeId;
 
     @Column(nullable = false)
     private String firstName;
@@ -53,6 +58,20 @@ public class Employee {
     @Column(nullable = false)
     private Boolean status;
 
+//    @Column(nullable = false)
+//@CreationTimestamp
+//    private String createdBy;
+//
+//    @Column(nullable = false)
+//    private Date createdDay;
+//
+//    @Column(nullable = false)
+//    private String updatedBy;
+//
+//    @Column(nullable = false)
+//    @UpdateTimestamp
+//    private Date updatedDay;
+
     @ManyToOne
     @JoinColumn(name = "department_id")
     @EqualsAndHashCode.Exclude
@@ -65,15 +84,16 @@ public class Employee {
     @ToString.Exclude
     private Position position;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @JoinTable(name = "employees_skills",
-            joinColumns = @JoinColumn(name = "employee_id"),
-            inverseJoinColumns = @JoinColumn(name = "skill_id"))
-    private List<Skill> skills;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+    @JoinTable(
+            name = "employees_skills",
+            joinColumns = {@JoinColumn(name = "employee_id")},
+            inverseJoinColumns = {@JoinColumn(name = "skill_id")})
+    private Set<Skill> skills;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JoinTable(name = "project_member",
@@ -91,11 +111,11 @@ public class Employee {
     @ToString.Exclude
     private List<Experience> experiences;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "employees_roles",
-            joinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+            joinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "employeeId")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "roleId")})
     private List<Role> roles = new ArrayList<>();
 
     public Employee(String firstName, String lastName, String email, String password,
@@ -117,5 +137,25 @@ public class Employee {
         this.department = department;
         this.position = position;
         this.roles = roles;
+    }
+
+    public Employee(String firstName, String lastName, String email, String password,
+                    Boolean gender, Date dateOfBirth, String phoneNumber, String address,
+                    Date startWork, Date endWork, Double coefficientsSalary, Boolean status,
+                    Department department, Position position) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.startWork = startWork;
+        this.endWork = endWork;
+        this.coefficientsSalary = coefficientsSalary;
+        this.status = status;
+        this.department = department;
+        this.position = position;
     }
 }

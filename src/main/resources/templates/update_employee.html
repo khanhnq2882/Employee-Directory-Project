@@ -7,37 +7,25 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="/resources/demos/style.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-  <script>
-    $( function() {
-      $( "#dateOfBirth" ).datepicker();
-      $( "#startWork" ).datepicker();
-      $( "#endWork" ).datepicker();
-    } );
-  </script>
 </head>
 
 <body>
 <div class="container">
   <div class="mt-5"><a class="link-primary" th:href="@{/logout}">Logout</a></div>
-  <h1>Add New Employee</h1>
-  <form th:action="@{/add_new_employee}" method="post" th:object="${employeeDto}">
+  <h1>Edit Profile</h1>
+  <form method="post" th:object="${currentEmployee}">
     <div class="row">
+
       <div class="form-group col-md-6">
         <label for="email">Email:</label>
-        <input type="text" class="form-control" id="email" name="email" th:field="*{email}">
+        <input type="text" class="form-control" id="email" name="email" th:field="*{email}" readonly>
       </div>
 
       <div class="form-group col-md-6">
         <label for="email">Password:</label>
-        <input type="password" class="form-control" id="password" name="password" th:field="*{password}">
+        <input type="text" class="form-control" id="password" name="password" th:field="*{password}" readonly>
       </div>
 
       <div class="form-group col-md-6">
@@ -56,21 +44,6 @@
       </div>
 
       <div class="form-group col-md-6">
-        <label for="lastName">Phone Number:</label>
-        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}">
-      </div>
-
-      <div class="form-group col-md-6">
-        <label for="lastName">Address:</label>
-        <input type="text" class="form-control" id="address" name="address" th:field="*{address}">
-      </div>
-
-      <div class="form-group col-md-6">
-        <label for="email">Coefficients Salary:</label>
-        <input type="text" class="form-control" id="coefficientsSalary" name="coefficientsSalary" th:field="*{coefficientsSalary}">
-      </div>
-
-      <div class="form-group col-md-6">
         <label>Gender:</label>
         <div class="form-check form-check-inline">
           <input type="radio" name="male" id="male" value="1" th:field="*{gender}" th:checked="*{gender}" checked/>Male
@@ -81,23 +54,24 @@
       </div>
 
       <div class="form-group col-md-6">
-        <label>Status:</label>
-        <div class="form-check form-check-inline">
-          <input type="radio" name="male" id="active" value="1" th:field="*{status}" th:checked="*{status}" checked/>Active
-        </div>
-        <div class="form-check form-check-inline">
-          <input type="radio" name="female" id="inactive" value="0" th:field="*{status}"  th:checked="*{status} == false"/>Inactive
-        </div>
+        <label for="lastName">Phone Number:</label>
+        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}">
       </div>
+
+      <div class="form-group col-md-6">
+        <label for="lastName">Address:</label>
+        <input type="text" class="form-control" id="address" name="address" th:field="*{address}">
+      </div>
+
 
       <div class="form-group col-md-6">
         <label for="startWork">Start Work:</label>
-        <input type="text" id="startWork" name="startWork" th:field="*{startWork}">
+        <input type="text" class="form-control" id="startWork" name="startWork" th:field="*{startWork}" readonly>
       </div>
 
       <div class="form-group col-md-6">
-        <label for="startWork">End Work:</label>
-        <input type="text" id="endWork" name="endWork" th:field="*{endWork}">
+        <label for="endWork">End Work:</label>
+        <input type="text" class="form-control" id="endWork" name="endWork" th:field="*{endWork}" readonly>
       </div>
 
       <div class="form-group col-sm-6">
@@ -105,25 +79,116 @@
         <select id="department" name="department" class="selectpicker form-control" th:field="*{department}">
           <option th:each="department: ${departments}"
                   th:text="${department.getDepartmentName()}"
-                  th:value="${department.getId()}">
+                  th:value="${department.getDepartmentId()}">
           </option>
         </select>
       </div>
 
       <div class="form-group col-sm-6">
         <label>Position:</label>
-        <select name="type" class="selectpicker form-control" th:field="*{position}">
+        <select name="position" id="position" class="selectpicker form-control" th:field="*{position}">
           <option th:each="position: ${positions}"
                   th:text="${position.getPositionName()}"
-                  th:value="${position.getId()}">
+                  th:value="${position.getPositionId()}">
           </option>
         </select>
       </div>
+
+      <div class="form-group col-md-6">
+        <label>Skills:</label>
+        <select class="selectpicker" multiple data-live-search="true">
+          <option>Mustard</option>
+          <option>Ketchup</option>
+          <option>Relish</option>
+          <option>Mustard</option>
+          <option>Ketchup</option>
+          <option>Relish</option>
+        </select>
+        <a class="btn btn-success" th:href="@{/add_new_skill}">+ Add Skill</a>
+
+      </div>
+
+      <div class="form-group col-md-6">
+        <label>Certifications:</label>
+        <select class="selectpicker" multiple data-live-search="true">
+          <option>Mustard</option>
+          <option>Ketchup</option>
+          <option>Relish</option>
+          <option>Mustard</option>
+          <option>Ketchup</option>
+          <option>Relish</option>
+        </select>
+        <button type="button" class="btn btn-primary">+ Add Certification</button>
+      </div>
+
+      <div class="form-group col-md-6">
+        <label>Experiences:</label>
+        <select class="selectpicker" name="asd" multiple data-live-search="true">
+          <option>Mustard</option>
+          <option>Ketchup</option>
+          <option>Relish</option>
+          <option>Mustard</option>
+          <option>Ketchup</option>
+          <option>Relish</option>
+        </select>
+        <button type="button" class="btn btn-primary">+ Add Experience</button>
+      </div>
+
+      <div class="form-group col-md-6">
+        <label>Projects:</label>
+        <select class="selectpicker" multiple data-live-search="true">
+          <option>Mustard</option>
+          <option>Ketchup</option>
+          <option>Relish</option>
+          <option>Mustard</option>
+          <option>Ketchup</option>
+          <option>Relish</option>
+        </select>
+        <button type="button" class="btn btn-primary">+ Add Project</button>
+      </div>
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        Launch demo modal
+      </button>
+
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <button type="submit" class="btn btn-info col-2">Save</button>
-    <a th:href="@{/list_employees}" class="btn btn-info col-2">Back to list</a>
   </form>
   <div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#department').attr("disabled", true);
+        $('#position').attr("disabled", true);
+        $( "#dateOfBirth" ).flatpickr();
+      });
+    </script>
 </body>
 
 </html>

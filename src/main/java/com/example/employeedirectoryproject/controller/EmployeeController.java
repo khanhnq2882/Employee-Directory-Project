@@ -1,14 +1,11 @@
 package com.example.employeedirectoryproject.controller;
 
-import com.example.employeedirectoryproject.dto.AddEmployeeDto;
-import com.example.employeedirectoryproject.dto.EditProfileDto;
 import com.example.employeedirectoryproject.dto.SkillDto;
+import com.example.employeedirectoryproject.dto.EditProfileDto;
 import com.example.employeedirectoryproject.model.Employee;
-import com.example.employeedirectoryproject.model.Skill;
 import com.example.employeedirectoryproject.repository.DepartmentRepository;
 import com.example.employeedirectoryproject.repository.EmployeeRepository;
 import com.example.employeedirectoryproject.repository.PositionRepository;
-import com.example.employeedirectoryproject.repository.SkillRepository;
 import com.example.employeedirectoryproject.service.EmployeeService;
 import com.example.employeedirectoryproject.service.SkillService;
 import jakarta.validation.Valid;
@@ -17,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -63,13 +59,7 @@ public class EmployeeController {
         skillService.addSkill(skillDto);
         return "redirect:/edit_profile";
     }
-
-    @GetMapping("/list_employees")
-    public String getAllDepartments(Model model) {
-        model.addAttribute("employees", employeeService.getAllEmployees());
-        return "list_employees";
-    }
-
+    
     @GetMapping("/home")
     public String home(){
         return "home";

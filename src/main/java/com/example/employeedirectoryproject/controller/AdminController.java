@@ -1,6 +1,6 @@
 package com.example.employeedirectoryproject.controller;
 
-import com.example.employeedirectoryproject.dto.AddEmployeeDto;
+import com.example.employeedirectoryproject.dto.SaveEmployeeDto;
 import com.example.employeedirectoryproject.dto.EmailDto;
 import com.example.employeedirectoryproject.model.Employee;
 import com.example.employeedirectoryproject.model.Role;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import java.util.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,31 +42,31 @@ public class AdminController {
     @Autowired
     private EmailSenderService emailSenderService;
 
-
     @RequestMapping("/login")
     public String loginForm() {
         return "login";
     }
 
-    @GetMapping("/add_new_employee")
-    public String registrationForm(Model model) {
-        AddEmployeeDto addEmployeeDto = new AddEmployeeDto();
+    @GetMapping("/save_employee")
+    public String addNewEmployeeForm(Model model) {
+        SaveEmployeeDto saveEmployeeDto = new SaveEmployeeDto();
         model.addAttribute("positions", positionRepository.findAll());
         model.addAttribute("departments", departmentRepository.findAll());
-        model.addAttribute("addEmployeeDto", addEmployeeDto);
+        model.addAttribute("saveEmployeeDto", saveEmployeeDto);
         return "add_new_employee";
     }
 
-    @PostMapping("/add_new_employee")
-    public String registration(@Valid @ModelAttribute("addEmployeeDto") AddEmployeeDto addEmployeeDto, BindingResult result, Model model) {
-        Employee existingEmployee = employeeService.findEmployeeByEmail(addEmployeeDto.getEmail());
-        if (existingEmployee != null)
+    @PostMapping("/save_employee")
+    public String addNewEmployee(@Valid @ModelAttribute("saveEmployeeDto") SaveEmployeeDto saveEmployeeDto, BindingResult result, Model model) {
+        Employee existingEmployee = employeeService.findEmployeeByEmail(saveEmployeeDto.getEmail());
+        if (existingEmployee != null) {
             result.rejectValue("email", null, "Employee email is already existed.");
+        }
         if (result.hasErrors()) {
-            model.addAttribute("addEmployeeDto", addEmployeeDto);
+            model.addAttribute("saveEmployeeDto", saveEmployeeDto);
             return "add_new_employee";
         }
-        employeeService.saveEmployee(addEmployeeDto);
+        employeeService.saveEmployee(saveEmployeeDto);
         return "redirect:/list_employees";
     }
 
@@ -86,20 +87,57 @@ public class AdminController {
         return "access_denied";
     }
 
-    @GetMapping("/update_employee/{id}")
-    public String updateEmployee(@PathVariable("id") Long id, Model model) {
+    @GetMapping("/update_employee_form/{id}")
+    public String updateEmployeeForm(@PathVariable("id") Long id, Model model) {
+        Employee employee = employeeService.getEmployeeById(id);
+        SaveEmployeeDto saveEmployeeDto = SaveEmployeeDto.builder()
+                .email(employee.getEmail())
+                .password(employee.getPassword())
+                .firstName(employee.getFirstName())
+                .lastName(employee.getLastName())
+                .dateOfBirth(employee.getDateOfBirth())
+                .phoneNumber(employee.getPhoneNumber())
+                .address(employee.getAddress())
+                .coefficientsSalary(employee.getCoefficientsSalary())
+                .gender(employee.getGender())
+                .status(employee.getStatus())
+                .startWork(employee.getStartWork())
+                .endWork(employee.getEndWork())
+                .department(employee.getDepartment())
+                .position(employee.getPosition())
+                .build();
+        model.addAttribute("saveEmployeeDto", saveEmployeeDto);
+        model.addAttribute("employeeId", employee.getEmployeeId());
+        model.addAttribute("positions", positionRepository.findAll());
+        model.addAttribute("departments", departmentRepository.findAll());
         return "update_employee";
     }
 
-    @GetMapping("/show_email_form/{id}")
+    @PostMapping("/update_employee/{id}")
+    public String updateEmployee(@Valid @ModelAttribute("saveEmployeeDto") SaveEmployeeDto saveEmployeeDto, @PathVariable("id") Long id) {
+        employeeService.updateEmployee(saveEmployeeDto, id);
+        return "redirect:/list_employees";
+    }
+
+    @GetMapping("/email_form/{id}")
     public String showEmailForm(Model model, @PathVariable("id") Long id) {
         Employee employee = employeeService.getEmployeeById(id);
         model.addAttribute("employee", employee);
         return "email_employee";
     }
 
+    @GetMapping("/delete_employee/{id}")
+    public String deleteEmployee(@PathVariable("id") Long id) {
+        Employee employee = employeeService.getEmployeeById(id);
+        for (Role role: employee.getRoles()) {
+            employeeService.deleteEmployeeRole(id, role.getRoleId());
+        }
+        employeeService.deleteEmployee(id);
+        return "redirect:/list_employees";
+    }
+
     @PostMapping("/send_mail_employee")
-    public void sendMailEmployee(HttpServletRequest request) throws MessagingException {
+    public String sendMailEmployee(HttpServletRequest request) throws MessagingException {
         String personalEmail = request.getParameter("personalEmail");
         String email = request.getParameter("email");
         String firstName = request.getParameter("firstName");
@@ -115,6 +153,20 @@ public class AdminController {
         emailDto.setProperties(properties);
         emailDto.setTemplate("email_content.html");
         emailSenderService.sendHtmlMessage(emailDto);
+        return "redirect:/list_employees";
+    }
+
+    @GetMapping("/list_employees")
+    public String getListEmployees(HttpServletRequest request, Model model) {
+        String searchText = request.getParameter("searchText");
+        List<Employee> employees = new ArrayList<>();
+        if (Objects.isNull(searchText)) {
+            employees = employeeService.getAllEmployees();
+        } else {
+            employees = employeeService.searchEmployees(searchText);
+        }
+        model.addAttribute("employees", employees);
+        return "list_employees";
     }
 
 }

@@ -10,7 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import java.util.Arrays;
+
+import java.util.*;
 
 @Service
 public class SkillServiceImpl implements SkillService {
@@ -31,6 +32,9 @@ public class SkillServiceImpl implements SkillService {
                 .description(skillDto.getDescription())
                 .employees(Arrays.asList(currentEmployee))
                 .build();
+        Set<Skill> skills = new HashSet<>();
+        skills.add(skill);
+        currentEmployee.setSkills(skills);
         skillRepository.save(skill);
     }
 }

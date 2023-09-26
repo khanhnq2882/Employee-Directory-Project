@@ -13,7 +13,7 @@ import java.util.Date;
 public class Experience {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long experienceId;
 
     @Column(nullable = false)
     private String name;

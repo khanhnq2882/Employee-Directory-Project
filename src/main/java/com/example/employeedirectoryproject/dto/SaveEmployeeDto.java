@@ -11,7 +11,8 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddEmployeeDto {
+@Builder
+public class SaveEmployeeDto {
     private String firstName;
     private String lastName;
     private String email;

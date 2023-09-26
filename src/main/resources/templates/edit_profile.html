@@ -85,7 +85,7 @@
                 <select id="department" name="department" class="selectpicker form-control" th:field="*{department}">
                     <option th:each="department: ${departments}"
                             th:text="${department.getDepartmentName()}"
-                            th:value="${department.getId()}">
+                            th:value="${department.getDepartmentId()}">
                     </option>
                 </select>
             </div>
@@ -95,7 +95,7 @@
                 <select name="position" id="position" class="selectpicker form-control" th:field="*{position}">
                     <option th:each="position: ${positions}"
                             th:text="${position.getPositionName()}"
-                            th:value="${position.getId()}">
+                            th:value="${position.getPositionId()}">
                     </option>
                 </select>
             </div>

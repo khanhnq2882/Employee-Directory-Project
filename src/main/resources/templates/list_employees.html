@@ -13,9 +13,17 @@
 </head>
 <body>
 <div class="container">
-  <div class="mt-5"><a class="link-primary" th:href="@{/logout}">Logout</a></div>
+  <div class="mt-5"><a style="float: right" class="link-primary" th:href="@{/logout}">Logout</a></div>
   <h1>List Employee</h1>
-  <a th:href="@{/add_new_employee}" class="btn btn-primary btn-sm mb-3">Add Employee</a>
+  <form th:href="@{/list_employees}" method="get">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" placeholder="Search..." aria-describedby="basic-addon2" id="searchText" name="searchText">
+      <div class="input-group-append">
+        <button class="btn btn-dark" type="submit">Search</button>
+      </div>
+    </div>
+  </form>
+  <a th:href="@{/save_employee}" style="float: right" class="btn btn-primary btn-sm mb-3">Add Employee</a>
   <table border="1" class = "table table-striped table-responsive-md">
     <thead>
         <tr>
@@ -32,7 +40,7 @@
     </thead>
     <tbody>
           <tr th:each="employee: ${employees}">
-            <td th:text="${employee.getId()}"></td>
+            <td th:text="${employee.getEmployeeId()}"></td>
             <td th:text="${employee.getFirstName()} +' '+ ${employee.getLastName()}"></td>
             <td th:text="${employee.getEmail()}"></td>
             <td th:text="${employee.getDepartment().getDepartmentName()}"></td>
@@ -41,9 +49,9 @@
             <td th:text="${employee.getEndWork()}"></td>
             <td th:text="${employee.getStatus() == true ? 'Active' : 'Inactive'}"></td>
             <td>
-              <a class="btn btn-success" th:href="@{/show_email_form/{id}(id=${employee.getId()})}">Send Mail</a>
-              <a class="btn btn-primary" th:href="@{/update_employee/{id}(id=${employee.getId()})}"> Update </a>
-              <a class="btn btn-danger"> Delete </a>
+              <a class="btn btn-success" th:href="@{/email_form/{id}(id=${employee.getEmployeeId()})}">Send Mail</a>
+              <a class="btn btn-primary" th:href="@{/update_employee_form/{id}(id=${employee.getEmployeeId()})}"> Update </a>
+              <a class="btn btn-danger" th:href="@{/delete_employee/{id}(id=${employee.getEmployeeId()})}"> Delete </a>
             </td>
           </tr>
     </tbody>

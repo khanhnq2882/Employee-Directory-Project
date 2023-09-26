@@ -23,8 +23,8 @@ public class SpringSecurity {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/login/**").permitAll()
-                        .requestMatchers("/admin").hasAnyRole("ADMIN")
-                        .requestMatchers("/add_new_employee/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/save_employee/**").permitAll()
                         .requestMatchers("/edit_profile/**").hasAnyRole("EMPLOYEE","ADMIN")
                         .requestMatchers("/list_employees/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated()
@@ -36,7 +36,15 @@ public class SpringSecurity {
                         .permitAll()
                 )
                 .logout((logout) -> logout.permitAll())
-                .exceptionHandling().accessDeniedPage("/access-denied");
+                .exceptionHandling().accessDeniedPage("/access-denied")
+                .and()
+                .formLogin().successHandler(((request, response, authentication) -> {
+                    if (request.isUserInRole("ADMIN")) {
+                        response.sendRedirect("/admin");
+                    } else {
+                        response.sendRedirect("/home");
+                    }
+                }));
         return http.build();
     }
 
