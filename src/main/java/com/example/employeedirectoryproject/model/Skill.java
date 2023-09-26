@@ -3,8 +3,7 @@ package com.example.employeedirectoryproject.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Getter
@@ -40,7 +39,7 @@ public class Skill {
 //    private Date updatedDay;
 
     @ManyToMany(mappedBy = "skills")
-//    @EqualsAndHashCode.Exclude
-//    @ToString.Exclude
-    private List<Employee> employees;
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private List<Employee> employees = new ArrayList<>();
 }

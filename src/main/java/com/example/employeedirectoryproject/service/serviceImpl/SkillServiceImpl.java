@@ -32,9 +32,7 @@ public class SkillServiceImpl implements SkillService {
                 .description(skillDto.getDescription())
                 .employees(Arrays.asList(currentEmployee))
                 .build();
-        Set<Skill> skills = new HashSet<>();
-        skills.add(skill);
-        currentEmployee.setSkills(skills);
+        currentEmployee.getSkills().add(skill);
         skillRepository.save(skill);
     }
 }

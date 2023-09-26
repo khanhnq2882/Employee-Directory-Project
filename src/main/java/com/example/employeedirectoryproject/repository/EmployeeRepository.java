@@ -19,7 +19,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM employees_roles WHERE emp_id = :employeeId AND role_id = :roleId", nativeQuery = true)
+    @Query(value = "DELETE FROM employees_roles WHERE employee_id = :employeeId AND role_id = :roleId", nativeQuery = true)
     void deleteEmployeeRole(@Param("employeeId") Long employeeId, @Param("roleId") Long roleId);
 
     @Query(value = "select * from employee as e where e.email like %:searchText% or e.first_name like %:searchText% or e.last_name like %:searchText%", nativeQuery = true)

@@ -3,7 +3,9 @@ package com.example.employeedirectoryproject.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -49,6 +51,6 @@ public class Project {
     @ManyToMany(mappedBy = "projects")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private List<Employee> employees;
+    private Set<Employee> employees = new HashSet<>();
 
 }

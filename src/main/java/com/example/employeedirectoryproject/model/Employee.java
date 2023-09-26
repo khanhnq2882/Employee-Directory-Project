@@ -4,11 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -38,6 +36,8 @@ public class Employee {
     private Boolean gender;
 
     @Column(nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
     @Column(nullable = false)
@@ -47,9 +47,13 @@ public class Employee {
     private String address;
 
     @Column(nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.DATE)
     private Date startWork;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endWork;
 
     @Column(nullable = false)
@@ -85,13 +89,13 @@ public class Employee {
     private Position position;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-//    @EqualsAndHashCode.Exclude
-//    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JoinTable(
             name = "employees_skills",
             joinColumns = {@JoinColumn(name = "employee_id")},
             inverseJoinColumns = {@JoinColumn(name = "skill_id")})
-    private Set<Skill> skills;
+    private Set<Skill> skills = new HashSet<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
@@ -99,17 +103,17 @@ public class Employee {
     @JoinTable(name = "project_member",
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "project_id"))
-    private List<Project> projects;
+    private Set<Project> projects = new HashSet<>();
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private List<Certification> certifications;
+    private List<Certification> certifications = new ArrayList<>();
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private List<Experience> experiences;
+    private List<Experience> experiences = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(

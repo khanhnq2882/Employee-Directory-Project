@@ -1,12 +1,16 @@
 package com.example.employeedirectoryproject.controller;
 
+import com.example.employeedirectoryproject.dto.CertificationDto;
+import com.example.employeedirectoryproject.dto.ExperienceDto;
 import com.example.employeedirectoryproject.dto.SkillDto;
 import com.example.employeedirectoryproject.dto.EditProfileDto;
 import com.example.employeedirectoryproject.model.Employee;
 import com.example.employeedirectoryproject.repository.DepartmentRepository;
 import com.example.employeedirectoryproject.repository.EmployeeRepository;
 import com.example.employeedirectoryproject.repository.PositionRepository;
+import com.example.employeedirectoryproject.service.CertificationService;
 import com.example.employeedirectoryproject.service.EmployeeService;
+import com.example.employeedirectoryproject.service.ExperienceService;
 import com.example.employeedirectoryproject.service.SkillService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +38,12 @@ public class EmployeeController {
     private SkillService skillService;
 
     @Autowired
+    private CertificationService certificationService;
+
+    @Autowired
+    private ExperienceService experienceService;
+
+    @Autowired
     private EmployeeService employeeService;
 
     @GetMapping("/edit_profile")
@@ -57,6 +67,32 @@ public class EmployeeController {
     @PostMapping("/add_new_skill")
     public String addNewSkill(@Valid @ModelAttribute("skillDto") SkillDto skillDto) {
         skillService.addSkill(skillDto);
+        return "redirect:/edit_profile";
+    }
+
+    @GetMapping("/add_new_certification")
+    public String addCertificationForm(Model model) {
+        CertificationDto certificationDto = new CertificationDto();
+        model.addAttribute("certificationDto", certificationDto);
+        return "add_new_certification";
+    }
+
+    @PostMapping("/add_new_certification")
+    public String addNewCertification(@Valid @ModelAttribute("certificationDto") CertificationDto certificationDto) {
+        certificationService.addCertification(certificationDto);
+        return "redirect:/edit_profile";
+    }
+
+    @GetMapping("/add_new_experience")
+    public String addExperienceForm(Model model) {
+        ExperienceDto experienceDto = new ExperienceDto();
+        model.addAttribute("experienceDto", experienceDto);
+        return "add_new_experience";
+    }
+
+    @PostMapping("/add_new_experience")
+    public String addNewExperience(@Valid @ModelAttribute("experienceDto") ExperienceDto experienceDto, Model model) {
+        experienceService.addExperience(experienceDto);
         return "redirect:/edit_profile";
     }
     

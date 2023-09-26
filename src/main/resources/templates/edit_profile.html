@@ -124,7 +124,7 @@
                     <option>Ketchup</option>
                     <option>Relish</option>
                 </select>
-                <button type="button" class="btn btn-primary">+ Add Certification</button>
+                <a class="btn btn-success" th:href="@{/add_new_certification}">+ Add Certification</a>
             </div>
 
             <div class="form-group col-md-6">
@@ -137,21 +137,21 @@
                     <option>Ketchup</option>
                     <option>Relish</option>
                 </select>
-                <button type="button" class="btn btn-primary">+ Add Experience</button>
+                <a class="btn btn-success" th:href="@{/add_new_experience}">+ Add Experience</a>
             </div>
 
-            <div class="form-group col-md-6">
-                <label>Projects:</label>
-                <select class="selectpicker" multiple data-live-search="true">
-                    <option>Mustard</option>
-                    <option>Ketchup</option>
-                    <option>Relish</option>
-                    <option>Mustard</option>
-                    <option>Ketchup</option>
-                    <option>Relish</option>
-                </select>
-                <button type="button" class="btn btn-primary">+ Add Project</button>
-            </div>
+<!--            <div class="form-group col-md-6">-->
+<!--                <label>Projects:</label>-->
+<!--                <select class="selectpicker" multiple data-live-search="true">-->
+<!--                    <option>Mustard</option>-->
+<!--                    <option>Ketchup</option>-->
+<!--                    <option>Relish</option>-->
+<!--                    <option>Mustard</option>-->
+<!--                    <option>Ketchup</option>-->
+<!--                    <option>Relish</option>-->
+<!--                </select>-->
+<!--                <button type="button" class="btn btn-primary">+ Add Project</button>-->
+<!--            </div>-->
 
         </div>
         <button type="submit" class="btn btn-info col-2">Save</button>

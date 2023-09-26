@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <script>
+    $( function() {
+      $( "#startWork" ).datepicker();
+      $( "#endWork" ).datepicker();
+    } );
+  </script>
+</head>
+<body>
+<div class="container">
+  <h1>Add New Experience</h1>
+  <form th:action="@{/add_new_experience}" method="post" th:object="${experienceDto}">
+
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label" for="companyName">Company Name</label>
+      <div class="col-sm-6">
+        <input type="text" required class="form-control" id="companyName" th:field="*{companyName}" />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label" for="projectName">Project Name</label>
+      <div class="col-sm-6">
+        <input type="text" required id="projectName" name="projectName" class="form-control"  th:field="*{projectName}"  />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label" for="language">Language</label>
+      <div class="col-sm-6">
+        <input type="text" required  id="language" name="language" class="form-control" th:field="*{language}"  />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label" for="framework">Framework</label>
+      <div class="col-sm-6">
+        <input type="text" required  id="framework" name="framework" class="form-control" th:field="*{framework}"  />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label" for="startWork">Start Work</label>
+      <div class="col-sm-6">
+        <input type="text" required  id="startWork" name="startWork" class="form-control" th:field="*{startWork}"  />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label" for="endWork">End Work</label>
+      <div class="col-sm-6">
+        <input type="text" required id="endWork" name="endWork" class="form-control" th:field="*{endWork}"  />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label" for="description">Description</label>
+      <div class="col-sm-6">
+        <input type="text" required class="form-control" id="description" th:field="*{description}" />
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-info col-2">Save</button>
+  </form>
+</div>
+</body>
+</html>
