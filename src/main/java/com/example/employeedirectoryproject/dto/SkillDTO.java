@@ -2,7 +2,6 @@ package com.example.employeedirectoryproject.dto;
 
 import com.example.employeedirectoryproject.model.Employee;
 import lombok.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +10,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SkillDto {
+public class SkillDTO {
     private String skillName;
     private Integer level;
     private String description;

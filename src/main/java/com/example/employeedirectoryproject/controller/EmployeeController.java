@@ -1,26 +1,23 @@
 package com.example.employeedirectoryproject.controller;
 
-import com.example.employeedirectoryproject.dto.CertificationDto;
-import com.example.employeedirectoryproject.dto.ExperienceDto;
-import com.example.employeedirectoryproject.dto.SkillDto;
-import com.example.employeedirectoryproject.dto.EditProfileDto;
+import com.example.employeedirectoryproject.dto.CertificationDTO;
+import com.example.employeedirectoryproject.dto.ExperienceDTO;
+import com.example.employeedirectoryproject.dto.SkillDTO;
 import com.example.employeedirectoryproject.model.Employee;
 import com.example.employeedirectoryproject.repository.DepartmentRepository;
 import com.example.employeedirectoryproject.repository.EmployeeRepository;
 import com.example.employeedirectoryproject.repository.PositionRepository;
-import com.example.employeedirectoryproject.service.CertificationService;
 import com.example.employeedirectoryproject.service.EmployeeService;
-import com.example.employeedirectoryproject.service.ExperienceService;
-import com.example.employeedirectoryproject.service.SkillService;
+import com.example.employeedirectoryproject.util.TbConstants;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 @Controller
 public class EmployeeController {
@@ -35,70 +32,80 @@ public class EmployeeController {
     private EmployeeRepository employeeRepository;
 
     @Autowired
-    private SkillService skillService;
-
-    @Autowired
-    private CertificationService certificationService;
-
-    @Autowired
-    private ExperienceService experienceService;
-
-    @Autowired
     private EmployeeService employeeService;
 
     @GetMapping("/edit_profile")
-    public String editProfile(Model model,@Valid @ModelAttribute("EditProfileDto") EditProfileDto editProfileDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Employee currentEmployee = employeeRepository.findByEmail(authentication.getName());
+    public String editProfileForm(Model model) {
+        Employee currentEmployee = employeeService.getCurrentEmployee();
         model.addAttribute("positions", positionRepository.findAll());
         model.addAttribute("departments", departmentRepository.findAll());
         model.addAttribute("currentEmployee", currentEmployee);
-        model.addAttribute("editProfileDto", editProfileDto);
         return "edit_profile";
+    }
+
+    @PostMapping("/edit_profile")
+    public String editProfile(HttpServletRequest request, Model model) throws Exception{
+        Employee currentEmployee = employeeService.getCurrentEmployee();
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        currentEmployee.setFirstName(request.getParameter("firstName"));
+        currentEmployee.setLastName(request.getParameter("lastName"));
+        currentEmployee.setDateOfBirth(df.parse(request.getParameter("dateOfBirth")));
+        currentEmployee.setGender(Boolean.parseBoolean(request.getParameter("gender")));
+        currentEmployee.setPhoneNumber(request.getParameter("phoneNumber"));
+        currentEmployee.setAddress(request.getParameter("address"));
+        employeeRepository.save(currentEmployee);
+        model.addAttribute("employee", currentEmployee);
+        return "employee_profile";
     }
 
     @GetMapping("/add_new_skill")
     public String addSkillForm(Model model) {
-        SkillDto skillDto = new SkillDto();
+        SkillDTO skillDto = new SkillDTO();
         model.addAttribute("skillDto", skillDto);
         return "add_new_skill";
     }
 
     @PostMapping("/add_new_skill")
-    public String addNewSkill(@Valid @ModelAttribute("skillDto") SkillDto skillDto) {
-        skillService.addSkill(skillDto);
+    public String addNewSkill(@Valid @ModelAttribute("skillDto") SkillDTO skillDto) {
+        employeeService.addSkill(skillDto);
         return "redirect:/edit_profile";
     }
 
     @GetMapping("/add_new_certification")
     public String addCertificationForm(Model model) {
-        CertificationDto certificationDto = new CertificationDto();
+        CertificationDTO certificationDto = new CertificationDTO();
         model.addAttribute("certificationDto", certificationDto);
         return "add_new_certification";
     }
 
     @PostMapping("/add_new_certification")
-    public String addNewCertification(@Valid @ModelAttribute("certificationDto") CertificationDto certificationDto) {
-        certificationService.addCertification(certificationDto);
+    public String addNewCertification(@Valid @ModelAttribute("certificationDto") CertificationDTO certificationDto) {
+        employeeService.addCertification(certificationDto);
         return "redirect:/edit_profile";
     }
 
     @GetMapping("/add_new_experience")
     public String addExperienceForm(Model model) {
-        ExperienceDto experienceDto = new ExperienceDto();
+        ExperienceDTO experienceDto = new ExperienceDTO();
         model.addAttribute("experienceDto", experienceDto);
         return "add_new_experience";
     }
 
     @PostMapping("/add_new_experience")
-    public String addNewExperience(@Valid @ModelAttribute("experienceDto") ExperienceDto experienceDto, Model model) {
-        experienceService.addExperience(experienceDto);
+    public String addNewExperience(@Valid @ModelAttribute("experienceDto") ExperienceDTO experienceDto) {
+        employeeService.addExperience(experienceDto);
         return "redirect:/edit_profile";
     }
     
     @GetMapping("/home")
     public String home(){
+        Employee currentEmployee = employeeService.getCurrentEmployee();
+        if (currentEmployee.getRoles().stream().filter(role -> role.getName().equals(TbConstants.Roles.ADMIN)).findAny().isPresent()) {
+            return "admin";
+        }
         return "home";
     }
+
+
 
 }

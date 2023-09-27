@@ -3,7 +3,6 @@ package com.example.employeedirectoryproject.dto;
 import com.example.employeedirectoryproject.model.Department;
 import com.example.employeedirectoryproject.model.Position;
 import lombok.*;
-
 import java.util.Date;
 
 @Data
@@ -12,7 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SaveEmployeeDto {
+public class SaveEmployeeDTO {
     private String firstName;
     private String lastName;
     private String email;

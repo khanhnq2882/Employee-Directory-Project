@@ -1,8 +1,8 @@
 package com.example.employeedirectoryproject.service;
 
-import com.example.employeedirectoryproject.dto.EmailDto;
+import com.example.employeedirectoryproject.dto.EmailDTO;
 import jakarta.mail.MessagingException;
 
 public interface EmailSenderService {
-    void sendHtmlMessage(EmailDto emailDto) throws MessagingException;
+    void sendHtmlMessage(EmailDTO emailDto) throws MessagingException;
 }

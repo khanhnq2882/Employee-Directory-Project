@@ -4,7 +4,7 @@ import lombok.Data;
 import java.util.Map;
 
 @Data
-public class EmailDto {
+public class EmailDTO {
     private String to;
     private String from;
     private String subject;

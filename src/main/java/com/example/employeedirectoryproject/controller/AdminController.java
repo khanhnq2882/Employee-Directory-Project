@@ -1,21 +1,17 @@
 package com.example.employeedirectoryproject.controller;
 
-import com.example.employeedirectoryproject.dto.SaveEmployeeDto;
-import com.example.employeedirectoryproject.dto.EmailDto;
+import com.example.employeedirectoryproject.dto.SaveEmployeeDTO;
+import com.example.employeedirectoryproject.dto.EmailDTO;
 import com.example.employeedirectoryproject.model.Employee;
 import com.example.employeedirectoryproject.model.Role;
 import com.example.employeedirectoryproject.repository.DepartmentRepository;
-import com.example.employeedirectoryproject.repository.EmployeeRepository;
 import com.example.employeedirectoryproject.repository.PositionRepository;
 import com.example.employeedirectoryproject.service.EmailSenderService;
 import com.example.employeedirectoryproject.service.EmployeeService;
-import com.example.employeedirectoryproject.util.TbConstants;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,9 +30,6 @@ public class AdminController {
     private DepartmentRepository departmentRepository;
 
     @Autowired
-    private EmployeeRepository employeeRepository;
-
-    @Autowired
     private EmployeeService employeeService;
 
     @Autowired
@@ -49,15 +42,14 @@ public class AdminController {
 
     @GetMapping("/save_employee")
     public String addNewEmployeeForm(Model model) {
-        SaveEmployeeDto saveEmployeeDto = new SaveEmployeeDto();
         model.addAttribute("positions", positionRepository.findAll());
         model.addAttribute("departments", departmentRepository.findAll());
-        model.addAttribute("saveEmployeeDto", saveEmployeeDto);
+        model.addAttribute("saveEmployeeDto", new SaveEmployeeDTO());
         return "add_new_employee";
     }
 
     @PostMapping("/save_employee")
-    public String addNewEmployee(@Valid @ModelAttribute("saveEmployeeDto") SaveEmployeeDto saveEmployeeDto, BindingResult result, Model model) {
+    public String addNewEmployee(@Valid @ModelAttribute("saveEmployeeDto") SaveEmployeeDTO saveEmployeeDto, BindingResult result, Model model) {
         Employee existingEmployee = employeeService.findEmployeeByEmail(saveEmployeeDto.getEmail());
         if (existingEmployee != null) {
             result.rejectValue("email", null, "Employee email is already existed.");
@@ -70,18 +62,6 @@ public class AdminController {
         return "redirect:/list_employees";
     }
 
-    @GetMapping("/admin")
-    public String admin(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Employee currentEmployee = employeeRepository.findByEmail(authentication.getName());
-        for (Role role: currentEmployee.getRoles()) {
-            if (!role.getName().equals(TbConstants.Roles.ADMIN)) {
-                return "redirect:/access_denied";
-            }
-        }
-        return "admin";
-    }
-
     @GetMapping("/access_denied")
     public String accessDenied() {
         return "access_denied";
@@ -90,31 +70,17 @@ public class AdminController {
     @GetMapping("/update_employee_form/{id}")
     public String updateEmployeeForm(@PathVariable("id") Long id, Model model) {
         Employee employee = employeeService.getEmployeeById(id);
-        SaveEmployeeDto saveEmployeeDto = SaveEmployeeDto.builder()
-                .email(employee.getEmail())
-                .password(employee.getPassword())
-                .firstName(employee.getFirstName())
-                .lastName(employee.getLastName())
-                .dateOfBirth(employee.getDateOfBirth())
-                .phoneNumber(employee.getPhoneNumber())
-                .address(employee.getAddress())
-                .coefficientsSalary(employee.getCoefficientsSalary())
-                .gender(employee.getGender())
-                .status(employee.getStatus())
-                .startWork(employee.getStartWork())
-                .endWork(employee.getEndWork())
-                .department(employee.getDepartment())
-                .position(employee.getPosition())
-                .build();
+        SaveEmployeeDTO saveEmployeeDto = mapToEntity(employee);
+        model.addAttribute("employee", employee);
         model.addAttribute("saveEmployeeDto", saveEmployeeDto);
-        model.addAttribute("employeeId", employee.getEmployeeId());
         model.addAttribute("positions", positionRepository.findAll());
         model.addAttribute("departments", departmentRepository.findAll());
         return "update_employee";
     }
 
     @PostMapping("/update_employee/{id}")
-    public String updateEmployee(@Valid @ModelAttribute("saveEmployeeDto") SaveEmployeeDto saveEmployeeDto, @PathVariable("id") Long id) {
+    public String updateEmployee(@Valid @ModelAttribute("saveEmployeeDto") SaveEmployeeDTO saveEmployeeDto,
+                                 @PathVariable("id") Long id){
         employeeService.updateEmployee(saveEmployeeDto, id);
         return "redirect:/list_employees";
     }
@@ -142,7 +108,7 @@ public class AdminController {
         String email = request.getParameter("email");
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
-        EmailDto emailDto = new EmailDto();
+        EmailDTO emailDto = new EmailDTO();
         emailDto.setFrom("quockhanhnguyen2882@gmail.com");
         emailDto.setTo(personalEmail);
         emailDto.setSubject("Company send information for new employee "+firstName+" "+lastName);
@@ -167,6 +133,25 @@ public class AdminController {
         }
         model.addAttribute("employees", employees);
         return "list_employees";
+    }
+
+    public SaveEmployeeDTO mapToEntity(Employee employee) {
+        return SaveEmployeeDTO.builder()
+                .email(employee.getEmail())
+                .password(employee.getPassword())
+                .firstName(employee.getFirstName())
+                .lastName(employee.getLastName())
+                .dateOfBirth(employee.getDateOfBirth())
+                .phoneNumber(employee.getPhoneNumber())
+                .address(employee.getAddress())
+                .coefficientsSalary(employee.getCoefficientsSalary())
+                .gender(employee.getGender())
+                .status(employee.getStatus())
+                .startWork(employee.getStartWork())
+                .endWork(employee.getEndWork())
+                .department(employee.getDepartment())
+                .position(employee.getPosition())
+                .build();
     }
 
 }

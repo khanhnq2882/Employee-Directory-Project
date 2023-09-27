@@ -12,8 +12,10 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "project")
 public class Project {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long projectId;
@@ -27,7 +29,7 @@ public class Project {
     @Column(nullable = false)
     private String framework;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)

@@ -2,10 +2,7 @@ package com.example.employeedirectoryproject.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.util.*;
 
 @Entity
@@ -63,7 +60,7 @@ public class Employee {
     private Boolean status;
 
 //    @Column(nullable = false)
-//@CreationTimestamp
+//    @CreationTimestamp
 //    private String createdBy;
 //
 //    @Column(nullable = false)

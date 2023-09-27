@@ -15,13 +15,20 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#department').attr("disabled", true);
+            $('#position').attr("disabled", true);
+            $( "#dateOfBirth" ).datepicker();
+        });
+    </script>
 </head>
 
 <body>
 <div class="container">
     <div class="mt-5"><a class="link-primary" th:href="@{/logout}">Logout</a></div>
     <h1>Edit Profile</h1>
-    <form method="post" th:object="${currentEmployee}">
+    <form method="post" th:object="${currentEmployee}" th:action="@{/edit_profile}">
         <div class="row">
 
             <div class="form-group col-md-6">
@@ -111,7 +118,6 @@
                     <option>Relish</option>
                 </select>
                 <a class="btn btn-success" th:href="@{/add_new_skill}">+ Add Skill</a>
-
             </div>
 
             <div class="form-group col-md-6">
@@ -140,29 +146,9 @@
                 <a class="btn btn-success" th:href="@{/add_new_experience}">+ Add Experience</a>
             </div>
 
-<!--            <div class="form-group col-md-6">-->
-<!--                <label>Projects:</label>-->
-<!--                <select class="selectpicker" multiple data-live-search="true">-->
-<!--                    <option>Mustard</option>-->
-<!--                    <option>Ketchup</option>-->
-<!--                    <option>Relish</option>-->
-<!--                    <option>Mustard</option>-->
-<!--                    <option>Ketchup</option>-->
-<!--                    <option>Relish</option>-->
-<!--                </select>-->
-<!--                <button type="button" class="btn btn-primary">+ Add Project</button>-->
-<!--            </div>-->
-
         </div>
         <button type="submit" class="btn btn-info col-2">Save</button>
     </form>
     <div>
 </body>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#department').attr("disabled", true);
-        $('#position').attr("disabled", true);
-        $( "#dateOfBirth" ).datepicker();
-    });
-</script>
 </html>

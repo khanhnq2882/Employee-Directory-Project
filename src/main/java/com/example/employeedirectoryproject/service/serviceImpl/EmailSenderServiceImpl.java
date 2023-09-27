@@ -1,6 +1,6 @@
 package com.example.employeedirectoryproject.service.serviceImpl;
 
-import com.example.employeedirectoryproject.dto.EmailDto;
+import com.example.employeedirectoryproject.dto.EmailDTO;
 import com.example.employeedirectoryproject.service.EmailSenderService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -19,10 +19,11 @@ import java.nio.charset.StandardCharsets;
 public class EmailSenderServiceImpl implements EmailSenderService {
 
     private final JavaMailSender emailSender;
+
     private final SpringTemplateEngine templateEngine;
 
     @Override
-    public void sendHtmlMessage(EmailDto emailDto)  throws MessagingException {
+    public void sendHtmlMessage(EmailDTO emailDto)  throws MessagingException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
         Context context = new Context();

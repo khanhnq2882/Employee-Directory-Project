@@ -2,7 +2,6 @@ package com.example.employeedirectoryproject.dto;
 
 import com.example.employeedirectoryproject.model.Employee;
 import lombok.*;
-
 import java.util.Date;
 
 @Data
@@ -10,7 +9,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExperienceDto {
+public class ExperienceDTO {
     private String companyName;
     private String projectName;
     private String language;

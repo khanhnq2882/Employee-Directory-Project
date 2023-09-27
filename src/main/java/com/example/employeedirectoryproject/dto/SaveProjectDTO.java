@@ -1,22 +1,22 @@
 package com.example.employeedirectoryproject.dto;
 
 import com.example.employeedirectoryproject.model.Employee;
-import jakarta.persistence.Column;
 import lombok.*;
-
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CertificationDto {
-    private String certificationName;
-    private Date issuedDate;
-    private Date expiredDate;
+@Builder
+public class SaveProjectDTO {
+    private String projectName;
+    private String language;
+    private String framework;
+    private Date startDate;
+    private Date endDate;
     private String description;
-    private Employee employee;
+    private Set<Employee> employees;
 }

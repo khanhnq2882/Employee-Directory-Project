@@ -1,13 +1,13 @@
 package com.example.employeedirectoryproject.service.serviceImpl;
 
-import com.example.employeedirectoryproject.dto.SaveEmployeeDto;
-import com.example.employeedirectoryproject.model.Employee;
-import com.example.employeedirectoryproject.model.Role;
-import com.example.employeedirectoryproject.repository.EmployeeRepository;
-import com.example.employeedirectoryproject.repository.RoleRepository;
+import com.example.employeedirectoryproject.dto.*;
+import com.example.employeedirectoryproject.model.*;
+import com.example.employeedirectoryproject.repository.*;
 import com.example.employeedirectoryproject.service.EmployeeService;
 import com.example.employeedirectoryproject.util.TbConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +26,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private SkillRepository skillRepository;
+
+    @Autowired
+    private ExperienceRepository experienceRepository;
+
+    @Autowired
+    private CertificationRepository certificationRepository;
+
     @Override
-    public void saveEmployee(SaveEmployeeDto saveEmployeeDto) {
+    public void saveEmployee(SaveEmployeeDTO saveEmployeeDto) {
         Role role = roleRepository.findByName(TbConstants.Roles.EMPLOYEE);
         if (role == null) {
             role = roleRepository.save(new Role(TbConstants.Roles.EMPLOYEE));
@@ -47,6 +56,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                 saveEmployeeDto.getDepartment(),
                 saveEmployeeDto.getPosition(),
                 Arrays.asList(role));
+
+
         employeeRepository.save(employee);
     }
 
@@ -66,12 +77,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void updateEmployee(SaveEmployeeDto saveEmployeeDto, Long id) {
+    public void updateEmployee(SaveEmployeeDTO saveEmployeeDto, Long id) {
         Employee employee = employeeRepository.findById(id).orElse(null);
-        if (employee.getRoles().stream().filter(role -> role.getName().equals("ROLE_EMPLOYEE")).findAny().isPresent() == true) {
-            employee = mapToEntity(employee, saveEmployeeDto);
-            employeeRepository.save(employee);
-        }
+        mapToEntity(employee, saveEmployeeDto);
+        employeeRepository.save(employee);
     }
 
     @Override
@@ -85,29 +94,74 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Employee getCurrentEmployee() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Employee currentEmployee = employeeRepository.findByEmail(authentication.getName());
+        return currentEmployee;
+    }
+
+    @Override
     public List<Employee> searchEmployees(String search) {
         return employeeRepository.search(search);
     }
 
-    public Employee mapToEntity(Employee employee, SaveEmployeeDto saveEmployeeDto) {
-        employee = Employee.builder()
-                .firstName(saveEmployeeDto.getFirstName())
-                .lastName(saveEmployeeDto.getLastName())
-                .email(saveEmployeeDto.getEmail())
-                .password(passwordEncoder.encode(saveEmployeeDto.getPassword()))
-                .gender(saveEmployeeDto.getGender())
-                .dateOfBirth(saveEmployeeDto.getDateOfBirth())
-                .phoneNumber(saveEmployeeDto.getPhoneNumber())
-                .address(saveEmployeeDto.getAddress())
-                .startWork(saveEmployeeDto.getStartWork())
-                .endWork(saveEmployeeDto.getEndWork())
-                .coefficientsSalary(saveEmployeeDto.getCoefficientsSalary())
-                .status(saveEmployeeDto.getStatus())
-                .department(saveEmployeeDto.getDepartment())
-                .position(saveEmployeeDto.getPosition())
+    @Override
+    public void addSkill(SkillDTO skillDto) {
+        Employee currentEmployee = getCurrentEmployee();
+        Skill skill = Skill.builder()
+                .skillName(skillDto.getSkillName())
+                .level(skillDto.getLevel())
+                .description(skillDto.getDescription())
+                .employees(Arrays.asList(currentEmployee))
                 .build();
-        return employee;
+        currentEmployee.getSkills().add(skill);
+        skillRepository.save(skill);
     }
 
+    @Override
+    public void addExperience(ExperienceDTO experienceDto) {
+        Employee currentEmployee = getCurrentEmployee();
+        Experience experience = Experience.builder()
+                .companyName(experienceDto.getCompanyName())
+                .name(experienceDto.getProjectName())
+                .language(experienceDto.getLanguage())
+                .framework(experienceDto.getFramework())
+                .startWork(experienceDto.getStartWork())
+                .endWork(experienceDto.getEndWork())
+                .description(experienceDto.getDescription())
+                .employee(currentEmployee)
+                .build();
+        experienceRepository.save(experience);
+    }
+
+    @Override
+    public void addCertification(CertificationDTO certificationDto) {
+        Employee currentEmployee = getCurrentEmployee();
+        Certification certification = Certification.builder()
+                .certificationName(certificationDto.getCertificationName())
+                .issuedDate(certificationDto.getIssuedDate())
+                .expiredDate(certificationDto.getExpiredDate())
+                .description(certificationDto.getDescription())
+                .employee(currentEmployee)
+                .build();
+        certificationRepository.save(certification);
+    }
+
+    private void mapToEntity(Employee employee, SaveEmployeeDTO saveEmployeeDto) {
+        employee.setFirstName(saveEmployeeDto.getFirstName());
+        employee.setLastName(saveEmployeeDto.getLastName());
+        employee.setEmail(saveEmployeeDto.getEmail());
+        employee.setPassword(passwordEncoder.encode(saveEmployeeDto.getPassword()));
+        employee.setGender(saveEmployeeDto.getGender());
+        employee.setDateOfBirth(saveEmployeeDto.getDateOfBirth());
+        employee.setPhoneNumber(saveEmployeeDto.getPhoneNumber());
+        employee.setAddress(saveEmployeeDto.getAddress());
+        employee.setStartWork(saveEmployeeDto.getStartWork());
+        employee.setEndWork(saveEmployeeDto.getEndWork());
+        employee.setCoefficientsSalary(saveEmployeeDto.getCoefficientsSalary());
+        employee.setStatus(saveEmployeeDto.getStatus());
+        employee.setDepartment(saveEmployeeDto.getDepartment());
+        employee.setPosition(saveEmployeeDto.getPosition());
+    }
 
 }
