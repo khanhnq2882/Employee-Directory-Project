@@ -1,63 +1,97 @@
 package com.example.employeedirectoryproject.service.serviceImpl;
 
+import com.example.employeedirectoryproject.config.exception.NotMatchPasswordException;
+import com.example.employeedirectoryproject.config.exception.WrongPasswordException;
 import com.example.employeedirectoryproject.dto.*;
+import com.example.employeedirectoryproject.mapper.CertificationMapper;
+import com.example.employeedirectoryproject.mapper.EmployeeMapper;
+import com.example.employeedirectoryproject.mapper.ExperienceMapper;
+import com.example.employeedirectoryproject.mapper.SkillMapper;
 import com.example.employeedirectoryproject.model.*;
 import com.example.employeedirectoryproject.repository.*;
+import com.example.employeedirectoryproject.service.EmailSenderService;
 import com.example.employeedirectoryproject.service.EmployeeService;
 import com.example.employeedirectoryproject.util.TbConstants;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
+import java.security.SecureRandom;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-
-    @Autowired
     private EmployeeRepository employeeRepository;
-
-    @Autowired
     private RoleRepository roleRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private SkillRepository skillRepository;
-
-    @Autowired
     private ExperienceRepository experienceRepository;
-
-    @Autowired
     private CertificationRepository certificationRepository;
+    private EmailSenderService emailSenderService;
+    @Autowired
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository,
+                               RoleRepository roleRepository,
+                               PasswordEncoder passwordEncoder,
+                               SkillRepository skillRepository,
+                               ExperienceRepository experienceRepository,
+                               CertificationRepository certificationRepository,
+                               EmailSenderService emailSenderService) {
+        this.employeeRepository = employeeRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.skillRepository = skillRepository;
+        this.experienceRepository = experienceRepository;
+        this.certificationRepository = certificationRepository;
+        this.emailSenderService = emailSenderService;
+    }
 
     @Override
-    public void saveEmployee(SaveEmployeeDTO saveEmployeeDto) {
+    public void changePassword(ChangePasswordDTO changePasswordDTO) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        if (bCryptPasswordEncoder.matches(changePasswordDTO.getOldPassword(), getCurrentEmployee().getPassword())) {
+            if (changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmPassword())) {
+                getCurrentEmployee().setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+                employeeRepository.save(getCurrentEmployee());
+            } else {
+                throw new NotMatchPasswordException("New password and confirm password is not match. Try again!");
+            }
+        } else {
+            throw new WrongPasswordException("Old password is not correct. Try again!");
+        }
+    }
+
+    @Override
+    public void saveEmployee(SaveEmployeeDTO saveEmployeeDto) throws MessagingException{
         Role role = roleRepository.findByName(TbConstants.Roles.EMPLOYEE);
-        if (role == null) {
+        if (Objects.isNull(role)) {
             role = roleRepository.save(new Role(TbConstants.Roles.EMPLOYEE));
         }
-        Employee employee = new Employee(saveEmployeeDto.getFirstName(),
-                saveEmployeeDto.getLastName(),
-                saveEmployeeDto.getEmail(),
-                passwordEncoder.encode(saveEmployeeDto.getPassword()),
-                saveEmployeeDto.getGender(),
-                saveEmployeeDto.getDateOfBirth(),
-                saveEmployeeDto.getPhoneNumber(),
-                saveEmployeeDto.getAddress(),
-                saveEmployeeDto.getStartWork(),
-                saveEmployeeDto.getEndWork(),
-                saveEmployeeDto.getCoefficientsSalary(),
-                saveEmployeeDto.getStatus(),
-                saveEmployeeDto.getDepartment(),
-                saveEmployeeDto.getPosition(),
-                Arrays.asList(role));
-
-
+        Employee employee = Employee.builder()
+                .firstName(saveEmployeeDto.getFirstName())
+                .lastName(saveEmployeeDto.getLastName())
+                .email(saveEmployeeDto.getEmail())
+                .password(randomPassword())
+                .dateOfBirth(saveEmployeeDto.getDateOfBirth())
+                .phoneNumber(saveEmployeeDto.getPhoneNumber())
+                .address(saveEmployeeDto.getAddress())
+                .gender(saveEmployeeDto.getGender())
+                .startWork(saveEmployeeDto.getStartWork())
+                .endWork(saveEmployeeDto.getEndWork())
+                .coefficientsSalary(saveEmployeeDto.getCoefficientsSalary())
+                .department(saveEmployeeDto.getDepartment())
+                .position(saveEmployeeDto.getPosition())
+                .status(saveEmployeeDto.getStatus())
+                .roles(Arrays.asList(role))
+                .build();
+        saveEmployeeDto.setPassword(employee.getPassword());
+        sendEmail(saveEmployeeDto);
+        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         employeeRepository.save(employee);
     }
 
@@ -68,7 +102,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+        return employeeRepository.getAllEmployees();
     }
 
     @Override
@@ -79,7 +113,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void updateEmployee(SaveEmployeeDTO saveEmployeeDto, Long id) {
         Employee employee = employeeRepository.findById(id).orElse(null);
-        mapToEntity(employee, saveEmployeeDto);
+        EmployeeMapper.EMPLOYEE_MAPPER.mapToUpdateEmployee(employee, saveEmployeeDto);
+        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         employeeRepository.save(employee);
     }
 
@@ -108,12 +143,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void addSkill(SkillDTO skillDto) {
         Employee currentEmployee = getCurrentEmployee();
-        Skill skill = Skill.builder()
-                .skillName(skillDto.getSkillName())
-                .level(skillDto.getLevel())
-                .description(skillDto.getDescription())
-                .employees(Arrays.asList(currentEmployee))
-                .build();
+        Skill skill = SkillMapper.SKILL_MAPPER.mapToSkill(skillDto);
+        skill.setEmployees(Arrays.asList(currentEmployee));
         currentEmployee.getSkills().add(skill);
         skillRepository.save(skill);
     }
@@ -121,47 +152,41 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void addExperience(ExperienceDTO experienceDto) {
         Employee currentEmployee = getCurrentEmployee();
-        Experience experience = Experience.builder()
-                .companyName(experienceDto.getCompanyName())
-                .name(experienceDto.getProjectName())
-                .language(experienceDto.getLanguage())
-                .framework(experienceDto.getFramework())
-                .startWork(experienceDto.getStartWork())
-                .endWork(experienceDto.getEndWork())
-                .description(experienceDto.getDescription())
-                .employee(currentEmployee)
-                .build();
+        Experience experience = ExperienceMapper.EXPERIENCE_MAPPER.mapToExperience(experienceDto);
+        experience.setEmployee(currentEmployee);
         experienceRepository.save(experience);
     }
 
     @Override
     public void addCertification(CertificationDTO certificationDto) {
         Employee currentEmployee = getCurrentEmployee();
-        Certification certification = Certification.builder()
-                .certificationName(certificationDto.getCertificationName())
-                .issuedDate(certificationDto.getIssuedDate())
-                .expiredDate(certificationDto.getExpiredDate())
-                .description(certificationDto.getDescription())
-                .employee(currentEmployee)
-                .build();
+        Certification certification = CertificationMapper.CERTIFICATION_MAPPER.mapToCertification(certificationDto);
+        certification.setEmployee(currentEmployee);
         certificationRepository.save(certification);
     }
 
-    private void mapToEntity(Employee employee, SaveEmployeeDTO saveEmployeeDto) {
-        employee.setFirstName(saveEmployeeDto.getFirstName());
-        employee.setLastName(saveEmployeeDto.getLastName());
-        employee.setEmail(saveEmployeeDto.getEmail());
-        employee.setPassword(passwordEncoder.encode(saveEmployeeDto.getPassword()));
-        employee.setGender(saveEmployeeDto.getGender());
-        employee.setDateOfBirth(saveEmployeeDto.getDateOfBirth());
-        employee.setPhoneNumber(saveEmployeeDto.getPhoneNumber());
-        employee.setAddress(saveEmployeeDto.getAddress());
-        employee.setStartWork(saveEmployeeDto.getStartWork());
-        employee.setEndWork(saveEmployeeDto.getEndWork());
-        employee.setCoefficientsSalary(saveEmployeeDto.getCoefficientsSalary());
-        employee.setStatus(saveEmployeeDto.getStatus());
-        employee.setDepartment(saveEmployeeDto.getDepartment());
-        employee.setPosition(saveEmployeeDto.getPosition());
+    public String randomPassword() {
+        final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        SecureRandom random = new SecureRandom();
+        return IntStream.range(0, 8)
+                .map(i -> random.nextInt(chars.length()))
+                .mapToObj(randomIndex -> String.valueOf(chars.charAt(randomIndex)))
+                .collect(Collectors.joining());
     }
+
+    public void sendEmail(SaveEmployeeDTO saveEmployeeDTO) throws MessagingException {
+        EmailDTO emailDto = new EmailDTO();
+        emailDto.setFrom("quockhanhnguyen2882@gmail.com");
+        emailDto.setTo(saveEmployeeDTO.getPersonalEmail());
+        emailDto.setSubject("Company send information for new employee "+saveEmployeeDTO.getFirstName()+" "+saveEmployeeDTO.getLastName());
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("email", saveEmployeeDTO.getEmail());
+        properties.put("password", saveEmployeeDTO.getPassword());
+        properties.put("fullName", saveEmployeeDTO.getFirstName()+" "+saveEmployeeDTO.getLastName());
+        emailDto.setProperties(properties);
+        emailDto.setTemplate("email_content.html");
+        emailSenderService.sendHtmlMessage(emailDto);
+    }
+
 
 }

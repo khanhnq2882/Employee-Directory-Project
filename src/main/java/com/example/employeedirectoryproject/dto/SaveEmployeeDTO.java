@@ -26,4 +26,5 @@ public class SaveEmployeeDTO {
     private Department department;
     private Position position;
     private Boolean status;
+    private String personalEmail;
 }

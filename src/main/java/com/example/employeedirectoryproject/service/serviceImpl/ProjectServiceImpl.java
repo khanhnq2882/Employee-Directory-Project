@@ -1,6 +1,7 @@
 package com.example.employeedirectoryproject.service.serviceImpl;
 
 import com.example.employeedirectoryproject.dto.SaveProjectDTO;
+import com.example.employeedirectoryproject.mapper.ProjectMapper;
 import com.example.employeedirectoryproject.model.Employee;
 import com.example.employeedirectoryproject.model.Project;
 import com.example.employeedirectoryproject.repository.ProjectRepository;
@@ -10,20 +11,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
+    private ProjectRepository projectRepository;
 
     @Autowired
-    private ProjectRepository projectRepository;
+    public ProjectServiceImpl(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
 
     @Override
     public void addNewProject(SaveProjectDTO saveProjectDTO) {
-        Project project = new Project();
-        project.setProjectName(saveProjectDTO.getProjectName());
-        project.setLanguage(saveProjectDTO.getLanguage());
-        project.setFramework(saveProjectDTO.getFramework());
-        project.setStartDate(saveProjectDTO.getStartDate());
-        project.setEndDate(saveProjectDTO.getEndDate());
-        project.setDescription(saveProjectDTO.getDescription());
-        project.setEmployees(saveProjectDTO.getEmployees());
+        Project project = ProjectMapper.PROJECT_MAPPER.mapToProject(saveProjectDTO);
         for (Employee employee: saveProjectDTO.getEmployees()) {
             employee.getProjects().add(project);
         }

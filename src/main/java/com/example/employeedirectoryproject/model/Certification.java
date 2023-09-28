@@ -2,9 +2,7 @@ package com.example.employeedirectoryproject.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Getter
@@ -48,4 +46,10 @@ public class Certification {
     @ToString.Exclude
     private Employee employee;
 
+    public Certification(String certificationName, Date issuedDate, Date expiredDate, String description) {
+        this.certificationName = certificationName;
+        this.issuedDate = issuedDate;
+        this.expiredDate = expiredDate;
+        this.description = description;
+    }
 }

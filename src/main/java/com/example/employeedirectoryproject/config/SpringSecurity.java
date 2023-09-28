@@ -23,6 +23,7 @@ public class SpringSecurity {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/login/**").permitAll()
+                        .requestMatchers("/change_password/**").permitAll()
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                         .requestMatchers("/save_employee/**").hasAnyRole("ADMIN")
                         .requestMatchers("/edit_profile/**").hasAnyRole("EMPLOYEE","ADMIN")
@@ -37,7 +38,7 @@ public class SpringSecurity {
                         .permitAll()
                 )
                 .logout((logout) -> logout.permitAll())
-                .exceptionHandling().accessDeniedPage("/access-denied");
+                .exceptionHandling().accessDeniedPage("/access_denied");
         return http.build();
     }
 

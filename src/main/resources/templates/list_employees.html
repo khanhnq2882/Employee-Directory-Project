@@ -36,7 +36,7 @@
           <th>Start Work</th>
           <th>End Work</th>
           <th>Status</th>
-          <th>Action</th>
+          <th style="text-align: center">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -50,7 +50,6 @@
             <td th:text="${employee.getEndWork()}"></td>
             <td th:text="${employee.getStatus() == true ? 'Active' : 'Inactive'}"></td>
             <td>
-              <a class="btn btn-success" th:href="@{/email_form/{id}(id=${employee.getEmployeeId()})}">Send Mail</a>
               <a class="btn btn-primary" th:href="@{/update_employee_form/{id}(id=${employee.getEmployeeId()})}"> Update </a>
               <a class="btn btn-danger" th:href="@{/delete_employee/{id}(id=${employee.getEmployeeId()})}"> Delete </a>
             </td>

@@ -1,7 +1,7 @@
 package com.example.employeedirectoryproject.controller;
 
 import com.example.employeedirectoryproject.dto.SaveEmployeeDTO;
-import com.example.employeedirectoryproject.dto.EmailDTO;
+import com.example.employeedirectoryproject.mapper.EmployeeMapper;
 import com.example.employeedirectoryproject.model.Employee;
 import com.example.employeedirectoryproject.model.Role;
 import com.example.employeedirectoryproject.repository.DepartmentRepository;
@@ -17,23 +17,24 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class AdminController {
-
-    @Autowired
     private PositionRepository positionRepository;
-
-    @Autowired
     private DepartmentRepository departmentRepository;
-
-    @Autowired
     private EmployeeService employeeService;
+    private EmailSenderService emailSenderService;
 
     @Autowired
-    private EmailSenderService emailSenderService;
+    public AdminController(PositionRepository positionRepository,
+                           DepartmentRepository departmentRepository,
+                           EmployeeService employeeService,
+                           EmailSenderService emailSenderService) {
+        this.positionRepository = positionRepository;
+        this.departmentRepository = departmentRepository;
+        this.employeeService = employeeService;
+        this.emailSenderService = emailSenderService;
+    }
 
     @RequestMapping("/login")
     public String loginForm() {
@@ -49,7 +50,9 @@ public class AdminController {
     }
 
     @PostMapping("/save_employee")
-    public String addNewEmployee(@Valid @ModelAttribute("saveEmployeeDto") SaveEmployeeDTO saveEmployeeDto, BindingResult result, Model model) {
+    public String addNewEmployee(@Valid @ModelAttribute("saveEmployeeDto") SaveEmployeeDTO saveEmployeeDto,
+                                 BindingResult result,
+                                 Model model) throws MessagingException{
         Employee existingEmployee = employeeService.findEmployeeByEmail(saveEmployeeDto.getEmail());
         if (existingEmployee != null) {
             result.rejectValue("email", null, "Employee email is already existed.");
@@ -70,7 +73,7 @@ public class AdminController {
     @GetMapping("/update_employee_form/{id}")
     public String updateEmployeeForm(@PathVariable("id") Long id, Model model) {
         Employee employee = employeeService.getEmployeeById(id);
-        SaveEmployeeDTO saveEmployeeDto = mapToEntity(employee);
+        SaveEmployeeDTO saveEmployeeDto = EmployeeMapper.EMPLOYEE_MAPPER.mapToSaveEmployeeDto(employee);
         model.addAttribute("employee", employee);
         model.addAttribute("saveEmployeeDto", saveEmployeeDto);
         model.addAttribute("positions", positionRepository.findAll());
@@ -85,13 +88,6 @@ public class AdminController {
         return "redirect:/list_employees";
     }
 
-    @GetMapping("/email_form/{id}")
-    public String showEmailForm(Model model, @PathVariable("id") Long id) {
-        Employee employee = employeeService.getEmployeeById(id);
-        model.addAttribute("employee", employee);
-        return "email_employee";
-    }
-
     @GetMapping("/delete_employee/{id}")
     public String deleteEmployee(@PathVariable("id") Long id) {
         Employee employee = employeeService.getEmployeeById(id);
@@ -99,26 +95,6 @@ public class AdminController {
             employeeService.deleteEmployeeRole(id, role.getRoleId());
         }
         employeeService.deleteEmployee(id);
-        return "redirect:/list_employees";
-    }
-
-    @PostMapping("/send_mail_employee")
-    public String sendMailEmployee(HttpServletRequest request) throws MessagingException {
-        String personalEmail = request.getParameter("personalEmail");
-        String email = request.getParameter("email");
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
-        EmailDTO emailDto = new EmailDTO();
-        emailDto.setFrom("quockhanhnguyen2882@gmail.com");
-        emailDto.setTo(personalEmail);
-        emailDto.setSubject("Company send information for new employee "+firstName+" "+lastName);
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("email", email);
-        properties.put("password", "123456");
-        properties.put("fullName", firstName +" "+lastName);
-        emailDto.setProperties(properties);
-        emailDto.setTemplate("email_content.html");
-        emailSenderService.sendHtmlMessage(emailDto);
         return "redirect:/list_employees";
     }
 
@@ -133,25 +109,6 @@ public class AdminController {
         }
         model.addAttribute("employees", employees);
         return "list_employees";
-    }
-
-    public SaveEmployeeDTO mapToEntity(Employee employee) {
-        return SaveEmployeeDTO.builder()
-                .email(employee.getEmail())
-                .password(employee.getPassword())
-                .firstName(employee.getFirstName())
-                .lastName(employee.getLastName())
-                .dateOfBirth(employee.getDateOfBirth())
-                .phoneNumber(employee.getPhoneNumber())
-                .address(employee.getAddress())
-                .coefficientsSalary(employee.getCoefficientsSalary())
-                .gender(employee.getGender())
-                .status(employee.getStatus())
-                .startWork(employee.getStartWork())
-                .endWork(employee.getEndWork())
-                .department(employee.getDepartment())
-                .position(employee.getPosition())
-                .build();
     }
 
 }

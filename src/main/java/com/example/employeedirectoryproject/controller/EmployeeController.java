@@ -1,6 +1,9 @@
 package com.example.employeedirectoryproject.controller;
 
+import com.example.employeedirectoryproject.config.exception.NotMatchPasswordException;
+import com.example.employeedirectoryproject.config.exception.WrongPasswordException;
 import com.example.employeedirectoryproject.dto.CertificationDTO;
+import com.example.employeedirectoryproject.dto.ChangePasswordDTO;
 import com.example.employeedirectoryproject.dto.ExperienceDTO;
 import com.example.employeedirectoryproject.dto.SkillDTO;
 import com.example.employeedirectoryproject.model.Employee;
@@ -15,24 +18,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 @Controller
 public class EmployeeController {
-
-    @Autowired
     private PositionRepository positionRepository;
-
-    @Autowired
     private DepartmentRepository departmentRepository;
-
-    @Autowired
     private EmployeeRepository employeeRepository;
+    private EmployeeService employeeService;
 
     @Autowired
-    private EmployeeService employeeService;
+    public EmployeeController(PositionRepository positionRepository,
+                              DepartmentRepository departmentRepository,
+                              EmployeeRepository employeeRepository,
+                              EmployeeService employeeService) {
+        this.positionRepository = positionRepository;
+        this.departmentRepository = departmentRepository;
+        this.employeeRepository = employeeRepository;
+        this.employeeService = employeeService;
+    }
+
+    @GetMapping("/change_password")
+    public String changePasswordForm(Model model) {
+        model.addAttribute("changePasswordDTO", new ChangePasswordDTO());
+        return "change_password";
+    }
+
+    @PostMapping("/change_password")
+    public String changePassword(@Valid @ModelAttribute("changePasswordDTO") ChangePasswordDTO changePasswordDTO, Model model) {
+        try {
+            employeeService.changePassword(changePasswordDTO);
+        }catch (WrongPasswordException | NotMatchPasswordException ex) {
+            model.addAttribute("errorMessage", ex.getMessage());
+        }
+        return "change_password";
+    }
 
     @GetMapping("/edit_profile")
     public String editProfileForm(Model model) {

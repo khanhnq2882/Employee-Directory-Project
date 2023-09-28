@@ -54,4 +54,14 @@ public class Experience {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Employee employee;
+
+    public Experience(String name, String companyName, String language, String framework, Date startWork, Date endWork, String description) {
+        this.name = name;
+        this.companyName = companyName;
+        this.language = language;
+        this.framework = framework;
+        this.startWork = startWork;
+        this.endWork = endWork;
+        this.description = description;
+    }
 }

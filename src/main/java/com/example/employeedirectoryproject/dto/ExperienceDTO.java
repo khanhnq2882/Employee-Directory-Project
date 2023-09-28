@@ -1,6 +1,5 @@
 package com.example.employeedirectoryproject.dto;
 
-import com.example.employeedirectoryproject.model.Employee;
 import lombok.*;
 import java.util.Date;
 
@@ -14,8 +13,7 @@ public class ExperienceDTO {
     private String projectName;
     private String language;
     private String framework;
-    private Date startWork;
-    private Date endWork;
+    private Date startDate;
+    private Date endDate;
     private String description;
-    private Employee employee;
 }

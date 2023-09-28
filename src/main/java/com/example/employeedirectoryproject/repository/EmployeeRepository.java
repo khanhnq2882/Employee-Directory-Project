@@ -14,15 +14,18 @@ import java.util.List;
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Employee findByEmail(String email);
 
-//    @Query(value = "SELECT * FROM employee INNER JOIN employees_roles ON employee.employee_id = employees_roles.emp_id WHERE employees_roles.role_id = 1", nativeQuery = true)
-//    List<Employee> getAllEmployees();
+    @Query(value = "SELECT e FROM Employee AS e INNER JOIN e.roles AS r WHERE r.roleId = 1")
+    List<Employee> getAllEmployees();
+
+    @Query(value = "SELECT e FROM Employee AS e INNER JOIN e.roles AS r WHERE r.roleId = 1 AND e.status = true")
+    List<Employee> getActiveEmployees();
 
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM employees_roles WHERE employee_id = :employeeId AND role_id = :roleId", nativeQuery = true)
     void deleteEmployeeRole(@Param("employeeId") Long employeeId, @Param("roleId") Long roleId);
 
-    @Query(value = "select * from employee as e where e.email like %:searchText% or e.first_name like %:searchText% or e.last_name like %:searchText%", nativeQuery = true)
+    @Query(value = "SELECT * FROM employee AS e WHERE e.email LIKE %:searchText% OR e.first_name LIKE %:searchText% OR e.last_name LIKE %:searchText%", nativeQuery = true)
     List<Employee> search(@Param("searchText") String searchText);
 
 }
