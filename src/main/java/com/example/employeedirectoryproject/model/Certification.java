@@ -2,20 +2,19 @@ package com.example.employeedirectoryproject.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "certification")
 public class Certification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long certificationId;
 
     @Column(nullable = false)
     private String certificationName;
@@ -47,4 +46,10 @@ public class Certification {
     @ToString.Exclude
     private Employee employee;
 
+    public Certification(String certificationName, Date issuedDate, Date expiredDate, String description) {
+        this.certificationName = certificationName;
+        this.issuedDate = issuedDate;
+        this.expiredDate = expiredDate;
+        this.description = description;
+    }
 }

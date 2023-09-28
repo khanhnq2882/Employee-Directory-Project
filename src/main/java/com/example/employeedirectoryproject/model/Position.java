@@ -15,7 +15,7 @@ import java.util.List;
 public class Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long positionId;
 
     @Column(nullable = false)
     private String positionName;

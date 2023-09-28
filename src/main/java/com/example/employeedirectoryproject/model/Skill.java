@@ -3,19 +3,19 @@ package com.example.employeedirectoryproject.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "skill")
 public class Skill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long skillId;
 
     @Column(nullable = false)
     private String skillName;
@@ -41,5 +41,5 @@ public class Skill {
     @ManyToMany(mappedBy = "skills")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private List<Employee> employees;
+    private List<Employee> employees = new ArrayList<>();
 }

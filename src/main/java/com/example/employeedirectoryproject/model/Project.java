@@ -3,18 +3,22 @@ package com.example.employeedirectoryproject.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "project")
 public class Project {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long projectId;
 
     @Column(nullable = false)
     private String projectName;
@@ -25,7 +29,7 @@ public class Project {
     @Column(nullable = false)
     private String framework;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)
@@ -49,6 +53,6 @@ public class Project {
     @ManyToMany(mappedBy = "projects")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private List<Employee> employees;
+    private Set<Employee> employees = new HashSet<>();
 
 }

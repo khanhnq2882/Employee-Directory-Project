@@ -2,15 +2,18 @@ package com.example.employeedirectoryproject.dto;
 
 import lombok.*;
 
+import java.util.Date;
+
 @Data
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegistrationDto {
+public class EditProfileDTO {
     private String firstName;
     private String lastName;
-    private String email;
-    private String password;
+    private Date dateOfBirth;
+    private Boolean gender;
     private String phoneNumber;
+    private String address;
 }
