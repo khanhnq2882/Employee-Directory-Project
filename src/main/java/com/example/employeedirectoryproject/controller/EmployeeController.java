@@ -52,7 +52,7 @@ public class EmployeeController {
         }catch (WrongPasswordException | NotMatchPasswordException ex) {
             model.addAttribute("errorMessage", ex.getMessage());
         }
-        return "change_password";
+        return "redirect:/login";
     }
 
     @GetMapping("/edit_profile")
@@ -124,7 +124,7 @@ public class EmployeeController {
         if (currentEmployee.getRoles().stream().filter(role -> role.getName().equals(TbConstants.Roles.ADMIN)).findAny().isPresent()) {
             return "admin";
         }
-        return "home";
+        return "employee";
     }
 
 

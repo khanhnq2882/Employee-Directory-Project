@@ -9,7 +9,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
-
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="/resources/demos/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
@@ -25,7 +24,7 @@
 <div class="container">
     <div class="mt-5"><a class="link-primary" th:href="@{/logout}">Logout</a></div>
     <h1>Add New Project</h1>
-    <form th:action="@{/add_new_project}" method="post" th:object="${saveProjectDto}">
+    <form th:action="@{/update_project/{id}(id=${project.getProjectId()})}" method="post" th:object="${saveProjectDTO}">
         <div class="row">
 
             <div class="form-group col-md-6">

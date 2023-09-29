@@ -1,6 +1,7 @@
 package com.example.employeedirectoryproject.dto;
 
 import com.example.employeedirectoryproject.model.Employee;
+import com.example.employeedirectoryproject.model.Status;
 import lombok.*;
 import java.util.Date;
 import java.util.Set;
@@ -18,5 +19,6 @@ public class SaveProjectDTO {
     private Date startDate;
     private Date endDate;
     private String description;
+    private Status status;
     private Set<Employee> employees;
 }

@@ -2,9 +2,10 @@ package com.example.employeedirectoryproject.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -33,9 +34,13 @@ public class Project {
     private String description;
 
     @Column(nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.DATE)
     private Date startDate;
 
     @Column(nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.DATE)
     private Date endDate;
 
 //    @Column(nullable = false)
@@ -49,6 +54,10 @@ public class Project {
 //
 //    @Column(nullable = false)
 //    private Date updatedDay;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "status_id", referencedColumnName = "statusId")
+    private Status status;
 
     @ManyToMany(mappedBy = "projects")
     @EqualsAndHashCode.Exclude
