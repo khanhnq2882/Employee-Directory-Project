@@ -1,5 +1,6 @@
 package com.example.employeedirectoryproject.controller;
 
+import com.example.employeedirectoryproject.config.exception.NotExistEmployeeException;
 import com.example.employeedirectoryproject.config.exception.NotMatchPasswordException;
 import com.example.employeedirectoryproject.config.exception.WrongPasswordException;
 import com.example.employeedirectoryproject.dto.CertificationDTO;
@@ -12,6 +13,7 @@ import com.example.employeedirectoryproject.repository.EmployeeRepository;
 import com.example.employeedirectoryproject.repository.PositionRepository;
 import com.example.employeedirectoryproject.service.EmployeeService;
 import com.example.employeedirectoryproject.util.TbConstants;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,28 @@ public class EmployeeController {
         return "redirect:/login";
     }
 
+    @GetMapping("/forgot_password")
+    public String forgotPasswordForm() {
+        return "forgot_password";
+    }
+
+    @PostMapping("/forgot_password")
+    public String forgotPassword(HttpServletRequest request, Model model) throws MessagingException {
+        try{
+            String email = request.getParameter("email");
+            employeeService.sendMailToAdmin(email);
+            return "redirect:/login";
+        } catch (NotExistEmployeeException ex) {
+            model.addAttribute("errorMessage", ex.getMessage());
+            return "forgot_password";
+        }
+    }
+
+    @GetMapping("/employee_profile/{id}")
+    public String employeeProfileForm(@PathVariable("id") Long id) {
+        return "employee_profile";
+    }
+
     @GetMapping("/edit_profile")
     public String editProfileForm(Model model) {
         Employee currentEmployee = employeeService.getCurrentEmployee();
@@ -75,8 +99,7 @@ public class EmployeeController {
         currentEmployee.setPhoneNumber(request.getParameter("phoneNumber"));
         currentEmployee.setAddress(request.getParameter("address"));
         employeeRepository.save(currentEmployee);
-        model.addAttribute("employee", currentEmployee);
-        return "employee_profile";
+        return "redirect:/employee_profile";
     }
 
     @GetMapping("/add_new_skill")

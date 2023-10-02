@@ -24,6 +24,7 @@ public class SpringSecurity {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/login/**").permitAll()
                         .requestMatchers("/change_password/**").permitAll()
+                        .requestMatchers("/forgot_password/**").permitAll()
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                         .requestMatchers("/save_employee/**").hasAnyRole("ADMIN")
                         .requestMatchers("/edit_profile/**").hasAnyRole("EMPLOYEE","ADMIN")
@@ -41,6 +42,5 @@ public class SpringSecurity {
                 .exceptionHandling().accessDeniedPage("/access_denied");
         return http.build();
     }
-
 
 }

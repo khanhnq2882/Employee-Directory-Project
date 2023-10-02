@@ -8,14 +8,19 @@ import com.example.employeedirectoryproject.repository.DepartmentRepository;
 import com.example.employeedirectoryproject.repository.PositionRepository;
 import com.example.employeedirectoryproject.service.EmailSenderService;
 import com.example.employeedirectoryproject.service.EmployeeService;
+import com.example.employeedirectoryproject.service.serviceImpl.EmployeeServiceImpl;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -70,7 +75,7 @@ public class AdminController {
         return "access_denied";
     }
 
-    @GetMapping("/update_employee_form/{id}")
+    @GetMapping("/update_employee/{id}")
     public String updateEmployeeForm(@PathVariable("id") Long id, Model model) {
         Employee employee = employeeService.getEmployeeById(id);
         SaveEmployeeDTO saveEmployeeDto = EmployeeMapper.EMPLOYEE_MAPPER.mapToSaveEmployeeDto(employee);
@@ -110,5 +115,19 @@ public class AdminController {
         model.addAttribute("employees", employees);
         return "list_employees";
     }
+
+    @GetMapping("/export_excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=list_employees_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+        List<Employee> listUsers = employeeService.getAllEmployees();
+        EmployeeServiceImpl excelExporter = new EmployeeServiceImpl(listUsers);
+        excelExporter.export(response);
+    }
+
 
 }

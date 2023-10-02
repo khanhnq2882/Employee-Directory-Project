@@ -20,6 +20,7 @@ public interface EmployeeService {
     void addSkill(SkillDTO skillDto);
     void addExperience(ExperienceDTO experienceDto);
     void addCertification(CertificationDTO certificationDto);
+    void sendMailToAdmin(String email) throws MessagingException ;
 
 
 }
