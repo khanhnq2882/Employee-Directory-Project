@@ -215,6 +215,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
+    @Override
+    public List<Skill> getEmployeeSkills(Long employeeId) {
+        return skillRepository.getEmployeeSkills(employeeId);
+    }
+
     public String randomPassword() {
         final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         SecureRandom random = new SecureRandom();

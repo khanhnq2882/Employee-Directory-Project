@@ -8,6 +8,7 @@ import com.example.employeedirectoryproject.dto.ChangePasswordDTO;
 import com.example.employeedirectoryproject.dto.ExperienceDTO;
 import com.example.employeedirectoryproject.dto.SkillDTO;
 import com.example.employeedirectoryproject.model.Employee;
+import com.example.employeedirectoryproject.model.Skill;
 import com.example.employeedirectoryproject.repository.DepartmentRepository;
 import com.example.employeedirectoryproject.repository.EmployeeRepository;
 import com.example.employeedirectoryproject.repository.PositionRepository;
@@ -22,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Controller
 public class EmployeeController {
@@ -77,7 +79,13 @@ public class EmployeeController {
 
     @GetMapping("/employee_profile/{id}")
     public String employeeProfile(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("employee", employeeService.getEmployeeById(id));
+        Employee employee = employeeService.getEmployeeById(id);
+        List<Skill> skills = employeeService.getEmployeeSkills(id);
+        for (Skill skill: skills) {
+
+        }
+        model.addAttribute("skills", skills);
+        model.addAttribute("employee", employee);
         return "employee_profile";
     }
 

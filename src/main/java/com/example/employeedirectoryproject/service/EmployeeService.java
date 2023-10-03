@@ -2,6 +2,7 @@ package com.example.employeedirectoryproject.service;
 
 import com.example.employeedirectoryproject.dto.*;
 import com.example.employeedirectoryproject.model.Employee;
+import com.example.employeedirectoryproject.model.Skill;
 import jakarta.mail.MessagingException;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public interface EmployeeService {
     void addExperience(ExperienceDTO experienceDto);
     void addCertification(CertificationDTO certificationDto);
     void sendMailToAdmin(String email) throws MessagingException ;
+    List<Skill> getEmployeeSkills(Long employeeId);
 
 
 }

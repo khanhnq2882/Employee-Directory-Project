@@ -38,35 +38,33 @@
 </nav>
 <div id="layoutSidenav">
     <div id="layoutSidenav_nav">
-        <div id="layoutSidenav_nav">
-            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                <div class="sb-sidenav-menu">
-                    <div class="nav">
-                        <div class="sb-sidenav-menu-heading">Dashboard</div>
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
-                           data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                            Department Management
-                        </a>
-                        <a class="nav-link collapsed" th:href="@{/list_employees}" data-bs-toggle="collapse"
-                           data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                            Employee Management
-                        </a>
-                        <a class="nav-link collapsed" th:href="@{/list_projects}" data-bs-toggle="collapse"
-                           data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                            Project Management
-                        </a>
-                        <a class="nav-link collapsed" th:href="@{/list_projects}" data-bs-toggle="collapse"
-                           data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                            Request Management
-                        </a>
-                    </div>
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <div class="sb-sidenav-menu-heading">Dashboard</div>
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                       data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                        Department Management
+                    </a>
+                    <a class="nav-link collapsed" th:href="@{/list_employees}" data-bs-toggle="collapse"
+                       data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                        Employee Management
+                    </a>
+                    <a class="nav-link collapsed" th:href="@{/list_projects}" data-bs-toggle="collapse"
+                       data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                        Project Management
+                    </a>
+                    <a class="nav-link collapsed" th:href="@{/list_projects}" data-bs-toggle="collapse"
+                       data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                        Request Management
+                    </a>
                 </div>
-            </nav>
-        </div>
+            </div>
+        </nav>
     </div>
     <div id="layoutSidenav_content">
         <section style="background-color: #eee;">
@@ -117,7 +115,9 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <b><p class="mb-0">Employee Code</p></b>
+                                        <b>
+                                            <p class="mb-0">Employee Code</p>
+                                        </b>
                                     </div>
                                     <div class="col-sm-9">
                                         <p class="text-muted mb-0" th:text="${employee.getEmployeeCode()}"></p>
@@ -126,16 +126,21 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <b><p class="mb-0">Full Name</p></b>
+                                        <b>
+                                            <p class="mb-0">Full Name</p>
+                                        </b>
                                     </div>
                                     <div class="col-sm-9">
-                                        <p class="text-muted mb-0" th:text="${employee.getFirstName()+' '+employee.getLastName()}"></p>
+                                        <p class="text-muted mb-0"
+                                           th:text="${employee.getFirstName()+' '+employee.getLastName()}"></p>
                                     </div>
                                 </div>
                                 <hr>
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <b><p class="mb-0">Email</p></b>
+                                        <b>
+                                            <p class="mb-0">Email</p>
+                                        </b>
                                     </div>
                                     <div class="col-sm-9">
                                         <p class="text-muted mb-0" th:text="${employee.getEmail()}"></p>
@@ -144,7 +149,9 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <b><p class="mb-0">Date Of Birth</p></b>
+                                        <b>
+                                            <p class="mb-0">Date Of Birth</p>
+                                        </b>
                                     </div>
                                     <div class="col-sm-9">
                                         <p class="text-muted mb-0" th:text="${employee.getDateOfBirth()}"></p>
@@ -153,7 +160,9 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <b><p class="mb-0">Phone Number</p></b>
+                                        <b>
+                                            <p class="mb-0">Phone Number</p>
+                                        </b>
                                     </div>
                                     <div class="col-sm-9">
                                         <p class="text-muted mb-0" th:text="${employee.getPhoneNumber()}"></p>
@@ -162,7 +171,9 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <b><p class="mb-0">Address</p></b>
+                                        <b>
+                                            <p class="mb-0">Address</p>
+                                        </b>
                                     </div>
                                     <div class="col-sm-9">
                                         <p class="text-muted mb-0" th:text="${employee.getAddress()}"></p>
@@ -173,119 +184,268 @@
 
                         <div class="card mb-4">
                             <div class="card-body">
-
-                                <ul class="d-flex nav nav-pills mb-5 text-center">
+                                <ul class="d-flex nav nav-pills mb-3 text-center profile-tab" id="profile-pills-tab"
+                                    role="tablist">
                                     <li class="nav-item">
                                         <a class="nav-link active show" data-toggle="pill" href="#profile1"
-                                           role="tab" aria-selected="false">Skills</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-toggle="pill" href="#profile2" role="tab"
-                                           aria-selected="false">Certifications</a>
+                                           role="tab" aria-selected="false">Skill</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" data-toggle="pill" href="#profile3" role="tab"
+                                           aria-selected="false">Education</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="pill" href="#profile4" role="tab"
                                            aria-selected="false">Experience</a>
                                     </li>
                                 </ul>
+                                <div class="profile-content tab-content">
+                                    <div id="profile1" class="tab-pane fade active show">
+<!--                                        <p>-->
+<!--                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.-->
+<!--                                            Turpis viverra viverra mollis sed vitae fames nunc-->
+<!--                                            sollicitudin viverra. Curabitur massa, ultrices diam-->
+<!--                                            ipsum faucibus risus. Hendrerit justo, quis massa a-->
+<!--                                            elementum. At elementum.-->
+<!--                                        </p>-->
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <ul class="list-inline p-0 m-0">
 
-                                <!-- profile 1 -->
-                                <div id="profile1" class="tab-pane fade active show">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Turpis viverra
-                                        viverra mollis sed vitae fames
-                                        nunc sollicitudin viverra. Curabitur massa, ultrices diam ipsum faucibus
-                                        risus. Hendrerit justo,
-                                        quis massa a elementum. At elementum.</p>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <ul class="list-inline p-0 m-0">
-                                                <li class="mb-4">
-                                                    <div class="d-flex align-items-center pt-2">
-                                                        <div class="ml-3 w-100">
-                                                            <div
-                                                                    class="media align-items-center justify-content-between">
-                                                                <p class="mb-0">Adobe Photoshop</p>
+                                                    <th:block th:each="skill: ${skills}">
+                                                        <li class="mb-4">
+                                                            <div class="d-flex align-items-center pt-2">
+                                                                <div class="ml-3 w-100">
+                                                                    <div
+                                                                            class="media align-items-center justify-content-between">
+                                                                        <p class="mb-0" th:text="${skill.getSkillName()}"></p>
+                                                                    </div>
+                                                                    <div class="progress">
+                                                                        <div class="progress-bar" role="progressbar"
+                                                                             style="width: 25%;" aria-valuenow="25"
+                                                                             aria-valuemin="0" aria-valuemax="100">25%
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <div class="progress">
-                                                                <div class="progress-bar" role="progressbar" style="width: 25%;"
-                                                                     aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                                                        </li>
+                                                    </th:block>
+
+                                                </ul>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <ul class="list-inline p-0 m-0">
+
+                                                    <li class="mb-4">
+                                                        <div class="d-flex align-items-center pt-2">
+                                                            <div class="ml-3 w-100">
+                                                                <div
+                                                                        class="media align-items-center justify-content-between">
+                                                                    <p class="mb-0">Adobe Photoshop</p>
+                                                                </div>
+                                                                <div class="progress">
+                                                                    <div class="progress-bar" role="progressbar"
+                                                                         style="width: 25%;" aria-valuenow="25"
+                                                                         aria-valuemin="0" aria-valuemax="100">25%
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="profile3" class="tab-pane fade">
+                                        <div
+                                                class="profile-line m-0 d-flex align-items-center justify-content-between position-relative">
+                                            <ul class="list-inline p-0 m-0 w-100">
+                                                <li>
+                                                    <div class="row align-items-top">
+                                                        <div class="col-md-3">
+                                                            <h6 class="mb-2">October, 2018</h6>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <div class="media profile-media align-items-top">
+                                                                <div class="profile-dots border-primary mt-1">
+                                                                </div>
+                                                                <div class="ml-4">
+                                                                    <h6 class="mb-1">
+                                                                        PhD of Science in computer
+                                                                        Science
+                                                                    </h6>
+                                                                    <p class="mb-0 font-size-14">
+                                                                        South Kellergrove University
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </li>
-
-                                                <li class="mb-4">
-                                                    <div class="d-flex align-items-center pt-2">
-                                                        <div class="ml-3 w-100">
-                                                            <div
-                                                                    class="media align-items-center justify-content-between">
-                                                                <p class="mb-0">Adobe Photoshop</p>
-                                                            </div>
-                                                            <div class="progress">
-                                                                <div class="progress-bar" role="progressbar" style="width: 25%;"
-                                                                     aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                                                <li>
+                                                    <div class="row align-items-top">
+                                                        <div class="col-md-3">
+                                                            <h6 class="mb-2">June, 2017</h6>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <div class="media profile-media align-items-top">
+                                                                <div class="profile-dots border-primary mt-1">
+                                                                </div>
+                                                                <div class="ml-4">
+                                                                    <h6 class="mb-1">
+                                                                        Master of Science in
+                                                                        Computer Science
+                                                                    </h6>
+                                                                    <p class="mb-0 font-size-14">
+                                                                        Milchuer College
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </li>
-
-                                                <li class="mb-4">
-                                                    <div class="d-flex align-items-center pt-2">
-                                                        <div class="ml-3 w-100">
-                                                            <div
-                                                                    class="media align-items-center justify-content-between">
-                                                                <p class="mb-0">Adobe Photoshop</p>
-                                                            </div>
-                                                            <div class="progress">
-                                                                <div class="progress-bar" role="progressbar" style="width: 25%;"
-                                                                     aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                                                <li>
+                                                    <div class="row align-items-top">
+                                                        <div class="col-md-3">
+                                                            <h6 class="mb-2">August, 2014</h6>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <div class="media profile-media align-items-top">
+                                                                <div class="profile-dots border-primary mt-1">
+                                                                </div>
+                                                                <div class="ml-4">
+                                                                    <h6 class="mb-1">
+                                                                        Bachelor of Science in
+                                                                        Computer Science
+                                                                    </h6>
+                                                                    <p class="mb-0 font-size-14">
+                                                                        Beechtown Universityy
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </li>
-
+                                                <li>
+                                                    <div class="row align-items-top">
+                                                        <div class="col-md-3">
+                                                            <h6 class="mb-2">June, 2010</h6>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <div class="media profile-media pb-0 align-items-top">
+                                                                <div class="profile-dots border-primary mt-1">
+                                                                </div>
+                                                                <div class="ml-4">
+                                                                    <h6 class="mb-1">Senior High
+                                                                        School</h6>
+                                                                    <p class="mb-0 font-size-14">
+                                                                        South Kellergrove High
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
                                             </ul>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <ul class="list-inline p-0 m-0">
-                                                <li class="mb-4">
-                                                    <div class="d-flex align-items-center pt-2">
-                                                        <div class="ml-3 w-100">
-                                                            <div
-                                                                    class="media align-items-center justify-content-between">
-                                                                <p class="mb-0">Adobe Photoshop</p>
-                                                            </div>
-                                                            <div class="progress">
-                                                                <div class="progress-bar" role="progressbar" style="width: 25%;"
-                                                                     aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                                    </div>
+                                    <div id="profile4" class="tab-pane fade">
+                                        <div
+                                                class="profile-line m-0 d-flex align-items-center justify-content-between position-relative">
+                                            <ul class="list-inline p-0 m-0 w-100">
+                                                <li>
+                                                    <div class="row align-items-top">
+                                                        <div class="col-md-3">
+                                                            <h6 class="mb-2">2020 - present</h6>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <div class="media profile-media align-items-top">
+                                                                <div class="profile-dots border-primary mt-1">
+                                                                </div>
+                                                                <div class="ml-4">
+                                                                    <h6 class="mb-1">
+                                                                        Software Engineer at Mathica
+                                                                        Labs
+                                                                    </h6>
+                                                                    <p class="mb-0 font-size-14">
+                                                                        Total : 02 + years of
+                                                                        experience
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </li>
-                                                <li class="mb-4">
-                                                    <div class="d-flex align-items-center pt-2">
-                                                        <div class="ml-3 w-100">
-                                                            <div
-                                                                    class="media align-items-center justify-content-between">
-                                                                <p class="mb-0">Adobe Photoshop</p>
-                                                            </div>
-                                                            <div class="progress">
-                                                                <div class="progress-bar" role="progressbar" style="width: 25%;"
-                                                                     aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                                                <li>
+                                                    <div class="row align-items-top">
+                                                        <div class="col-md-3">
+                                                            <h6 class="mb-2">2018 - 2019</h6>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <div class="media profile-media align-items-top">
+                                                                <div class="profile-dots border-primary mt-1">
+                                                                </div>
+                                                                <div class="ml-4">
+                                                                    <h6 class="mb-1">
+                                                                        Junior Software Engineer at
+                                                                        Zimcore
+                                                                        Solutions
+                                                                    </h6>
+                                                                    <p class="mb-0 font-size-14">
+                                                                        Total : 1.5 + years of
+                                                                        experience
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </li>
-                                                <li class="mb-4">
-                                                    <div class="d-flex align-items-center pt-2">
-                                                        <div class="ml-3 w-100">
-                                                            <div
-                                                                    class="media align-items-center justify-content-between">
-                                                                <p class="mb-0">Adobe Photoshop</p>
+                                                <li>
+                                                    <div class="row align-items-top">
+                                                        <div class="col-md-3">
+                                                            <h6 class="mb-2">2017 - 2018</h6>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <div class="media profile-media align-items-top">
+                                                                <div class="profile-dots border-primary mt-1">
+                                                                </div>
+                                                                <div class="ml-4">
+                                                                    <h6 class="mb-1">
+                                                                        Junior Software Engineer at
+                                                                        Skycare Ptv.
+                                                                        Ltd
+                                                                    </h6>
+                                                                    <p class="mb-0 font-size-14">
+                                                                        Total : 0.5 + years of
+                                                                        experience
+                                                                    </p>
+                                                                </div>
                                                             </div>
-                                                            <div class="progress">
-                                                                <div class="progress-bar" role="progressbar" style="width: 25%;"
-                                                                     aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="row align-items-top">
+                                                        <div class="col-3">
+                                                            <h6 class="mb-2">06 Months</h6>
+                                                        </div>
+                                                        <div class="col-9">
+                                                            <div class="media profile-media pb-0 align-items-top">
+                                                                <div class="profile-dots border-primary mt-1">
+                                                                </div>
+                                                                <div class="ml-4">
+                                                                    <h6 class="mb-1">
+                                                                        Junior Software Engineer at
+                                                                        Infosys
+                                                                        Solutions
+                                                                    </h6>
+                                                                    <p class="mb-0 font-size-14">
+                                                                        Total : Freshers
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -294,17 +454,20 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
     </div>
 </div>
+<script src="/js/backend-bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         crossorigin="anonymous"></script>
-<script src="js/scripts.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
         crossorigin="anonymous"></script>
 <script src="js/datatables-simple-demo.js"></script>
+<script src="js/scripts.js"></script>
 </body>
 </html>
