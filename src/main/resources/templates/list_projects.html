@@ -19,30 +19,28 @@
   <a th:href="@{/add_new_project}" style="float: right" class="btn btn-primary btn-sm mb-3">Add Project</a>
   <table border="1" class = "table table-striped table-responsive-md">
     <thead>
-    <tr>
-      <th>ID</th>
-      <th>Project Name</th>
-      <th>Language</th>
-      <th>Framework</th>
-      <th>Start Date</th>
-      <th>End Date</th>
-      <th>Status</th>
-      <th style="text-align: center">Action</th>
-    </tr>
+        <tr>
+          <th>Project Name</th>
+          <th>Language</th>
+          <th>Framework</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Status</th>
+          <th style="text-align: center">Action</th>
+        </tr>
     </thead>
     <tbody>
-    <tr th:each="project: ${projects}">
-      <td th:text="${project.getProjectId()}"></td>
-      <td th:text="${project.getProjectName()}"></td>
-      <td th:text="${project.getLanguage()}"></td>
-      <td th:text="${project.getFramework()}"></td>
-      <td th:text="${project.getStartDate()}"></td>
-      <td th:text="${project.getEndDate()}"></td>
-      <td th:text="${project.getStatus().getStatusName()}"></td>
-      <td>
-        <a style="text-align: center" class="btn btn-primary" th:href="@{/update_project/{id}(id=${project.getProjectId()})}"> Update </a>
-      </td>
-    </tr>
+        <tr th:each="project: ${projects}">
+          <td th:text="${project.getProjectName()}"></td>
+          <td th:text="${project.getLanguage()}"></td>
+          <td th:text="${project.getFramework()}"></td>
+          <td th:text="${project.getStartDate()}"></td>
+          <td th:text="${project.getEndDate()}"></td>
+          <td th:text="${project.getStatus().getStatusName()}"></td>
+          <td>
+            <a style="text-align: center" class="btn btn-primary" th:href="@{/update_project/{id}(id=${project.getProjectId()})}"> Update </a>
+          </td>
+        </tr>
     </tbody>
   </table>
 </div>

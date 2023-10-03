@@ -75,7 +75,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             role = roleRepository.save(new Role(TbConstants.Roles.EMPLOYEE));
         }
         String employeeCode = "";
-        List<Employee> employees = getAllEmployees();
+        List<Employee> employees = employeeRepository.findAll();
         if (employees.size() == 0) {
             employeeCode = "NV1";
         } else {
@@ -170,26 +170,29 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void addSkill(SkillDTO skillDto) {
-        Employee currentEmployee = getCurrentEmployee();
         Skill skill = SkillMapper.SKILL_MAPPER.mapToSkill(skillDto);
-        skill.setEmployees(Arrays.asList(currentEmployee));
-        currentEmployee.getSkills().add(skill);
+        skill.setEmployees(Arrays.asList(getCurrentEmployee()));
+        skill.setCreatedBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName());
+        skill.setUpdatedBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName());
+        getCurrentEmployee().getSkills().add(skill);
         skillRepository.save(skill);
     }
 
     @Override
     public void addExperience(ExperienceDTO experienceDto) {
-        Employee currentEmployee = getCurrentEmployee();
         Experience experience = ExperienceMapper.EXPERIENCE_MAPPER.mapToExperience(experienceDto);
-        experience.setEmployee(currentEmployee);
+        experience.setEmployee(getCurrentEmployee());
+        experience.setCreatedBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName());
+        experience.setUpdatedBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName());
         experienceRepository.save(experience);
     }
 
     @Override
     public void addCertification(CertificationDTO certificationDto) {
-        Employee currentEmployee = getCurrentEmployee();
         Certification certification = CertificationMapper.CERTIFICATION_MAPPER.mapToCertification(certificationDto);
-        certification.setEmployee(currentEmployee);
+        certification.setEmployee(getCurrentEmployee());
+        certification.setCreatedBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName());
+        certification.setUpdatedBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName());
         certificationRepository.save(certification);
     }
 

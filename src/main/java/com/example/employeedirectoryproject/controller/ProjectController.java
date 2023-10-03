@@ -42,7 +42,7 @@ public class ProjectController {
     @PostMapping("/add_new_project")
     public String addNewProject(@Valid @ModelAttribute("saveProjectDto")SaveProjectDTO saveProjectDTO) {
         projectService.addNewProject(saveProjectDTO);
-        return "redirect:/list_employees";
+        return "redirect:/list_projects";
     }
 
     @GetMapping("/list_projects")

@@ -1292,7 +1292,7 @@ progress {
     }
     .col-lg-7 {
         flex: 0 0 auto;
-        width: 80%;
+        width: 58.33333333%;
     }
     .col-lg-8 {
         flex: 0 0 auto;
@@ -2203,7 +2203,7 @@ textarea.form-control-lg {
 .form-check {
     display: block;
     min-height: 1.5rem;
-    padding-left: -1.5em;
+    padding-left: 1.5em;
     margin-bottom: 0.125rem;
 }
 .form-check .form-check-input {
@@ -2422,7 +2422,7 @@ textarea.form-control-lg {
 .form-floating > .form-control-plaintext,
 .form-floating > .form-select,
 .form-floating > .datatable-selector {
-    height: calc(2.5rem + 2px);
+    height: calc(3.5rem + 2px);
     line-height: 1.25;
 }
 .form-floating > label {
@@ -2464,7 +2464,7 @@ textarea.form-control-lg {
 .form-floating > .form-control:focus, .form-floating > .datatable-input:focus, .form-floating > .form-control:not(:placeholder-shown), .form-floating > .datatable-input:not(:placeholder-shown),
 .form-floating > .form-control-plaintext:focus,
 .form-floating > .form-control-plaintext:not(:placeholder-shown) {
-    padding-top: 0.625rem;
+    padding-top: 1.625rem;
     padding-bottom: 0.625rem;
 }
 .form-floating > .form-control:-webkit-autofill, .form-floating > .datatable-input:-webkit-autofill,
@@ -4215,13 +4215,6 @@ textarea.form-control-lg {
 .card > .card-header + .list-group,
 .card > .list-group + .card-footer {
     border-top: 0;
-}
-
-.card-body-1 {
-    flex: 1 1 auto;
-    padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
-    color: var(--bs-card-color);
-    height: 330px;
 }
 
 .card-body {

@@ -51,10 +51,11 @@ public class EmployeeController {
     public String changePassword(@Valid @ModelAttribute("changePasswordDTO") ChangePasswordDTO changePasswordDTO, Model model) {
         try {
             employeeService.changePassword(changePasswordDTO);
+            return "redirect:/login";
         }catch (WrongPasswordException | NotMatchPasswordException ex) {
             model.addAttribute("errorMessage", ex.getMessage());
+            return "change_password";
         }
-        return "redirect:/login";
     }
 
     @GetMapping("/forgot_password")
@@ -75,7 +76,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/employee_profile/{id}")
-    public String employeeProfileForm(@PathVariable("id") Long id) {
+    public String employeeProfile(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("employee", employeeService.getEmployeeById(id));
         return "employee_profile";
     }
 
@@ -142,14 +144,15 @@ public class EmployeeController {
     }
     
     @GetMapping("/home")
-    public String home(){
+    public String home(Model model){
         Employee currentEmployee = employeeService.getCurrentEmployee();
         if (currentEmployee.getRoles().stream().filter(role -> role.getName().equals(TbConstants.Roles.ADMIN)).findAny().isPresent()) {
+            model.addAttribute("currentEmployee", currentEmployee);
             return "admin";
         }
+        model.addAttribute("currentEmployee", currentEmployee);
         return "employee";
     }
-
 
 
 }
