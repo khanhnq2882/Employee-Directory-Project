@@ -1292,7 +1292,7 @@ progress {
     }
     .col-lg-7 {
         flex: 0 0 auto;
-        width: 58.33333333%;
+        width: 70%;
     }
     .col-lg-8 {
         flex: 0 0 auto;
@@ -4764,6 +4764,7 @@ textarea.form-control-lg {
     font-size: var(--bs-progress-font-size);
     background-color: var(--bs-progress-bg);
     border-radius: var(--bs-progress-border-radius);
+    height: 25px;
 }
 
 .progress-bar {

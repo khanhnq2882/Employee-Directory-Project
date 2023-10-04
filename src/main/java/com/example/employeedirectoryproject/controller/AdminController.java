@@ -48,6 +48,7 @@ public class AdminController {
 
     @GetMapping("/save_employee")
     public String addNewEmployeeForm(Model model) {
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         model.addAttribute("positions", positionRepository.findAll());
         model.addAttribute("departments", departmentRepository.findAll());
         model.addAttribute("saveEmployeeDto", new SaveEmployeeDTO());
@@ -80,6 +81,7 @@ public class AdminController {
         Employee employee = employeeService.getEmployeeById(id);
         SaveEmployeeDTO saveEmployeeDto = EmployeeMapper.EMPLOYEE_MAPPER.mapToSaveEmployeeDto(employee);
         model.addAttribute("employee", employee);
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         model.addAttribute("saveEmployeeDto", saveEmployeeDto);
         model.addAttribute("positions", positionRepository.findAll());
         model.addAttribute("departments", departmentRepository.findAll());
@@ -106,13 +108,14 @@ public class AdminController {
     @GetMapping("/list_employees")
     public String getListEmployees(HttpServletRequest request, Model model) {
         String searchText = request.getParameter("searchText");
-        List<Employee> employees = new ArrayList<>();
+        List<Employee> employees;
         if (Objects.isNull(searchText)) {
             employees = employeeService.getAllEmployees();
         } else {
             employees = employeeService.searchEmployees(searchText);
         }
         model.addAttribute("employees", employees);
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         return "list_employees";
     }
 

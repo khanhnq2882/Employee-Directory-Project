@@ -82,12 +82,13 @@ public class EmployeeServiceImpl implements EmployeeService {
             Long nextId = Collections.max(employees.stream().map(employee -> employee.getEmployeeId()).collect(Collectors.toList())) + 1;
             employeeCode = "NV" + nextId;
         }
+        String password = randomPassword();
         Employee employee = Employee.builder()
                 .employeeCode(employeeCode)
                 .firstName(saveEmployeeDto.getFirstName())
                 .lastName(saveEmployeeDto.getLastName())
                 .email(saveEmployeeDto.getEmail())
-                .password(randomPassword())
+                .password(password)
                 .dateOfBirth(saveEmployeeDto.getDateOfBirth())
                 .phoneNumber(saveEmployeeDto.getPhoneNumber())
                 .address(saveEmployeeDto.getAddress())
@@ -102,8 +103,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .updatedBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName())
                 .roles(Arrays.asList(role))
                 .build();
-        saveEmployeeDto.setPassword(employee.getPassword());
-        sendEmail(saveEmployeeDto);
+        sendEmail(saveEmployeeDto, password);
         employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         employeeRepository.save(employee);
     }
@@ -142,7 +142,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void updateEmployee(SaveEmployeeDTO saveEmployeeDto, Long id) {
         Employee employee = employeeRepository.findById(id).orElse(null);
         EmployeeMapper.EMPLOYEE_MAPPER.mapToUpdateEmployee(employee, saveEmployeeDto);
-        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
+        employee.setUpdatedBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName());
         employeeRepository.save(employee);
     }
 
@@ -220,6 +220,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         return skillRepository.getEmployeeSkills(employeeId);
     }
 
+    @Override
+    public List<Certification> getEmployeeCertifications(Long employeeId) {
+        return certificationRepository.getEmployeeCertifications(employeeId);
+    }
+
+    @Override
+    public List<Experience> getEmployeeExperiences(Long employeeId) {
+        return experienceRepository.getEmployeeExperiences(employeeId);
+    }
+
     public String randomPassword() {
         final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         SecureRandom random = new SecureRandom();
@@ -229,14 +239,14 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .collect(Collectors.joining());
     }
 
-    public void sendEmail(SaveEmployeeDTO saveEmployeeDTO) throws MessagingException {
+    public void sendEmail(SaveEmployeeDTO saveEmployeeDTO, String password) throws MessagingException {
         EmailDTO emailDto = new EmailDTO();
         emailDto.setFrom("quockhanhnguyen2882@gmail.com");
         emailDto.setTo(saveEmployeeDTO.getPersonalEmail());
         emailDto.setSubject("Company send information for new employee "+saveEmployeeDTO.getFirstName()+" "+saveEmployeeDTO.getLastName());
         Map<String, Object> properties = new HashMap<>();
         properties.put("email", saveEmployeeDTO.getEmail());
-        properties.put("password", saveEmployeeDTO.getPassword());
+        properties.put("password", password);
         properties.put("fullName", saveEmployeeDTO.getFirstName()+" "+saveEmployeeDTO.getLastName());
         emailDto.setProperties(properties);
         emailDto.setTemplate("email_send_account.html");

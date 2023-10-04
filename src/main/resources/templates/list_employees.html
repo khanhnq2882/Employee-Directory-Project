@@ -23,7 +23,7 @@
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
          aria-expanded="false">
-        <i class="fas fa-user fa-fw"></i><b>Nguyen Quoc Khanh</b>
+        <i class="fas fa-user fa-fw"></i><b th:text="${currentEmployee.getFirstName()} +' '+ ${currentEmployee.getLastName()}"></b>
       </a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
         <li><a class="dropdown-item" th:href="@{/edit_profile}">Edit Profile</a></li>
@@ -38,35 +38,33 @@
 </nav>
 <div id="layoutSidenav">
   <div id="layoutSidenav_nav">
-    <div id="layoutSidenav_nav">
-      <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-        <div class="sb-sidenav-menu">
-          <div class="nav">
-            <div class="sb-sidenav-menu-heading">Dashboard</div>
-            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
-               data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-              <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-              Department Management
-            </a>
-            <a class="nav-link collapsed" th:href="@{/list_employees}" data-bs-toggle="collapse"
-               data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-              <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-              Employee Management
-            </a>
-            <a class="nav-link collapsed" th:href="@{/list_projects}" data-bs-toggle="collapse"
-               data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-              <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-              Project Management
-            </a>
-            <a class="nav-link collapsed" th:href="@{/list_projects}" data-bs-toggle="collapse"
-               data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-              <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-              Request Management
-            </a>
-          </div>
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+      <div class="sb-sidenav-menu">
+        <div class="nav">
+          <div class="sb-sidenav-menu-heading">Dashboard</div>
+          <a class="nav-link collapsed" th:href="@{/list_departments}"
+             data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+            Department Management
+          </a>
+          <a class="nav-link collapsed" th:href="@{/list_employees}"
+             data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+            Employee Management
+          </a>
+          <a class="nav-link collapsed" th:href="@{/list_projects}"
+             data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+            Project Management
+          </a>
+          <a class="nav-link collapsed"  th:href="@{/edit_profile}"
+             data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+            Change Profile
+          </a>
         </div>
-      </nav>
-    </div>
+      </div>
+    </nav>
   </div>
   <div id="layoutSidenav_content">
     <main>
@@ -82,12 +80,8 @@
     </div>
 </div>
 </form> -->
-            <a th:href="@{/save_employee}" style="float: right" class="btn btn-primary btn-sm mb-3">Add
-              Employee</a>
-            <a th:href="@{/export_excel}" style="float: right"
-               class="btn btn-primary btn-sm mb-3">Export To Excel</a>
-            <!-- <a th:href="@{/save_employee}" style="float: right" class="btn btn-primary btn-sm mb-3">Export To Word</a>
-<a th:href="@{/export_excel}" style="float: right" class="btn btn-primary btn-sm mb-3">Export To PDF</a> -->
+            <a th:href="@{/save_employee}" style="float: right" class="btn btn-primary btn-sm mb-3">Add Employee</a>
+            <a th:href="@{/export_excel}" style="float: right; margin-right: 10px" class="btn btn-primary btn-sm mb-3" >Export To Excel</a>
             <table class="table table-striped custom-table">
               <thead>
               <tr>

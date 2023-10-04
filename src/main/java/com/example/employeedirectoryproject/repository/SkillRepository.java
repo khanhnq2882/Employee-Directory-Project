@@ -10,6 +10,6 @@ import java.util.Set;
 
 @Repository
 public interface SkillRepository extends JpaRepository<Skill, Long> {
-    @Query("SELECT s FROM Skill AS s INNER JOIN Employee AS e WHERE e.employeeId = :employeeId")
+    @Query(value = "SELECT s FROM Skill AS s INNER JOIN s.employees AS e WHERE e.employeeId = :employeeId")
     List<Skill> getEmployeeSkills(Long employeeId);
 }

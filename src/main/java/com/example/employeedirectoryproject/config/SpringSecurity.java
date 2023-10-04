@@ -30,6 +30,8 @@ public class SpringSecurity {
                         .requestMatchers("/edit_profile/**").hasAnyRole("EMPLOYEE","ADMIN")
                         .requestMatchers("/list_employees/**").hasAnyRole("ADMIN")
                         .requestMatchers("/add_new_project/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/add_new_department/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/list_departments/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form

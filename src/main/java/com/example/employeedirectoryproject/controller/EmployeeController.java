@@ -7,7 +7,9 @@ import com.example.employeedirectoryproject.dto.CertificationDTO;
 import com.example.employeedirectoryproject.dto.ChangePasswordDTO;
 import com.example.employeedirectoryproject.dto.ExperienceDTO;
 import com.example.employeedirectoryproject.dto.SkillDTO;
+import com.example.employeedirectoryproject.model.Certification;
 import com.example.employeedirectoryproject.model.Employee;
+import com.example.employeedirectoryproject.model.Experience;
 import com.example.employeedirectoryproject.model.Skill;
 import com.example.employeedirectoryproject.repository.DepartmentRepository;
 import com.example.employeedirectoryproject.repository.EmployeeRepository;
@@ -78,14 +80,16 @@ public class EmployeeController {
     }
 
     @GetMapping("/employee_profile/{id}")
-    public String employeeProfile(@PathVariable("id") Long id, Model model) {
+    public String employeeProfile(@PathVariable("id") Long id, Model model){
         Employee employee = employeeService.getEmployeeById(id);
         List<Skill> skills = employeeService.getEmployeeSkills(id);
-        for (Skill skill: skills) {
-
-        }
+        List<Certification> certifications = employeeService.getEmployeeCertifications(id);
+        List<Experience> experiences = employeeService.getEmployeeExperiences(id);
         model.addAttribute("skills", skills);
+        model.addAttribute("certifications", certifications);
+        model.addAttribute("experiences", experiences);
         model.addAttribute("employee", employee);
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         return "employee_profile";
     }
 

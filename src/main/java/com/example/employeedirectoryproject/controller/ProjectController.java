@@ -21,14 +21,17 @@ public class ProjectController {
     private EmployeeRepository employeeRepository;
     private StatusRepository statusRepository;
     private ProjectService projectService;
+    private EmployeeService employeeService;
 
     @Autowired
     public ProjectController(EmployeeRepository employeeRepository,
                              ProjectService projectService,
-                             StatusRepository statusRepository) {
+                             StatusRepository statusRepository,
+                             EmployeeService employeeService) {
         this.employeeRepository = employeeRepository;
         this.projectService = projectService;
         this.statusRepository = statusRepository;
+        this.employeeService = employeeService;
     }
 
     @GetMapping("/add_new_project")
@@ -47,6 +50,7 @@ public class ProjectController {
 
     @GetMapping("/list_projects")
     public String getListProjects(Model model) {
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         model.addAttribute("projects", projectService.getListProjects());
         return "list_projects";
     }
