@@ -39,6 +39,7 @@ public class ProjectController {
         model.addAttribute("employees", employeeRepository.getActiveEmployees());
         model.addAttribute("statusList", statusRepository.findAll());
         model.addAttribute("saveProjectDto", new SaveProjectDTO());
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         return "add_new_project";
     }
 
@@ -63,6 +64,7 @@ public class ProjectController {
         model.addAttribute("saveProjectDTO", saveProjectDTO);
         model.addAttribute("employees", employeeRepository.getActiveEmployees());
         model.addAttribute("statusList", statusRepository.findAll());
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         return "update_project";
     }
 

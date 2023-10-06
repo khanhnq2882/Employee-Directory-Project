@@ -118,8 +118,8 @@ public class EmployeeController {
 
     @GetMapping("/add_new_skill")
     public String addSkillForm(Model model) {
-        SkillDTO skillDto = new SkillDTO();
-        model.addAttribute("skillDto", skillDto);
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
+        model.addAttribute("skillDto", new SkillDTO());
         return "add_new_skill";
     }
 
@@ -131,8 +131,8 @@ public class EmployeeController {
 
     @GetMapping("/add_new_certification")
     public String addCertificationForm(Model model) {
-        CertificationDTO certificationDto = new CertificationDTO();
-        model.addAttribute("certificationDto", certificationDto);
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
+        model.addAttribute("certificationDto", new CertificationDTO());
         return "add_new_certification";
     }
 
@@ -144,8 +144,8 @@ public class EmployeeController {
 
     @GetMapping("/add_new_experience")
     public String addExperienceForm(Model model) {
-        ExperienceDTO experienceDto = new ExperienceDTO();
-        model.addAttribute("experienceDto", experienceDto);
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
+        model.addAttribute("experienceDto", new ExperienceDTO());
         return "add_new_experience";
     }
 

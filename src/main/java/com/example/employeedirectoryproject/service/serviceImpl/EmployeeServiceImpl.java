@@ -111,7 +111,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void changePassword(ChangePasswordDTO changePasswordDTO) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        if (bCryptPasswordEncoder.matches(changePasswordDTO.getOldPassword(), getCurrentEmployee().getPassword())) {
+        if (bCryptPasswordEncoder.matches(changePasswordDTO.getCurrentPassword(), getCurrentEmployee().getPassword())) {
             if (changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmPassword())) {
                 getCurrentEmployee().setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
                 employeeRepository.save(getCurrentEmployee());

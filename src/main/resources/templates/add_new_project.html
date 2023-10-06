@@ -49,12 +49,13 @@
                     <option th:each="employee: ${employees}"
                             th:text="${employee.getEmail()}"
                             th:value="${employee.getEmployeeId()}">
+                    </option>
                 </select>
             </div>
 
             <div class="form-group col-sm-6">
                 <label>Status:</label>
-                <select id="department" name="department" class="selectpicker form-control" th:field="*{status}">
+                <select id="department" name="department" class="form-control" th:field="*{status}">
                     <option th:each="status: ${statusList}"
                             th:text="${status.getStatusName()}"
                             th:value="${status.getStatusId()}">

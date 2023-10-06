@@ -23,7 +23,8 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
                aria-expanded="false">
-                <i class="fas fa-user fa-fw"></i><b th:text="${currentEmployee.getFirstName()} +' '+ ${currentEmployee.getLastName()}"></b>
+                <i class="fas fa-user fa-fw"></i><b
+                    th:text="${currentEmployee.getFirstName()} +' '+ ${currentEmployee.getLastName()}"></b>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" th:href="@{/edit_profile}">Edit Profile</a></li>
@@ -42,25 +43,25 @@
             <div class="sb-sidenav-menu">
                 <div class="nav">
                     <div class="sb-sidenav-menu-heading">Dashboard</div>
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
-                       data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                    <a class="nav-link collapsed" th:href="@{/list_departments}" data-bs-target="#collapseLayouts"
+                       aria-expanded="false" aria-controls="collapseLayouts">
                         <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                         Department Management
                     </a>
-                    <a class="nav-link collapsed" th:href="@{/list_employees}" data-bs-toggle="collapse"
-                       data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                    <a class="nav-link collapsed" th:href="@{/list_employees}" data-bs-target="#collapseLayouts"
+                       aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                         Employee Management
                     </a>
-                    <a class="nav-link collapsed" th:href="@{/list_projects}" data-bs-toggle="collapse"
-                       data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                    <a class="nav-link collapsed" th:href="@{/list_projects}" data-bs-target="#collapseLayouts"
+                       aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                         Project Management
                     </a>
-                    <a class="nav-link collapsed" th:href="@{/list_projects}" data-bs-toggle="collapse"
-                       data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                        Request Management
+                    <a class="nav-link collapsed" th:href="@{/edit_profile}" data-bs-target="#collapseLayouts"
+                       aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                        Change Profile
                     </a>
                 </div>
             </div>

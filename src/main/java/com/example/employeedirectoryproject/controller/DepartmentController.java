@@ -30,6 +30,7 @@ public class DepartmentController {
 
     @GetMapping("/add_new_department")
     public String addDepartmentForm(Model model) {
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         model.addAttribute("saveDepartmentDTO", new SaveDepartmentDTO());
         return "add_new_department";
     }
@@ -50,6 +51,7 @@ public class DepartmentController {
     @GetMapping("/update_department/{id}")
     public String updateDepartmentForm(@PathVariable("id") Long id, Model model) {
         Department department = departmentService.getDepartmentById(id);
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         model.addAttribute("department", department);
         return "update_department";
     }
