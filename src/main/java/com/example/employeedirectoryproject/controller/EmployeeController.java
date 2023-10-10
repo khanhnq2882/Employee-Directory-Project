@@ -1,17 +1,22 @@
 package com.example.employeedirectoryproject.controller;
 
+import com.example.employeedirectoryproject.config.exception.NotExistEmployeeException;
 import com.example.employeedirectoryproject.config.exception.NotMatchPasswordException;
 import com.example.employeedirectoryproject.config.exception.WrongPasswordException;
 import com.example.employeedirectoryproject.dto.CertificationDTO;
 import com.example.employeedirectoryproject.dto.ChangePasswordDTO;
 import com.example.employeedirectoryproject.dto.ExperienceDTO;
 import com.example.employeedirectoryproject.dto.SkillDTO;
+import com.example.employeedirectoryproject.model.Certification;
 import com.example.employeedirectoryproject.model.Employee;
+import com.example.employeedirectoryproject.model.Experience;
+import com.example.employeedirectoryproject.model.Skill;
 import com.example.employeedirectoryproject.repository.DepartmentRepository;
 import com.example.employeedirectoryproject.repository.EmployeeRepository;
 import com.example.employeedirectoryproject.repository.PositionRepository;
 import com.example.employeedirectoryproject.service.EmployeeService;
 import com.example.employeedirectoryproject.util.TbConstants;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +25,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Controller
 public class EmployeeController {
@@ -49,10 +55,42 @@ public class EmployeeController {
     public String changePassword(@Valid @ModelAttribute("changePasswordDTO") ChangePasswordDTO changePasswordDTO, Model model) {
         try {
             employeeService.changePassword(changePasswordDTO);
+            return "redirect:/login";
         }catch (WrongPasswordException | NotMatchPasswordException ex) {
             model.addAttribute("errorMessage", ex.getMessage());
+            return "change_password";
         }
-        return "change_password";
+    }
+
+    @GetMapping("/forgot_password")
+    public String forgotPasswordForm() {
+        return "forgot_password";
+    }
+
+    @PostMapping("/forgot_password")
+    public String forgotPassword(HttpServletRequest request, Model model) throws MessagingException {
+        try{
+            String email = request.getParameter("email");
+            employeeService.sendMailToAdmin(email);
+            return "redirect:/login";
+        } catch (NotExistEmployeeException ex) {
+            model.addAttribute("errorMessage", ex.getMessage());
+            return "forgot_password";
+        }
+    }
+
+    @GetMapping("/employee_profile/{id}")
+    public String employeeProfile(@PathVariable("id") Long id, Model model){
+        Employee employee = employeeService.getEmployeeById(id);
+        List<Skill> skills = employeeService.getEmployeeSkills(id);
+        List<Certification> certifications = employeeService.getEmployeeCertifications(id);
+        List<Experience> experiences = employeeService.getEmployeeExperiences(id);
+        model.addAttribute("skills", skills);
+        model.addAttribute("certifications", certifications);
+        model.addAttribute("experiences", experiences);
+        model.addAttribute("employee", employee);
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
+        return "employee_profile";
     }
 
     @GetMapping("/edit_profile")
@@ -75,14 +113,13 @@ public class EmployeeController {
         currentEmployee.setPhoneNumber(request.getParameter("phoneNumber"));
         currentEmployee.setAddress(request.getParameter("address"));
         employeeRepository.save(currentEmployee);
-        model.addAttribute("employee", currentEmployee);
-        return "employee_profile";
+        return "redirect:/employee_profile";
     }
 
     @GetMapping("/add_new_skill")
     public String addSkillForm(Model model) {
-        SkillDTO skillDto = new SkillDTO();
-        model.addAttribute("skillDto", skillDto);
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
+        model.addAttribute("skillDto", new SkillDTO());
         return "add_new_skill";
     }
 
@@ -94,8 +131,8 @@ public class EmployeeController {
 
     @GetMapping("/add_new_certification")
     public String addCertificationForm(Model model) {
-        CertificationDTO certificationDto = new CertificationDTO();
-        model.addAttribute("certificationDto", certificationDto);
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
+        model.addAttribute("certificationDto", new CertificationDTO());
         return "add_new_certification";
     }
 
@@ -107,8 +144,8 @@ public class EmployeeController {
 
     @GetMapping("/add_new_experience")
     public String addExperienceForm(Model model) {
-        ExperienceDTO experienceDto = new ExperienceDTO();
-        model.addAttribute("experienceDto", experienceDto);
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
+        model.addAttribute("experienceDto", new ExperienceDTO());
         return "add_new_experience";
     }
 
@@ -119,14 +156,15 @@ public class EmployeeController {
     }
     
     @GetMapping("/home")
-    public String home(){
+    public String home(Model model){
         Employee currentEmployee = employeeService.getCurrentEmployee();
         if (currentEmployee.getRoles().stream().filter(role -> role.getName().equals(TbConstants.Roles.ADMIN)).findAny().isPresent()) {
+            model.addAttribute("currentEmployee", currentEmployee);
             return "admin";
         }
-        return "home";
+        model.addAttribute("currentEmployee", currentEmployee);
+        return "employee";
     }
-
 
 
 }

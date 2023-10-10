@@ -24,11 +24,14 @@ public class SpringSecurity {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/login/**").permitAll()
                         .requestMatchers("/change_password/**").permitAll()
+                        .requestMatchers("/forgot_password/**").permitAll()
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                         .requestMatchers("/save_employee/**").hasAnyRole("ADMIN")
                         .requestMatchers("/edit_profile/**").hasAnyRole("EMPLOYEE","ADMIN")
                         .requestMatchers("/list_employees/**").hasAnyRole("ADMIN")
                         .requestMatchers("/add_new_project/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/add_new_department/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/list_departments/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
@@ -41,6 +44,5 @@ public class SpringSecurity {
                 .exceptionHandling().accessDeniedPage("/access_denied");
         return http.build();
     }
-
 
 }

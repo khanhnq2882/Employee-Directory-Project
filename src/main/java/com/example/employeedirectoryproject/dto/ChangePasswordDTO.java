@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChangePasswordDTO {
-    private String oldPassword;
+    private String currentPassword;
     private String newPassword;
     private String confirmPassword;
 }

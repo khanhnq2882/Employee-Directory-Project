@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+        $( function() {
+            $( "#startDate" ).datepicker();
+            $( "#endDate" ).datepicker();
+        } );
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="mt-5"><a class="link-primary" th:href="@{/logout}">Logout</a></div>
+    <h1>Add New Project</h1>
+    <form th:action="@{/update_project/{id}(id=${project.getProjectId()})}" method="post" th:object="${saveProjectDTO}">
+        <div class="row">
+
+            <div class="form-group col-md-6">
+                <label for="projectName">Project Name:</label>
+                <input type="text" class="form-control" id="projectName" name="projectName" th:field="*{projectName}">
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="language">Language:</label>
+                <input type="text" class="form-control" id="language" name="language" th:field="*{language}">
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="framework">Framework:</label>
+                <input type="text" class="form-control" id="framework" name="framework" th:field="*{framework}">
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>Members:</label>
+                <select name="member" id="member" class="selectpicker" multiple data-live-search="true" th:field="*{employees}">
+                    <option th:each="employee: ${employees}"
+                            th:text="${employee.getEmail()}"
+                            th:value="${employee.getEmployeeId()}">
+                </select>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label>Status:</label>
+                <select id="department" name="department" class="selectpicker form-control" th:field="*{status}">
+                    <option th:each="status: ${statusList}"
+                            th:text="${status.getStatusName()}"
+                            th:value="${status.getStatusId()}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="startDate">Start Date:</label>
+                <input type="text" id="startDate" name="startDate" th:field="*{startDate}">
+                <label for="endDate">End Date:</label>
+                <input type="text" id="endDate" name="endDate" th:field="*{endDate}">
+            </div>
+
+            <div class="form-group col-md-12">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3" th:field="*{description}"></textarea>
+            </div>
+
+        </div>
+        <button type="submit" class="btn btn-info col-2">Save</button>
+        <a class="btn btn-info col-2" th:href="@{/list_projects}">Back to list</a>
+
+    </form>
+    <div>
+</body>
+</html>

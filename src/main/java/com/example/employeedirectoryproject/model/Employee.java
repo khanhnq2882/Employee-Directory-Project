@@ -2,6 +2,8 @@ package com.example.employeedirectoryproject.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.util.*;
 
@@ -16,6 +18,9 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long employeeId;
+
+    @Column(nullable = false)
+    private String employeeCode;
 
     @Column(nullable = false)
     private String firstName;
@@ -59,19 +64,17 @@ public class Employee {
     @Column(nullable = false)
     private Boolean status;
 
-//    @Column(nullable = false)
-//    @CreationTimestamp
-//    private String createdBy;
-//
-//    @Column(nullable = false)
-//    private Date createdDay;
-//
-//    @Column(nullable = false)
-//    private String updatedBy;
-//
-//    @Column(nullable = false)
-//    @UpdateTimestamp
-//    private Date updatedDay;
+    @Column(nullable = true)
+    private String createdBy;
+
+    @CreationTimestamp
+    private Date createdDay;
+
+    @Column(nullable = true)
+    private String updatedBy;
+
+    @UpdateTimestamp
+    private Date updatedDay;
 
     @ManyToOne
     @JoinColumn(name = "department_id")
@@ -92,7 +95,7 @@ public class Employee {
             name = "employees_skills",
             joinColumns = {@JoinColumn(name = "employee_id")},
             inverseJoinColumns = {@JoinColumn(name = "skill_id")})
-    private Set<Skill> skills = new HashSet<>();
+    private List<Skill> skills = new ArrayList<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
@@ -100,7 +103,7 @@ public class Employee {
     @JoinTable(name = "project_member",
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "project_id"))
-    private Set<Project> projects = new HashSet<>();
+    private List<Project> projects = new ArrayList<>();
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude

@@ -10,6 +10,7 @@
   <title>Admin Page</title>
   <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
   <link th:href="@{/css/styles.css}" rel="stylesheet" type="text/css">
+  <!--    <link href="css/styles.css" rel="stylesheet" />-->
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
 
@@ -75,29 +76,15 @@
             <div class="col-lg-7">
               <div class="card shadow-lg border-0 rounded-lg mt-5">
                 <div class="card-header">
-                  <h3 class="text-center font-weight-light my-4">Add New Certification</h3>
+                  <h3 class="text-center font-weight-light my-4">Add New Department</h3>
                 </div>
                 <div class="card-body">
-                  <form th:action="@{/add_new_certification}" method="post"
-                        th:object="${certificationDto}">
+                  <form th:action="@{/update_department/{id}(id=${department.getDepartmentId()})}" method="post" th:object="${department}">
                     <div class="row mb-3">
                       <div class="form-group col-md-12">
-                        <label for="certificationName">Certification Name:</label>
-                        <input type="text" class="form-control" id="certificationName" name="certificationName"
-                               th:field="*{certificationName}" >
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <div class="form-group col-md-6">
-                        <label for="issuedDate">Issued Date:</label>
-                        <input type="text" class="form-control" id="issuedDate"
-                               name="issuedDate" th:field="*{issuedDate}">
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="expiredDate">Expired Date:</label>
-                        <input type="text" class="form-control" id="expiredDate"
-                               name="expiredDate" th:field="*{expiredDate}">
+                        <label for="departmentName">Department Name:</label>
+                        <input type="text" class="form-control" id="departmentName" name="departmentName"
+                               th:field="*{departmentName}">
                       </div>
                     </div>
 
@@ -133,12 +120,5 @@
   <link rel="stylesheet" href="/resources/demos/style.css">
   <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-  <script>
-    $(function () {
-      $("#issuedDate").datepicker();
-      $("#expiredDate").datepicker();
-    });
-  </script>
 </body>
-
 </html>

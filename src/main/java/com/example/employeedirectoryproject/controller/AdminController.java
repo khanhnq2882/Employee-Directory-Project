@@ -8,14 +8,19 @@ import com.example.employeedirectoryproject.repository.DepartmentRepository;
 import com.example.employeedirectoryproject.repository.PositionRepository;
 import com.example.employeedirectoryproject.service.EmailSenderService;
 import com.example.employeedirectoryproject.service.EmployeeService;
+import com.example.employeedirectoryproject.service.serviceImpl.EmployeeServiceImpl;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -38,11 +43,12 @@ public class AdminController {
 
     @RequestMapping("/login")
     public String loginForm() {
-        return "login";
+            return "login";
     }
 
     @GetMapping("/save_employee")
     public String addNewEmployeeForm(Model model) {
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         model.addAttribute("positions", positionRepository.findAll());
         model.addAttribute("departments", departmentRepository.findAll());
         model.addAttribute("saveEmployeeDto", new SaveEmployeeDTO());
@@ -70,11 +76,12 @@ public class AdminController {
         return "access_denied";
     }
 
-    @GetMapping("/update_employee_form/{id}")
+    @GetMapping("/update_employee/{id}")
     public String updateEmployeeForm(@PathVariable("id") Long id, Model model) {
         Employee employee = employeeService.getEmployeeById(id);
         SaveEmployeeDTO saveEmployeeDto = EmployeeMapper.EMPLOYEE_MAPPER.mapToSaveEmployeeDto(employee);
         model.addAttribute("employee", employee);
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         model.addAttribute("saveEmployeeDto", saveEmployeeDto);
         model.addAttribute("positions", positionRepository.findAll());
         model.addAttribute("departments", departmentRepository.findAll());
@@ -101,14 +108,29 @@ public class AdminController {
     @GetMapping("/list_employees")
     public String getListEmployees(HttpServletRequest request, Model model) {
         String searchText = request.getParameter("searchText");
-        List<Employee> employees = new ArrayList<>();
+        List<Employee> employees;
         if (Objects.isNull(searchText)) {
             employees = employeeService.getAllEmployees();
         } else {
             employees = employeeService.searchEmployees(searchText);
         }
         model.addAttribute("employees", employees);
+        model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         return "list_employees";
     }
+
+    @GetMapping("/export_excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=list_employees_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+        List<Employee> listUsers = employeeService.getAllEmployees();
+        EmployeeServiceImpl excelExporter = new EmployeeServiceImpl(listUsers);
+        excelExporter.export(response);
+    }
+
 
 }

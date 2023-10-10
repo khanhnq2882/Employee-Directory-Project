@@ -2,9 +2,12 @@ package com.example.employeedirectoryproject.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -33,22 +36,30 @@ public class Project {
     private String description;
 
     @Column(nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.DATE)
     private Date startDate;
 
     @Column(nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.DATE)
     private Date endDate;
 
-//    @Column(nullable = false)
-//    private String createdBy;
-//
-//    @Column(nullable = false)
-//    private Date createdDay;
-//
-//    @Column(nullable = false)
-//    private String updatedBy;
-//
-//    @Column(nullable = false)
-//    private Date updatedDay;
+    @Column(nullable = true)
+    private String createdBy;
+
+    @CreationTimestamp
+    private Date createdDay;
+
+    @Column(nullable = true)
+    private String updatedBy;
+
+    @UpdateTimestamp
+    private Date updatedDay;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "status_id", referencedColumnName = "statusId")
+    private Status status;
 
     @ManyToMany(mappedBy = "projects")
     @EqualsAndHashCode.Exclude

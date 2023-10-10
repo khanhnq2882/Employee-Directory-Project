@@ -9,7 +9,7 @@
   <meta name="author" content="" />
   <title>Admin Page</title>
   <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-  <link href="css/styles.css" rel="stylesheet" />
+  <link th:href="@{/css/styles.css}" rel="stylesheet" type="text/css">
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
 
@@ -69,7 +69,7 @@
   <div id="layoutSidenav_content">
     <main>
       <div class="container-fluid px-4">
-        <h1 class="mt-4">List Employees</h1>
+        <h1 class="mt-4">List Projects</h1>
         <div class="card mb-4">
           <div class="card-body">
             <!-- <form th:href="@{/list_employees}" method="get">
@@ -80,8 +80,8 @@
     </div>
 </div>
 </form> -->
-            <a class="btn btn-primary icon-link" th:href="@{/save_employee}" style="float: right; margin-right: 10px; margin-bottom: 20px;" >
-              <svg class="fa fas fa-user-plus" aria-hidden="true"><use xlink:href="#box-seam"></use></svg> Add Employee
+            <a class="btn btn-primary icon-link" th:href="@{/add_new_project}" style="float: right; margin-right: 10px; margin-bottom: 20px;" >
+              <svg class="fa fas fa-plus" aria-hidden="true"><use xlink:href="#box-seam"></use></svg> Add Project
             </a>
             <a class="btn btn-success icon-link" th:href="@{/export_excel}" style="float: right; margin-right: 10px; margin-bottom: 20px;" >
               <svg class="fa fas fa-file-excel" aria-hidden="true"><use xlink:href="#box-seam"></use></svg> Export To Excel
@@ -89,36 +89,29 @@
             <table class="table table-striped custom-table">
               <thead>
               <tr>
-                <th>Employee Code</th>
-                <th>Full Name</th>
-                <th>Email</th>
-                <th>Department</th>
-                <th>Position</th>
-                <th>Start Work</th>
-                <th>End Work</th>
+                <th>Project Name</th>
+                <th>Language</th>
+                <th>Framework</th>
+                <th>Start Date</th>
+                <th>End Date</th>
                 <th>Status</th>
                 <th style="text-align: center">Action</th>
               </tr>
               </thead>
               <tbody>
-              <tr th:each="employee: ${employees}">
-                <td th:text="${employee.getEmployeeCode()}"></td>
-                <td th:text="${employee.getFirstName()} +' '+ ${employee.getLastName()}"></td>
-                <td th:text="${employee.getEmail()}"></td>
-                <td th:text="${employee.getDepartment().getDepartmentName()}"></td>
-                <td th:text="${employee.getPosition().getPositionName()}"></td>
-                <td th:text="${employee.getStartWork()}"></td>
-                <td th:text="${employee.getEndWork()}"></td>
-                <td th:text="${employee.getStatus() == true ? 'Active' : 'Inactive'}"></td>
+              <tr th:each="project: ${projects}">
+                <td th:text="${project.getProjectName()}"></td>
+                <td th:text="${project.getLanguage()}"></td>
+                <td th:text="${project.getFramework()}"></td>
+                <td th:text="${project.getStartDate()}"></td>
+                <td th:text="${project.getEndDate()}"></td>
+                <td th:text="${project.getStatus().getStatusName()}"></td>
                 <td style="text-align: center;">
-                  <a class="btn btn-success icon-link" th:href="@{/employee_profile/{id}(id=${employee.getEmployeeId()})}">
+                  <a class="btn btn-success icon-link" href="#">
                     <svg class="fa fa-eye" aria-hidden="true"><use xlink:href="#box-seam"></use></svg>
                   </a>
-                  <a class="btn btn-primary icon-link" th:href="@{/update_employee/{id}(id=${employee.getEmployeeId()})}">
+                  <a class="btn btn-primary icon-link" th:href="@{/update_project/{id}(id=${project.getProjectId()})}">
                     <svg class="fa fa-pencil" aria-hidden="true"><use xlink:href="#box-seam"></use></svg>
-                  </a>
-                  <a class="btn btn-danger icon-link" th:href="@{/delete_employee/{id}(id=${employee.getEmployeeId()})}">
-                    <svg class="fa fa-trash" aria-hidden="true"><use xlink:href="#box-seam"></use></svg>
                   </a>
                 </td>
               </tr>
