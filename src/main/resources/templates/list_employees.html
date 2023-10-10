@@ -9,7 +9,7 @@
   <meta name="author" content="" />
   <title>Admin Page</title>
   <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-  <link th:href="@{/css/styles.css}" rel="stylesheet" type="text/css">
+  <link href="css/styles.css" rel="stylesheet" />
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
 
@@ -44,22 +44,22 @@
           <div class="sb-sidenav-menu-heading">Dashboard</div>
           <a class="nav-link collapsed" th:href="@{/list_departments}"
              data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+            <div class="sb-nav-link-icon"><i class="fas fa-building"></i></div>
             Department Management
           </a>
           <a class="nav-link collapsed" th:href="@{/list_employees}"
              data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
             Employee Management
           </a>
           <a class="nav-link collapsed" th:href="@{/list_projects}"
              data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+            <div class="sb-nav-link-icon"><i class="fas fa-project-diagram"></i></div>
             Project Management
           </a>
           <a class="nav-link collapsed"  th:href="@{/edit_profile}"
              data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+            <div class="sb-nav-link-icon"><i class="fas fa-user-edit"></i></div>
             Change Profile
           </a>
         </div>
@@ -80,8 +80,12 @@
     </div>
 </div>
 </form> -->
-            <a th:href="@{/save_employee}" style="float: right" class="btn btn-primary btn-sm mb-3">Add Employee</a>
-            <a th:href="@{/export_excel}" style="float: right; margin-right: 10px" class="btn btn-primary btn-sm mb-3" >Export To Excel</a>
+            <a class="btn btn-primary icon-link" th:href="@{/save_employee}" style="float: right; margin-right: 10px; margin-bottom: 20px;" >
+              <svg class="fa fas fa-user-plus" aria-hidden="true"><use xlink:href="#box-seam"></use></svg> Add Employee
+            </a>
+            <a class="btn btn-success icon-link" th:href="@{/export_excel}" style="float: right; margin-right: 10px; margin-bottom: 20px;" >
+              <svg class="fa fas fa-file-excel" aria-hidden="true"><use xlink:href="#box-seam"></use></svg> Export To Excel
+            </a>
             <table class="table table-striped custom-table">
               <thead>
               <tr>
