@@ -1,8 +1,6 @@
 package com.example.employeedirectoryproject.service.serviceImpl;
 
-import com.example.employeedirectoryproject.config.exception.NotExistEmployeeException;
-import com.example.employeedirectoryproject.config.exception.NotMatchPasswordException;
-import com.example.employeedirectoryproject.config.exception.WrongPasswordException;
+import com.example.employeedirectoryproject.config.MessageException;
 import com.example.employeedirectoryproject.dto.*;
 import com.example.employeedirectoryproject.mapper.CertificationMapper;
 import com.example.employeedirectoryproject.mapper.EmployeeMapper;
@@ -22,6 +20,10 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -99,8 +101,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .department(saveEmployeeDto.getDepartment())
                 .position(saveEmployeeDto.getPosition())
                 .status(saveEmployeeDto.getStatus())
-                .createdBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName())
-                .updatedBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName())
+//                .createdBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName())
                 .roles(Arrays.asList(role))
                 .build();
         sendEmail(saveEmployeeDto, password);
@@ -116,10 +117,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                 getCurrentEmployee().setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
                 employeeRepository.save(getCurrentEmployee());
             } else {
-                throw new NotMatchPasswordException("New password and confirm password is not match. Try again!");
+                throw new MessageException("New password and confirm password is not match. Try again!");
             }
         } else {
-            throw new WrongPasswordException("Old password is not correct. Try again!");
+            throw new MessageException("Old password is not correct. Try again!");
         }
     }
 
@@ -211,7 +212,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             emailDto.setTemplate("email_reset_password.html");
             emailSenderService.sendHtmlMessage(emailDto);
         } else {
-            throw new NotExistEmployeeException("Not exist employee information that have email is "+email+" . Try again!");
+            throw new MessageException("Not exist employee information that have email is "+email+" . Try again!");
         }
     }
 
@@ -323,6 +324,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         workbook.close();
         outputStream.close();
     }
+
+    @Override
+    public Page<Employee> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize, sort);
+        return this.employeeRepository.findAll(pageable);
+    }
+
 
 
 }

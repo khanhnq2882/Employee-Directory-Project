@@ -40,7 +40,7 @@ public class Project {
     @Temporal(TemporalType.DATE)
     private Date startDate;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
     private Date endDate;

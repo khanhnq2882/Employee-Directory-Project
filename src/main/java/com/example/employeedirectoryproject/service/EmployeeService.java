@@ -6,6 +6,8 @@ import com.example.employeedirectoryproject.model.Employee;
 import com.example.employeedirectoryproject.model.Experience;
 import com.example.employeedirectoryproject.model.Skill;
 import jakarta.mail.MessagingException;
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 public interface EmployeeService {
@@ -26,5 +28,5 @@ public interface EmployeeService {
     List<Skill> getEmployeeSkills(Long employeeId);
     List<Certification> getEmployeeCertifications(Long employeeId);
     List<Experience> getEmployeeExperiences(Long employeeId);
-
+    Page<Employee> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection);
 }
