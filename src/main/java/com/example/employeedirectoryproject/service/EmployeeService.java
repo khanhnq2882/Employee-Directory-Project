@@ -7,6 +7,7 @@ import com.example.employeedirectoryproject.model.Experience;
 import com.example.employeedirectoryproject.model.Skill;
 import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 

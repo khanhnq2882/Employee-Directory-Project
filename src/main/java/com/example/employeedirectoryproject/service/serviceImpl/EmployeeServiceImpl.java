@@ -1,6 +1,6 @@
 package com.example.employeedirectoryproject.service.serviceImpl;
 
-import com.example.employeedirectoryproject.config.MessageException;
+import com.example.employeedirectoryproject.config.ErrorMessageException;
 import com.example.employeedirectoryproject.dto.*;
 import com.example.employeedirectoryproject.mapper.CertificationMapper;
 import com.example.employeedirectoryproject.mapper.EmployeeMapper;
@@ -117,10 +117,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                 getCurrentEmployee().setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
                 employeeRepository.save(getCurrentEmployee());
             } else {
-                throw new MessageException("New password and confirm password is not match. Try again!");
+                throw new ErrorMessageException("New password and confirm password is not match. Try again!");
             }
         } else {
-            throw new MessageException("Old password is not correct. Try again!");
+            throw new ErrorMessageException("Old password is not correct. Try again!");
         }
     }
 
@@ -212,7 +212,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             emailDto.setTemplate("email_reset_password.html");
             emailSenderService.sendHtmlMessage(emailDto);
         } else {
-            throw new MessageException("Not exist employee information that have email is "+email+" . Try again!");
+            throw new ErrorMessageException("Not exist employee information that have email is "+email+" . Try again!");
         }
     }
 
@@ -331,7 +331,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         Pageable pageable = PageRequest.of(pageNo-1, pageSize, sort);
         return this.employeeRepository.findAll(pageable);
     }
-
 
 
 }

@@ -23,8 +23,8 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
                aria-expanded="false">
-<!--                <i class="fas fa-user fa-fw"></i><b-->
-<!--                    th:text="${currentEmployee.getFirstName()} +' '+ ${currentEmployee.getLastName()}"></b>-->
+                <i class="fas fa-user fa-fw"></i><b
+                    th:text="${currentEmployee.getFirstName()} +' '+ ${currentEmployee.getLastName()}"></b>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" th:href="@{/edit_profile}">Edit Profile</a></li>
@@ -79,7 +79,7 @@
                                 </div>
                                 <div class="card-body">
                                     <form th:action="@{/save_employee}" method="post"
-                                          th:object="${saveEmployeeDto}">
+                                          th:object="${saveEmployeeDto}" id="frmAddEmployee">
                                         <div class="row mb-3">
                                             <div class="form-group col-md-6">
                                                 <label for="email">Employee Email:</label>
@@ -218,9 +218,10 @@
     <script src="js/datatables-simple-demo.js"></script>
     <script src="js/scripts.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
+<!--    <link rel="stylesheet" href="/resources/demos/style.css">-->
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="/js/validate.js"></script>
     <script>
         $(function () {
             $("#dateOfBirth").datepicker();

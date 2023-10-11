@@ -1,6 +1,6 @@
 package com.example.employeedirectoryproject.controller;
 
-import com.example.employeedirectoryproject.config.MessageException;
+import com.example.employeedirectoryproject.config.ErrorMessageException;
 import com.example.employeedirectoryproject.dto.CertificationDTO;
 import com.example.employeedirectoryproject.dto.ChangePasswordDTO;
 import com.example.employeedirectoryproject.dto.ExperienceDTO;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -56,7 +55,7 @@ public class EmployeeController {
         try {
             employeeService.changePassword(changePasswordDTO);
             return "redirect:/login";
-        }catch (MessageException ex) {
+        }catch (ErrorMessageException ex) {
             model.addAttribute("errorMessage", ex.getMessage());
             return "change_password";
         }
@@ -73,7 +72,7 @@ public class EmployeeController {
             String email = request.getParameter("email");
             employeeService.sendMailToAdmin(email);
             return "redirect:/login";
-        } catch (MessageException ex) {
+        } catch (ErrorMessageException ex) {
             model.addAttribute("errorMessage", ex.getMessage());
             return "forgot_password";
         }

@@ -5,6 +5,7 @@ import com.example.employeedirectoryproject.mapper.EmployeeMapper;
 import com.example.employeedirectoryproject.model.Employee;
 import com.example.employeedirectoryproject.model.Role;
 import com.example.employeedirectoryproject.repository.DepartmentRepository;
+import com.example.employeedirectoryproject.repository.EmployeeRepository;
 import com.example.employeedirectoryproject.repository.PositionRepository;
 import com.example.employeedirectoryproject.service.EmailSenderService;
 import com.example.employeedirectoryproject.service.EmployeeService;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +27,7 @@ import java.util.*;
 
 @Controller
 public class AdminController {
+    private EmployeeRepository employeeRepository;
     private PositionRepository positionRepository;
     private DepartmentRepository departmentRepository;
     private EmployeeService employeeService;
@@ -34,11 +37,13 @@ public class AdminController {
     public AdminController(PositionRepository positionRepository,
                            DepartmentRepository departmentRepository,
                            EmployeeService employeeService,
-                           EmailSenderService emailSenderService) {
+                           EmailSenderService emailSenderService,
+                           EmployeeRepository employeeRepository) {
         this.positionRepository = positionRepository;
         this.departmentRepository = departmentRepository;
         this.employeeService = employeeService;
         this.emailSenderService = emailSenderService;
+        this.employeeRepository = employeeRepository;
     }
 
     @RequestMapping("/login")
@@ -105,18 +110,38 @@ public class AdminController {
         return "redirect:/list_employees";
     }
 
-    @GetMapping("/list_employees")
-    public String getListEmployees(HttpServletRequest request, Model model) {
+    @GetMapping("/list_employees/page/{pageNo}")
+    public String getListEmployees(HttpServletRequest request,
+                                   @PathVariable(value = "pageNo") int pageNo,
+                                   @RequestParam("sortField") String sortField,
+                                   @RequestParam("sortDirection") String sortDirection,
+                                   Model model) {
         String searchText = request.getParameter("searchText");
-        List<Employee> employees;
-        if (Objects.isNull(searchText)) {
-            employees = employeeService.getAllEmployees();
-        } else {
-            employees = employeeService.searchEmployees(searchText);
-        }
-        model.addAttribute("employees", employees);
+        int pageSize = 3;
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize, sort);
+        Page<Employee> page = employeeRepository.findAll(pageable);
+//        Page<Employee> page = new PageImpl<>(employeeService.getAllEmployees(pageable));
+//        List<Employee> employees;
+//        if (Objects.isNull(searchText)) {
+//            employees = employeeService.getAllEmployees(pageable);
+//        } else {
+//            employees = employeeService.searchEmployees(searchText);
+//        }
+        model.addAttribute("employees", page.getContent());
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
         model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         return "list_employees";
+    }
+
+    @GetMapping("/list_employees")
+    public String defaultListEmployees(HttpServletRequest request, Model model) {
+        return getListEmployees(request,1, "employeeCode", "asc", model);
     }
 
     @GetMapping("/export_excel")
