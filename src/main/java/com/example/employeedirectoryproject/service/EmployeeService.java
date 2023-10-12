@@ -15,6 +15,7 @@ public interface EmployeeService {
     void changePassword(ChangePasswordDTO changePasswordDTO);
     void saveEmployee(SaveEmployeeDTO saveEmployeeDto) throws MessagingException;
     Employee findEmployeeByEmail(String email);
+    Employee findEmployeeByPhoneNumber(String phoneNumber);
     List<Employee> getAllEmployees();
     Employee getEmployeeById(Long id);
     void updateEmployee(SaveEmployeeDTO saveEmployeeDto, Long id);

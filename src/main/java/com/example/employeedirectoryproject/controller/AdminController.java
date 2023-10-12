@@ -1,5 +1,6 @@
 package com.example.employeedirectoryproject.controller;
 
+import com.example.employeedirectoryproject.config.ErrorMessageException;
 import com.example.employeedirectoryproject.dto.SaveEmployeeDTO;
 import com.example.employeedirectoryproject.mapper.EmployeeMapper;
 import com.example.employeedirectoryproject.model.Employee;
@@ -51,7 +52,7 @@ public class AdminController {
             return "login";
     }
 
-    @GetMapping("/save_employee")
+    @GetMapping("/add_new_employee")
     public String addNewEmployeeForm(Model model) {
         model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         model.addAttribute("positions", positionRepository.findAll());
@@ -60,19 +61,32 @@ public class AdminController {
         return "add_new_employee";
     }
 
-    @PostMapping("/save_employee")
+    @PostMapping("/add_new_employee")
     public String addNewEmployee(@Valid @ModelAttribute("saveEmployeeDto") SaveEmployeeDTO saveEmployeeDto,
                                  BindingResult result,
                                  Model model) throws MessagingException{
-        Employee existingEmployee = employeeService.findEmployeeByEmail(saveEmployeeDto.getEmail());
-        if (existingEmployee != null) {
-            result.rejectValue("email", null, "Employee email is already existed.");
+        try {
+            if (!Objects.isNull(employeeService.findEmployeeByEmail(saveEmployeeDto.getEmail()))) {
+                result.rejectValue("email", null, "Employee email is already existed.");
+            }
+            if (!Objects.isNull(employeeService.findEmployeeByPhoneNumber(saveEmployeeDto.getPhoneNumber()))) {
+                result.rejectValue("phoneNumber", null, "Phone number is already existed.");
+            }
+            if (result.hasErrors()) {
+                model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
+                model.addAttribute("positions", positionRepository.findAll());
+                model.addAttribute("departments", departmentRepository.findAll());
+                model.addAttribute("saveEmployeeDto", new SaveEmployeeDTO());
+                return "/add_new_employee";
+            }
+            employeeService.saveEmployee(saveEmployeeDto);
+        } catch (ErrorMessageException ex) {
+            model.addAttribute("errorMessage", ex.getMessage());
+            model.addAttribute("positions", positionRepository.findAll());
+            model.addAttribute("departments", departmentRepository.findAll());
+            model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
+            return "/add_new_employee";
         }
-        if (result.hasErrors()) {
-            model.addAttribute("saveEmployeeDto", saveEmployeeDto);
-            return "add_new_employee";
-        }
-        employeeService.saveEmployee(saveEmployeeDto);
         return "redirect:/list_employees";
     }
 

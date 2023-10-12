@@ -92,7 +92,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .email(saveEmployeeDto.getEmail())
                 .password(password)
                 .dateOfBirth(saveEmployeeDto.getDateOfBirth())
-                .phoneNumber(saveEmployeeDto.getPhoneNumber())
+                .phoneNumber(isPhoneNumberExist(saveEmployeeDto.getPhoneNumber()))
                 .address(saveEmployeeDto.getAddress())
                 .gender(saveEmployeeDto.getGender())
                 .startWork(saveEmployeeDto.getStartWork())
@@ -101,7 +101,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .department(saveEmployeeDto.getDepartment())
                 .position(saveEmployeeDto.getPosition())
                 .status(saveEmployeeDto.getStatus())
-//                .createdBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName())
+                .createdBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName())
                 .roles(Arrays.asList(role))
                 .build();
         sendEmail(saveEmployeeDto, password);
@@ -127,6 +127,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee findEmployeeByEmail(String email) {
         return employeeRepository.findByEmail(email);
+    }
+
+    @Override
+    public Employee findEmployeeByPhoneNumber(String phoneNumber) {
+        return employeeRepository.findEmployeeByPhoneNumber(phoneNumber);
     }
 
     @Override
@@ -231,6 +236,25 @@ public class EmployeeServiceImpl implements EmployeeService {
         return experienceRepository.getEmployeeExperiences(employeeId);
     }
 
+    @Override
+    public Page<Employee> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize, sort);
+        return this.employeeRepository.findAll(pageable);
+    }
+
+    public String isPhoneNumberExist(String phoneNumber) {
+        boolean check = false;
+        if (!employeeRepository.findAll().stream().filter(employee -> phoneNumber.equals(employee.getPhoneNumber())).findAny().isPresent()) {
+            check = true;
+        }
+        if (check == true) {
+            return phoneNumber;
+        } else {
+            throw new ErrorMessageException("Phone number is already exists.");
+        }
+    }
+
     public String randomPassword() {
         final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         SecureRandom random = new SecureRandom();
@@ -324,13 +348,5 @@ public class EmployeeServiceImpl implements EmployeeService {
         workbook.close();
         outputStream.close();
     }
-
-    @Override
-    public Page<Employee> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
-        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
-        Pageable pageable = PageRequest.of(pageNo-1, pageSize, sort);
-        return this.employeeRepository.findAll(pageable);
-    }
-
 
 }
