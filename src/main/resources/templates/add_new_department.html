@@ -80,7 +80,7 @@
                                 </div>
                                 <div class="card-body">
                                     <form th:action="@{/add_new_department}" method="post"
-                                          th:object="${saveDepartmentDTO}">
+                                          th:object="${saveDepartmentDTO}" id="frmAddDepartment">
                                         <div class="row mb-3">
                                             <div class="form-group col-md-12">
                                                 <label for="departmentName">Department Name:</label>
@@ -118,8 +118,9 @@
     <script src="js/datatables-simple-demo.js"></script>
     <script src="js/scripts.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="/js/screens/add-department.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" type="text/javascript"></script>
 </body>
 </html>

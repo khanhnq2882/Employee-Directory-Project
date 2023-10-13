@@ -99,4 +99,45 @@ $(document).ready(function() {
         }
     });
 
+    $( function() {
+
+        $("#dateOfBirth").datepicker({
+            defaultDate: "+1w",
+            changeMonth: true,
+        });
+        var dateFormat = "mm/dd/yy",
+            from = $( "#startWork" )
+                .datepicker({
+                    defaultDate: "+1w",
+                    changeMonth: true,
+                })
+                .on( "change", function() {
+                    to.datepicker( "option", "minDate", getDate( this ) );
+                }),
+            to = $( "#endWork" ).datepicker({
+                defaultDate: "+1w",
+                changeMonth: true,
+            })
+                .on( "change", function() {
+                    from.datepicker( "option", "maxDate", getDate( this ) );
+                });
+
+        function getDate( element ) {
+            var date;
+            try {
+                date = $.datepicker.parseDate( dateFormat, element.value );
+            } catch( error ) {
+                date = null;
+            }
+
+            return date;
+        }
+        if($('input:radio[name=gender]').is(':checked') === false) {
+            $('input:radio[name=gender]').filter('[value=1]').prop('checked', true);
+        }
+        if($('input:radio[name=status]').is(':checked') === false) {
+            $('input:radio[name=status]').filter('[value=1]').prop('checked', true);
+        }
+    } );
+
 });
