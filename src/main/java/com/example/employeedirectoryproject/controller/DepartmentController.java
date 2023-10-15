@@ -3,16 +3,16 @@ package com.example.employeedirectoryproject.controller;
 import com.example.employeedirectoryproject.dto.SaveDepartmentDTO;
 import com.example.employeedirectoryproject.model.Department;
 import com.example.employeedirectoryproject.model.Employee;
+import com.example.employeedirectoryproject.model.Project;
 import com.example.employeedirectoryproject.service.DepartmentService;
 import com.example.employeedirectoryproject.service.EmployeeService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,11 +41,28 @@ public class DepartmentController {
         return "redirect:/list_departments";
     }
 
-    @GetMapping("/list_departments")
-    public String getAllDepartments(Model model) {
-        model.addAttribute("departments", departmentService.getAllDepartments());
+    @GetMapping("/list_departments/page/{pageNo}")
+    public String getListDepartments(HttpServletRequest request,
+                                  @PathVariable(value = "pageNo") int pageNo,
+                                  @RequestParam("sortField") String sortField,
+                                  @RequestParam("sortDirection") String sortDirection,
+                                  Model model) {
+        String searchText = request.getParameter("searchText");
+        Page<Department> page = departmentService.findPaginated(pageNo, 3, sortField, sortDirection, searchText);
+        model.addAttribute("departments", page.getContent());
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
         model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         return "list_departments";
+    }
+
+    @GetMapping("/list_departments")
+    public String defaultListProjects(HttpServletRequest request, Model model) {
+        return getListDepartments(request,1, "departmentName", "asc", model);
     }
 
     @GetMapping("/update_department/{id}")

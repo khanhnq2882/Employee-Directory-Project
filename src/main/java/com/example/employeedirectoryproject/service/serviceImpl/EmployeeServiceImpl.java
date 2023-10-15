@@ -135,8 +135,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.getAllEmployees();
+    public List<Employee> listEmployees() {
+        return employeeRepository.listEmployees();
+    }
+
+    @Override
+    public Page<Employee> getAllEmployees(Pageable pageable) {
+        return employeeRepository.getAllEmployees(pageable);
     }
 
     @Override
@@ -170,8 +175,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> searchEmployees(String search) {
-        return employeeRepository.search(search);
+    public Page<Employee> searchEmployees(String searchText, Pageable pageable) {
+        return employeeRepository.search(searchText, pageable);
     }
 
     @Override
@@ -237,10 +242,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Page<Employee> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
+    public Page<Employee> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection, String searchText) {
         Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
         Pageable pageable = PageRequest.of(pageNo-1, pageSize, sort);
-        return this.employeeRepository.findAll(pageable);
+        Page<Employee> page;
+        if (Objects.isNull(searchText)) {
+            page = getAllEmployees(pageable);
+        } else {
+            page = searchEmployees(searchText, pageable);
+        }
+        return page;
     }
 
     public String isPhoneNumberExist(String phoneNumber) {

@@ -131,17 +131,7 @@ public class AdminController {
                                    @RequestParam("sortDirection") String sortDirection,
                                    Model model) {
         String searchText = request.getParameter("searchText");
-        int pageSize = 3;
-        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
-        Pageable pageable = PageRequest.of(pageNo-1, pageSize, sort);
-        Page<Employee> page = employeeRepository.findAll(pageable);
-//        Page<Employee> page = new PageImpl<>(employeeService.getAllEmployees(pageable));
-//        List<Employee> employees;
-//        if (Objects.isNull(searchText)) {
-//            employees = employeeService.getAllEmployees(pageable);
-//        } else {
-//            employees = employeeService.searchEmployees(searchText);
-//        }
+        Page<Employee> page = employeeService.findPaginated(pageNo, 3, sortField, sortDirection, searchText);
         model.addAttribute("employees", page.getContent());
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
@@ -158,7 +148,7 @@ public class AdminController {
         return getListEmployees(request,1, "employeeCode", "asc", model);
     }
 
-    @GetMapping("/export_excel")
+    @GetMapping("/employee_export_excel")
     public void exportToExcel(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
@@ -166,7 +156,7 @@ public class AdminController {
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=list_employees_" + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
-        List<Employee> listUsers = employeeService.getAllEmployees();
+        List<Employee> listUsers = employeeService.listEmployees();
         EmployeeServiceImpl excelExporter = new EmployeeServiceImpl(listUsers);
         excelExporter.export(response);
     }

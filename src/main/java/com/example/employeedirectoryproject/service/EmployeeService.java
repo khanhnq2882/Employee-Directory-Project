@@ -16,13 +16,14 @@ public interface EmployeeService {
     void saveEmployee(SaveEmployeeDTO saveEmployeeDto) throws MessagingException;
     Employee findEmployeeByEmail(String email);
     Employee findEmployeeByPhoneNumber(String phoneNumber);
-    List<Employee> getAllEmployees();
+    List<Employee> listEmployees();
+    Page<Employee> getAllEmployees(Pageable pageable);
     Employee getEmployeeById(Long id);
     void updateEmployee(SaveEmployeeDTO saveEmployeeDto, Long id);
     void deleteEmployeeRole(Long employeeId, Long roleId);
     void deleteEmployee(Long id);
     Employee getCurrentEmployee();
-    List<Employee> searchEmployees(String search);
+    Page<Employee> searchEmployees(String searchText, Pageable pageable);
     void addSkill(SkillDTO skillDto);
     void addExperience(ExperienceDTO experienceDto);
     void addCertification(CertificationDTO certificationDto);
@@ -30,5 +31,5 @@ public interface EmployeeService {
     List<Skill> getEmployeeSkills(Long employeeId);
     List<Certification> getEmployeeCertifications(Long employeeId);
     List<Experience> getEmployeeExperiences(Long employeeId);
-    Page<Employee> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection);
+    Page<Employee> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection, String searchText);
 }

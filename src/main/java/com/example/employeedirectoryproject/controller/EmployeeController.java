@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -155,10 +154,11 @@ public class EmployeeController {
     }
     
     @GetMapping("/home")
-    public String home(Model model){
+    public String home(Model model, Long id){
         Employee currentEmployee = employeeService.getCurrentEmployee();
         if (currentEmployee.getRoles().stream().filter(role -> role.getName().equals(TbConstants.Roles.ADMIN)).findAny().isPresent()) {
             model.addAttribute("currentEmployee", currentEmployee);
+            model.addAttribute("departments", departmentRepository.findAll());
             return "admin";
         }
         model.addAttribute("currentEmployee", currentEmployee);

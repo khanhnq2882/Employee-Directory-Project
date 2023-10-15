@@ -3,6 +3,8 @@ package com.example.employeedirectoryproject.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -18,6 +20,6 @@ public class Status {
     @Column(nullable = false)
     private String statusName;
 
-    @OneToOne(mappedBy = "status")
-    private Project project;
+    @OneToMany(mappedBy = "status")
+    private List<Project> project;
 }

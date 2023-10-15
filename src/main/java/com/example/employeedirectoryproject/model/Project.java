@@ -57,7 +57,7 @@ public class Project {
     @UpdateTimestamp
     private Date updatedDay;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "status_id", referencedColumnName = "statusId")
     private Status status;
 
