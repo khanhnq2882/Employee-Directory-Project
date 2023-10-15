@@ -15,7 +15,7 @@
 
 <body class="sb-nav-fixed">
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-    <a class="navbar-brand ps-3" th:href="@{/home}">Employee Management</a>
+    <a class="navbar-brand ps-3" th:href="@{/home}">TECH CORP.</a>
     <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
             class="fas fa-bars"></i></button>
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0"></form>
@@ -77,14 +77,19 @@
                                 <div class="card-header">
                                     <h3 class="text-center font-weight-light my-4">Add New Employee</h3>
                                 </div>
+                                <div th:if="${errorMessage}">
+                                    <div class="alert alert-danger" th:text="${errorMessage}"></div>
+                                </div>
                                 <div class="card-body">
-                                    <form th:action="@{/save_employee}" method="post"
-                                          th:object="${saveEmployeeDto}">
+                                    <form th:action="@{/add_new_employee}" method="post"
+                                          th:object="${saveEmployeeDto}" id="frmAddEmployee">
                                         <div class="row mb-3">
                                             <div class="form-group col-md-6">
                                                 <label for="email">Employee Email:</label>
                                                 <input type="text" class="form-control" id="email" name="email"
                                                        th:field="*{email}">
+                                                <p class="text-danger" th:errors="*{email}"
+                                                   th:if="${#fields.hasErrors('email')}"></p>
                                             </div>
 
                                             <div class="form-group col-md-6">
@@ -117,6 +122,7 @@
                                                 <label for="lastName">Phone Number:</label>
                                                 <input type="text" class="form-control" id="phoneNumber"
                                                        name="phoneNumber" th:field="*{phoneNumber}">
+<!--                                                <p class="text-danger" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></p>-->
                                             </div>
                                         </div>
 
@@ -137,11 +143,11 @@
                                             <div class="form-group col-md-6">
                                                 <label>Gender:</label>
                                                 <div class="form-check form-check-inline">
-                                                    <input type="radio" name="male" id="male" value="1"
-                                                           th:field="*{gender}" th:checked="*{gender}" checked />Male
+                                                    <input type="radio" name="gender" id="male" value="1"
+                                                           th:field="*{gender}" th:checked="*{gender}" />Male
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input type="radio" name="female" id="female" value="0"
+                                                    <input type="radio" name="gender" id="female" value="0"
                                                            th:field="*{gender}"
                                                            th:checked="*{gender} == false" />Female
                                                 </div>
@@ -149,11 +155,11 @@
                                             <div class="form-group col-md-6">
                                                 <label>Status:</label>
                                                 <div class="form-check form-check-inline">
-                                                    <input type="radio" name="male" id="active" value="1"
-                                                           th:field="*{status}" th:checked="*{status}" checked />Active
+                                                    <input type="radio" name="status" id="active" value="1"
+                                                           th:field="*{status}" th:checked="*{status}" />Active
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input type="radio" name="female" id="inactive" value="0"
+                                                    <input type="radio" name="status" id="inactive" value="0"
                                                            th:field="*{status}"
                                                            th:checked="*{status} == false" />Inactive
                                                 </div>
@@ -199,7 +205,7 @@
                                         </div>
                                         <div class="mt-4 mb-0">
                                             <div class="d-grid"><button type="submit"
-                                                                        class="btn btn-info col-2">Save</button>
+                                                                        class="btn btn-info col-2" id="btnSaveEmployee">Save</button>
                                             </div>
                                     </form>
                                 </div>
@@ -218,16 +224,10 @@
     <script src="js/datatables-simple-demo.js"></script>
     <script src="js/scripts.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-    <script>
-        $(function () {
-            $("#dateOfBirth").datepicker();
-            $("#startWork").datepicker();
-            $("#endWork").datepicker();
-        });
-    </script>
+    <script src="/js/screens/add-employee.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" type="text/javascript"></script>
 </body>
 
 </html>

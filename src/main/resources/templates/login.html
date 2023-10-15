@@ -19,6 +19,9 @@
                     <div class="col-lg-5">
                         <div class="card shadow-lg border-0 rounded-lg mt-5">
                             <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
+                            <div th:if="${param.error}">
+                                <div class="alert alert-danger">Invalid email or password!!!</div>
+                            </div>
                             <div class="card-body">
                                 <form th:action="@{/login}" method="post" role="form">
                                     <div class="form-floating mb-3">

@@ -1,8 +1,6 @@
 package com.example.employeedirectoryproject.controller;
 
-import com.example.employeedirectoryproject.config.exception.NotExistEmployeeException;
-import com.example.employeedirectoryproject.config.exception.NotMatchPasswordException;
-import com.example.employeedirectoryproject.config.exception.WrongPasswordException;
+import com.example.employeedirectoryproject.config.ErrorMessageException;
 import com.example.employeedirectoryproject.dto.CertificationDTO;
 import com.example.employeedirectoryproject.dto.ChangePasswordDTO;
 import com.example.employeedirectoryproject.dto.ExperienceDTO;
@@ -56,7 +54,7 @@ public class EmployeeController {
         try {
             employeeService.changePassword(changePasswordDTO);
             return "redirect:/login";
-        }catch (WrongPasswordException | NotMatchPasswordException ex) {
+        }catch (ErrorMessageException ex) {
             model.addAttribute("errorMessage", ex.getMessage());
             return "change_password";
         }
@@ -73,7 +71,7 @@ public class EmployeeController {
             String email = request.getParameter("email");
             employeeService.sendMailToAdmin(email);
             return "redirect:/login";
-        } catch (NotExistEmployeeException ex) {
+        } catch (ErrorMessageException ex) {
             model.addAttribute("errorMessage", ex.getMessage());
             return "forgot_password";
         }
@@ -103,9 +101,9 @@ public class EmployeeController {
     }
 
     @PostMapping("/edit_profile")
-    public String editProfile(HttpServletRequest request, Model model) throws Exception{
+    public String editProfile(HttpServletRequest request) throws Exception{
         Employee currentEmployee = employeeService.getCurrentEmployee();
-        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         currentEmployee.setFirstName(request.getParameter("firstName"));
         currentEmployee.setLastName(request.getParameter("lastName"));
         currentEmployee.setDateOfBirth(df.parse(request.getParameter("dateOfBirth")));
@@ -156,10 +154,11 @@ public class EmployeeController {
     }
     
     @GetMapping("/home")
-    public String home(Model model){
+    public String home(Model model, Long id){
         Employee currentEmployee = employeeService.getCurrentEmployee();
         if (currentEmployee.getRoles().stream().filter(role -> role.getName().equals(TbConstants.Roles.ADMIN)).findAny().isPresent()) {
             model.addAttribute("currentEmployee", currentEmployee);
+            model.addAttribute("departments", departmentRepository.findAll());
             return "admin";
         }
         model.addAttribute("currentEmployee", currentEmployee);

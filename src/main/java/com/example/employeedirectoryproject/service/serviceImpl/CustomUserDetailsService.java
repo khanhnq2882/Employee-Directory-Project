@@ -1,4 +1,4 @@
-package com.example.employeedirectoryproject.service;
+package com.example.employeedirectoryproject.service.serviceImpl;
 
 import com.example.employeedirectoryproject.model.Employee;
 import com.example.employeedirectoryproject.repository.EmployeeRepository;

@@ -1,8 +1,6 @@
 package com.example.employeedirectoryproject.service.serviceImpl;
 
-import com.example.employeedirectoryproject.config.exception.NotExistEmployeeException;
-import com.example.employeedirectoryproject.config.exception.NotMatchPasswordException;
-import com.example.employeedirectoryproject.config.exception.WrongPasswordException;
+import com.example.employeedirectoryproject.config.ErrorMessageException;
 import com.example.employeedirectoryproject.dto.*;
 import com.example.employeedirectoryproject.mapper.CertificationMapper;
 import com.example.employeedirectoryproject.mapper.EmployeeMapper;
@@ -22,6 +20,10 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -90,7 +92,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .email(saveEmployeeDto.getEmail())
                 .password(password)
                 .dateOfBirth(saveEmployeeDto.getDateOfBirth())
-                .phoneNumber(saveEmployeeDto.getPhoneNumber())
+                .phoneNumber(isPhoneNumberExist(saveEmployeeDto.getPhoneNumber()))
                 .address(saveEmployeeDto.getAddress())
                 .gender(saveEmployeeDto.getGender())
                 .startWork(saveEmployeeDto.getStartWork())
@@ -100,7 +102,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .position(saveEmployeeDto.getPosition())
                 .status(saveEmployeeDto.getStatus())
                 .createdBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName())
-                .updatedBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName())
                 .roles(Arrays.asList(role))
                 .build();
         sendEmail(saveEmployeeDto, password);
@@ -116,10 +117,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                 getCurrentEmployee().setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
                 employeeRepository.save(getCurrentEmployee());
             } else {
-                throw new NotMatchPasswordException("New password and confirm password is not match. Try again!");
+                throw new ErrorMessageException("New password and confirm password is not match. Try again!");
             }
         } else {
-            throw new WrongPasswordException("Old password is not correct. Try again!");
+            throw new ErrorMessageException("Old password is not correct. Try again!");
         }
     }
 
@@ -129,8 +130,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.getAllEmployees();
+    public Employee findEmployeeByPhoneNumber(String phoneNumber) {
+        return employeeRepository.findEmployeeByPhoneNumber(phoneNumber);
+    }
+
+    @Override
+    public List<Employee> listEmployees() {
+        return employeeRepository.listEmployees();
+    }
+
+    @Override
+    public Page<Employee> getAllEmployees(Pageable pageable) {
+        return employeeRepository.getAllEmployees(pageable);
     }
 
     @Override
@@ -164,8 +175,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> searchEmployees(String search) {
-        return employeeRepository.search(search);
+    public Page<Employee> searchEmployees(String searchText, Pageable pageable) {
+        return employeeRepository.search(searchText, pageable);
     }
 
     @Override
@@ -211,7 +222,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             emailDto.setTemplate("email_reset_password.html");
             emailSenderService.sendHtmlMessage(emailDto);
         } else {
-            throw new NotExistEmployeeException("Not exist employee information that have email is "+email+" . Try again!");
+            throw new ErrorMessageException("Not exist employee information that have email is "+email+" . Try again!");
         }
     }
 
@@ -228,6 +239,31 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<Experience> getEmployeeExperiences(Long employeeId) {
         return experienceRepository.getEmployeeExperiences(employeeId);
+    }
+
+    @Override
+    public Page<Employee> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection, String searchText) {
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize, sort);
+        Page<Employee> page;
+        if (Objects.isNull(searchText)) {
+            page = getAllEmployees(pageable);
+        } else {
+            page = searchEmployees(searchText, pageable);
+        }
+        return page;
+    }
+
+    public String isPhoneNumberExist(String phoneNumber) {
+        boolean check = false;
+        if (!employeeRepository.findAll().stream().filter(employee -> phoneNumber.equals(employee.getPhoneNumber())).findAny().isPresent()) {
+            check = true;
+        }
+        if (check == true) {
+            return phoneNumber;
+        } else {
+            throw new ErrorMessageException("Phone number is already exists.");
+        }
     }
 
     public String randomPassword() {
@@ -323,6 +359,5 @@ public class EmployeeServiceImpl implements EmployeeService {
         workbook.close();
         outputStream.close();
     }
-
 
 }

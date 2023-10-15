@@ -40,7 +40,7 @@ public class Project {
     @Temporal(TemporalType.DATE)
     private Date startDate;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
     private Date endDate;
@@ -57,7 +57,7 @@ public class Project {
     @UpdateTimestamp
     private Date updatedDay;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "status_id", referencedColumnName = "statusId")
     private Status status;
 
