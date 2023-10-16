@@ -13,9 +13,10 @@ import java.util.List;
 
 public interface EmployeeService {
     void changePassword(ChangePasswordDTO changePasswordDTO);
+    void resetPassword(String email) throws MessagingException ;
     void saveEmployee(SaveEmployeeDTO saveEmployeeDto) throws MessagingException;
     Employee findEmployeeByEmail(String email);
-    Employee findEmployeeByPhoneNumber(String phoneNumber);
+    Employee findByPhoneNumber(String phoneNumber);
     List<Employee> listEmployees();
     Page<Employee> getAllEmployees(Pageable pageable);
     Employee getEmployeeById(Long id);

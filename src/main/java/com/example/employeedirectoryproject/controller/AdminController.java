@@ -49,7 +49,7 @@ public class AdminController {
 
     @RequestMapping("/login")
     public String loginForm() {
-            return "login";
+        return "login";
     }
 
     @GetMapping("/add_new_employee")
@@ -69,15 +69,12 @@ public class AdminController {
             if (!Objects.isNull(employeeService.findEmployeeByEmail(saveEmployeeDto.getEmail()))) {
                 result.rejectValue("email", null, "Employee email is already existed.");
             }
-            if (!Objects.isNull(employeeService.findEmployeeByPhoneNumber(saveEmployeeDto.getPhoneNumber()))) {
-                result.rejectValue("phoneNumber", null, "Phone number is already existed.");
-            }
             if (result.hasErrors()) {
                 model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
                 model.addAttribute("positions", positionRepository.findAll());
                 model.addAttribute("departments", departmentRepository.findAll());
                 model.addAttribute("saveEmployeeDto", new SaveEmployeeDTO());
-                return "/add_new_employee";
+                return "add_new_employee";
             }
             employeeService.saveEmployee(saveEmployeeDto);
         } catch (ErrorMessageException ex) {
@@ -85,7 +82,7 @@ public class AdminController {
             model.addAttribute("positions", positionRepository.findAll());
             model.addAttribute("departments", departmentRepository.findAll());
             model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
-            return "/add_new_employee";
+            return "add_new_employee";
         }
         return "redirect:/list_employees";
     }
@@ -161,5 +158,21 @@ public class AdminController {
         excelExporter.export(response);
     }
 
+    @GetMapping("/reset_password")
+    public String resetPasswordForm() {
+        return "reset_password";
+    }
+
+    @PostMapping("/reset_password")
+    public String forgotPassword(HttpServletRequest request, Model model) throws MessagingException {
+        try{
+            String email = request.getParameter("email");
+            employeeService.resetPassword(email);
+            return "redirect:/home";
+        } catch (ErrorMessageException ex) {
+            model.addAttribute("errorMessage", ex.getMessage());
+            return "reset_password";
+        }
+    }
 
 }

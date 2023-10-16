@@ -17,7 +17,7 @@ import java.util.List;
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Employee findByEmail(String email);
 
-    Employee findEmployeeByPhoneNumber(String phoneNumber);
+    Employee findByPhoneNumber(String phoneNumber);
 
     @Query(value = "SELECT e FROM Employee AS e INNER JOIN e.roles AS r WHERE r.roleId = 1")
     List<Employee> listEmployees();

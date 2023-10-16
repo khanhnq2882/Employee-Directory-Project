@@ -85,28 +85,32 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeCode = "NV" + nextId;
         }
         String password = randomPassword();
-        Employee employee = Employee.builder()
-                .employeeCode(employeeCode)
-                .firstName(saveEmployeeDto.getFirstName())
-                .lastName(saveEmployeeDto.getLastName())
-                .email(saveEmployeeDto.getEmail())
-                .password(password)
-                .dateOfBirth(saveEmployeeDto.getDateOfBirth())
-                .phoneNumber(isPhoneNumberExist(saveEmployeeDto.getPhoneNumber()))
-                .address(saveEmployeeDto.getAddress())
-                .gender(saveEmployeeDto.getGender())
-                .startWork(saveEmployeeDto.getStartWork())
-                .endWork(saveEmployeeDto.getEndWork())
-                .coefficientsSalary(saveEmployeeDto.getCoefficientsSalary())
-                .department(saveEmployeeDto.getDepartment())
-                .position(saveEmployeeDto.getPosition())
-                .status(saveEmployeeDto.getStatus())
-                .createdBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName())
-                .roles(Arrays.asList(role))
-                .build();
-        sendEmail(saveEmployeeDto, password);
-        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
-        employeeRepository.save(employee);
+        if(findByPhoneNumber(saveEmployeeDto.getPhoneNumber()) == null) {
+            Employee employee = Employee.builder()
+                    .employeeCode(employeeCode)
+                    .firstName(saveEmployeeDto.getFirstName())
+                    .lastName(saveEmployeeDto.getLastName())
+                    .email(saveEmployeeDto.getEmail())
+                    .password(password)
+                    .dateOfBirth(saveEmployeeDto.getDateOfBirth())
+                    .phoneNumber(saveEmployeeDto.getPhoneNumber())
+                    .address(saveEmployeeDto.getAddress())
+                    .gender(saveEmployeeDto.getGender())
+                    .startWork(saveEmployeeDto.getStartWork())
+                    .endWork(saveEmployeeDto.getEndWork())
+                    .coefficientsSalary(saveEmployeeDto.getCoefficientsSalary())
+                    .department(saveEmployeeDto.getDepartment())
+                    .position(saveEmployeeDto.getPosition())
+                    .status(saveEmployeeDto.getStatus())
+                    .createdBy(getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName())
+                    .roles(Arrays.asList(role))
+                    .build();
+            sendEmail(saveEmployeeDto, password);
+            employee.setPassword(passwordEncoder.encode(employee.getPassword()));
+            employeeRepository.save(employee);
+        } else {
+            throw new ErrorMessageException("Phone number is already registered.");
+        }
     }
 
     @Override
@@ -117,10 +121,33 @@ public class EmployeeServiceImpl implements EmployeeService {
                 getCurrentEmployee().setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
                 employeeRepository.save(getCurrentEmployee());
             } else {
-                throw new ErrorMessageException("New password and confirm password is not match. Try again!");
+                throw new ErrorMessageException("New password and confirm password is not match.");
             }
         } else {
-            throw new ErrorMessageException("Old password is not correct. Try again!");
+            throw new ErrorMessageException("Current password is not correct.");
+        }
+    }
+
+    @Override
+    public void resetPassword(String email) throws MessagingException {
+        EmailDTO emailDto = new EmailDTO();
+        Employee employee = employeeRepository.findByEmail(email);
+        if (!Objects.isNull(employee)) {
+            emailDto.setFrom("quockhanhnguyen2882@gmail.com");
+            emailDto.setTo(email);
+            emailDto.setSubject("Your password has been changed");
+            employee.setPassword(randomPassword());
+            Map<String, Object> properties = new HashMap<>();
+            properties.put("password", employee.getPassword());
+            properties.put("fullNameAdmin", getCurrentEmployee().getFirstName()+" "+getCurrentEmployee().getLastName());
+            properties.put("fullNameEmployee", employee.getFirstName()+" "+employee.getLastName());
+            emailDto.setProperties(properties);
+            emailDto.setTemplate("email_reset_password.html");
+            employee.setPassword(passwordEncoder.encode(employee.getPassword()));
+            emailSenderService.sendHtmlMessage(emailDto);
+            employeeRepository.save(employee);
+        } else {
+            throw new ErrorMessageException("Not exist employee information that have email is "+email+".");
         }
     }
 
@@ -130,8 +157,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee findEmployeeByPhoneNumber(String phoneNumber) {
-        return employeeRepository.findEmployeeByPhoneNumber(phoneNumber);
+    public Employee findByPhoneNumber(String phoneNumber) {
+        return employeeRepository.findByPhoneNumber(phoneNumber);
     }
 
     @Override
@@ -219,7 +246,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             properties.put("email", email);
             properties.put("fullName", employee.getFirstName()+" "+employee.getLastName());
             emailDto.setProperties(properties);
-            emailDto.setTemplate("email_reset_password.html");
+            emailDto.setTemplate("email_forgot_password.html");
             emailSenderService.sendHtmlMessage(emailDto);
         } else {
             throw new ErrorMessageException("Not exist employee information that have email is "+email+" . Try again!");
@@ -252,18 +279,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             page = searchEmployees(searchText, pageable);
         }
         return page;
-    }
-
-    public String isPhoneNumberExist(String phoneNumber) {
-        boolean check = false;
-        if (!employeeRepository.findAll().stream().filter(employee -> phoneNumber.equals(employee.getPhoneNumber())).findAny().isPresent()) {
-            check = true;
-        }
-        if (check == true) {
-            return phoneNumber;
-        } else {
-            throw new ErrorMessageException("Phone number is already exists.");
-        }
     }
 
     public String randomPassword() {
