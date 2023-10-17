@@ -35,7 +35,7 @@
             <div class="sb-sidenav-menu">
                 <div class="nav">
                     <div class="sb-sidenav-menu-heading">Dashboard</div>
-                    <a class="nav-link collapsed" th:href="@{/list_departments}"
+                    <a class="nav-link collapsed" th:href="@{/employee_profile/{id}(id=${currentEmployee.getEmployeeId()})}"
                        data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                         <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
                         Your Profile

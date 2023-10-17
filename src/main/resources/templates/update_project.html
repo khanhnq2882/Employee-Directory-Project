@@ -28,7 +28,7 @@
                     th:text="${currentEmployee.getFirstName()} +' '+ ${currentEmployee.getLastName()}"></b>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" th:href="@{/edit_profile}">Edit Profile</a></li>
+                <li><a class="dropdown-item" th:href="@{/edit_profile}">Change Profile</a></li>
                 <li><a class="dropdown-item" th:href="@{/change_password}">Change Password</a></li>
                 <li>
                     <hr class="dropdown-divider" />
@@ -59,10 +59,10 @@
                         <div class="sb-nav-link-icon"><i class="fas fa-project-diagram"></i></div>
                         Project Management
                     </a>
-                    <a class="nav-link collapsed"  th:href="@{/edit_profile}"
+                    <a class="nav-link collapsed" th:href="@{/reset_password}"
                        data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fas fa-user-edit"></i></div>
-                        Change Profile
+                        <div class="sb-nav-link-icon"><i class="fas fa-lock"></i></div>
+                        Reset Password
                     </a>
                 </div>
             </div>

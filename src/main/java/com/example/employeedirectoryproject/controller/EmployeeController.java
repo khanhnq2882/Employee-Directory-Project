@@ -103,10 +103,10 @@ public class EmployeeController {
     @PostMapping("/edit_profile")
     public String editProfile(HttpServletRequest request) throws Exception{
         Employee currentEmployee = employeeService.getCurrentEmployee();
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat df1 = new SimpleDateFormat("MM/dd/yyyy");
         currentEmployee.setFirstName(request.getParameter("firstName"));
         currentEmployee.setLastName(request.getParameter("lastName"));
-        currentEmployee.setDateOfBirth(df.parse(request.getParameter("dateOfBirth")));
+        currentEmployee.setDateOfBirth(df1.parse(request.getParameter("dateOfBirth")));
         currentEmployee.setGender(Boolean.parseBoolean(request.getParameter("gender")));
         currentEmployee.setPhoneNumber(request.getParameter("phoneNumber"));
         currentEmployee.setAddress(request.getParameter("address"));

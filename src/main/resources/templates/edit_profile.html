@@ -27,7 +27,7 @@
                     th:text="${currentEmployee.getFirstName()} +' '+ ${currentEmployee.getLastName()}"></b>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" th:href="@{/edit_profile}">Edit Profile</a></li>
+                <li><a class="dropdown-item" th:href="@{/edit_profile}">Change Profile</a></li>
                 <li><a class="dropdown-item" th:href="@{/change_password}">Change Password</a></li>
                 <li>
                     <hr class="dropdown-divider" />
@@ -41,29 +41,56 @@
     <div id="layoutSidenav_nav">
         <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
             <div class="sb-sidenav-menu">
-                <div class="nav">
-                    <div class="sb-sidenav-menu-heading">Dashboard</div>
-                    <a class="nav-link collapsed" th:href="@{/list_departments}"
-                       data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fas fa-building"></i></div>
-                        Department Management
-                    </a>
-                    <a class="nav-link collapsed" th:href="@{/list_employees}"
-                       data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                        Employee Management
-                    </a>
-                    <a class="nav-link collapsed" th:href="@{/list_projects}"
-                       data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fas fa-project-diagram"></i></div>
-                        Project Management
-                    </a>
-                    <a class="nav-link collapsed"  th:href="@{/edit_profile}"
-                       data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fas fa-user-edit"></i></div>
-                        Change Profile
-                    </a>
-                </div>
+                <th:block th:each="role: ${currentEmployee.getRoles()}">
+                    <th:block th:if="${role.getName().equals('ROLE_ADMIN')}">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Dashboard</div>
+                            <a class="nav-link collapsed" th:href="@{/list_departments}"
+                               data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-building"></i></div>
+                                Department Management
+                            </a>
+                            <a class="nav-link collapsed" th:href="@{/list_employees}"
+                               data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                Employee Management
+                            </a>
+                            <a class="nav-link collapsed" th:href="@{/list_projects}"
+                               data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-project-diagram"></i></div>
+                                Project Management
+                            </a>
+                            <a class="nav-link collapsed" th:href="@{/reset_password}"
+                               data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-lock"></i></div>
+                                Reset Password
+                            </a>
+                        </div>
+                    </th:block>
+                </th:block>
+
+                <th:block th:each="role: ${currentEmployee.getRoles()}">
+                    <th:block th:if="${role.getName().equals('ROLE_EMPLOYEE')}">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Dashboard</div>
+                            <a class="nav-link collapsed" th:href="@{/employee_profile/{id}(id=${currentEmployee.getEmployeeId()})}"
+                               data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                                Your Profile
+                            </a>
+                            <a class="nav-link collapsed" th:href="@{/list_projects}"
+                               data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-project-diagram"></i></div>
+                                Your Project
+                            </a>
+                            <a class="nav-link collapsed"  th:href="@{/edit_profile}"
+                               data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user-edit"></i></div>
+                                Change Profile
+                            </a>
+                        </div>
+                    </th:block>
+                </th:block>
             </div>
         </nav>
     </div>
@@ -233,7 +260,7 @@
         $(function () {
             $('#department').attr("disabled", true);
             $('#position').attr("disabled", true);
-            $('#dateOfBirth').datePicker();
+            $('#dateOfBirth').datepicker();
         });
     </script>
 </body>
