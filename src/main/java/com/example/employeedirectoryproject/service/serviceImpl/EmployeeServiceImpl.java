@@ -11,6 +11,12 @@ import com.example.employeedirectoryproject.repository.*;
 import com.example.employeedirectoryproject.service.EmailSenderService;
 import com.example.employeedirectoryproject.service.EmployeeService;
 import com.example.employeedirectoryproject.util.TbConstants;
+import com.lowagie.text.Document;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +25,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,13 +36,28 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.SecureRandom;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.*;
+import org.springframework.web.multipart.MultipartFile;
+
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
@@ -90,6 +112,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     .employeeCode(employeeCode)
                     .firstName(saveEmployeeDto.getFirstName())
                     .lastName(saveEmployeeDto.getLastName())
+                    .personalEmail(saveEmployeeDto.getPersonalEmail())
                     .email(saveEmployeeDto.getEmail())
                     .password(password)
                     .dateOfBirth(saveEmployeeDto.getDateOfBirth())
@@ -133,8 +156,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         EmailDTO emailDto = new EmailDTO();
         Employee employee = employeeRepository.findByEmail(email);
         if (!Objects.isNull(employee)) {
-            emailDto.setFrom("quockhanhnguyen2882@gmail.com");
-            emailDto.setTo(email);
+            emailDto.setFrom(getCurrentEmployee().getEmail());
+            emailDto.setTo(employee.getPersonalEmail());
             emailDto.setSubject("Your password has been changed");
             employee.setPassword(randomPassword());
             Map<String, Object> properties = new HashMap<>();
@@ -358,11 +381,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             createCell(row, columnCount++, employee.getPosition().getPositionName(), style);
             createCell(row, columnCount++, employee.getStartWork(), style);
             createCell(row, columnCount++, employee.getEndWork(), style);
-            if (employee.getStatus() == true) {
-                createCell(row, columnCount++, "Active", style);
-            } else {
-                createCell(row, columnCount++, "Inactive", style);
-            }
+            createCell(row, columnCount++, employee.getStatus().toString().equals("true") ? "Active" : "Inactive", style);
         }
     }
 
@@ -374,5 +393,137 @@ public class EmployeeServiceImpl implements EmployeeService {
         workbook.close();
         outputStream.close();
     }
+
+    @Override
+    public ByteArrayInputStream generateWord() throws IOException {
+        try (XWPFDocument document = new XWPFDocument()) {
+            XWPFParagraph paragraph = document.createParagraph();
+            paragraph.setAlignment(ParagraphAlignment.CENTER);
+            XWPFRun run = paragraph.createRun();
+            run.setBold(true);
+            run.setFontSize(30);
+            run.setText("List Employees");
+            run.setFontFamily("Times New Roman");
+            XWPFTable table = document.createTable();
+            table.setWidth("100%");
+            table.setTableAlignment(TableRowAlign.CENTER);
+            XWPFTableRow row = table.getRow(0);
+            row.getCell(0).setText("Employee Code");
+            row.addNewTableCell().setText("Full Name");
+            row.addNewTableCell().setText("Department");
+            row.addNewTableCell().setText("Position");
+            row.addNewTableCell().setText("Email");
+            row.addNewTableCell().setText("Start Work");
+            row.addNewTableCell().setText("End Work");
+            row.addNewTableCell().setText("Status");
+            for(int i=0; i<=row.getTableCells().size()-1; i++) {
+                XWPFParagraph p = table.getRow(0).getCell(i).getParagraphs().get(0);
+                p.setAlignment(ParagraphAlignment.CENTER);
+                XWPFRun r = p.createRun();
+                r.setBold(true);
+                r.setColor("FF5733");
+            }
+            for(int i=0; i<=listEmployees().size() - 1; i++) {
+                XWPFTableRow r = table.createRow();
+                DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+                r.getCell(0).setText(listEmployees().get(i).getEmployeeCode());
+                r.getCell(1).setText(listEmployees().get(i).getFirstName() + " " + listEmployees().get(i).getLastName());
+                r.getCell(2).setText(listEmployees().get(i).getEmail());
+                r.getCell(3).setText(listEmployees().get(i).getDepartment().getDepartmentName());
+                r.getCell(4).setText(listEmployees().get(i).getPosition().getPositionName());
+                r.getCell(5).setText(df.format(listEmployees().get(i).getStartWork()));
+                r.getCell(6).setText(df.format(listEmployees().get(i).getEndWork()));
+                r.getCell(7).setText(listEmployees().get(i).getStatus().toString().equals("true") ? "Active" : "Inactive");
+            }
+            ByteArrayOutputStream b = new ByteArrayOutputStream();
+            document.write(b);
+            return new ByteArrayInputStream(b.toByteArray());
+        }
+    }
+
+    private void writeTableHeader(PdfPTable table) {
+        PdfPCell cell = new PdfPCell();
+        cell.setBackgroundColor(Color.BLUE);
+        cell.setPadding(5);
+        Font font = FontFactory.getFont(FontFactory.HELVETICA);
+        font.setColor(Color.WHITE);
+        cell.setPhrase(new Phrase("Employee Code", font));
+        table.addCell(cell);
+        cell.setPhrase(new Phrase("Full Name", font));
+        table.addCell(cell);
+        cell.setPhrase(new Phrase("Department", font));
+        table.addCell(cell);
+        cell.setPhrase(new Phrase("Position", font));
+        table.addCell(cell);
+        cell.setPhrase(new Phrase("Email", font));
+        table.addCell(cell);
+        cell.setPhrase(new Phrase("Start Work", font));
+        table.addCell(cell);
+        cell.setPhrase(new Phrase("End Work", font));
+        table.addCell(cell);
+        cell.setPhrase(new Phrase("Status", font));
+        table.addCell(cell);
+    }
+
+    private void writeTableData(PdfPTable table) {
+        for (Employee employee : listEmployees()) {
+            DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+            table.addCell(employee.getEmployeeCode());
+            table.addCell(employee.getFirstName()+" "+employee.getLastName());
+            table.addCell(employee.getDepartment().getDepartmentName());
+            table.addCell(employee.getPosition().getPositionName());
+            table.addCell(employee.getEmail());
+            table.addCell(df.format(employee.getStartWork()));
+            table.addCell(df.format(employee.getEndWork()));
+            table.addCell(employee.getStatus().toString().equals("true") ? "Active" : "Inactive");
+        }
+    }
+
+    @Override
+    public void exportToPdf(HttpServletResponse response) throws IOException {
+        Document document = new Document(PageSize.A4);
+        PdfWriter.getInstance(document, response.getOutputStream());
+        document.open();
+        Font font = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+        font.setSize(18);
+        font.setColor(Color.BLUE);
+        Paragraph p = new Paragraph("List Employees", font);
+        p.setAlignment(Paragraph.ALIGN_CENTER);
+        document.add(p);
+        PdfPTable table = new PdfPTable(5);
+        table.setWidthPercentage(100f);
+        table.setWidths(new float[] {1.5f, 3.5f, 3.0f, 3.0f, 1.5f, 3.0f, 3.0f, 1.5f});
+        table.setSpacingBefore(10);
+        writeTableHeader(table);
+        writeTableData(table);
+        document.add(table);
+        document.close();
+    }
+
+    @Override
+    public void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
+        Path uploadPath = Paths.get(uploadDir);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ioe) {
+            throw new IOException("Could not save image file: " + fileName, ioe);
+        }
+    }
+
+    @Override
+    public void updateAvatar(MultipartFile file) {
+        try{
+
+
+        }catch (Exception e) {
+
+        }
+
+    }
+
 
 }

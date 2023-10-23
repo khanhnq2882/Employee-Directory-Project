@@ -16,12 +16,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import org.springframework.http.HttpHeaders;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -153,8 +157,7 @@ public class AdminController {
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=list_employees_" + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
-        List<Employee> listUsers = employeeService.listEmployees();
-        EmployeeServiceImpl excelExporter = new EmployeeServiceImpl(listUsers);
+        EmployeeServiceImpl excelExporter = new EmployeeServiceImpl(employeeService.listEmployees());
         excelExporter.export(response);
     }
 
@@ -173,6 +176,29 @@ public class AdminController {
             model.addAttribute("errorMessage", ex.getMessage());
             return "reset_password";
         }
+    }
+
+    @GetMapping(value = "/employee_export_word", produces = "application/vnd.openxmlformats-" + "officedocument.wordprocessingml.document")
+    public ResponseEntity<InputStreamResource> exportToWord() throws IOException{
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+        ByteArrayInputStream inputStream = employeeService.generateWord();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename = list_employees_"+currentDateTime+ ".docx");
+        InputStreamResource streamResource = new InputStreamResource(inputStream);
+        return ResponseEntity.ok().headers(headers).body(streamResource);
+    }
+
+    @GetMapping("/employee_export_pdf")
+    public void exportToPdf(HttpServletResponse response) throws IOException{
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=list_employees_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+        EmployeeServiceImpl exporter = new EmployeeServiceImpl(employeeService.listEmployees());
+        exporter.export(response);
     }
 
 }

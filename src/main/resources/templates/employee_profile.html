@@ -27,7 +27,7 @@
                     th:text="${currentEmployee.getFirstName()} +' '+ ${currentEmployee.getLastName()}"></b>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" th:href="@{/edit_profile}">Edit Profile</a></li>
+                <li><a class="dropdown-item" th:href="@{/edit_profile}">Change Profile</a></li>
                 <li><a class="dropdown-item" th:href="@{/change_password}">Change Password</a></li>
                 <li>
                     <hr class="dropdown-divider" />
@@ -41,30 +41,56 @@
     <div id="layoutSidenav_nav">
         <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
             <div class="sb-sidenav-menu">
-                <div class="nav">
-                    <div class="sb-sidenav-menu-heading">Dashboard</div>
-                    <a class="nav-link collapsed" th:href="@{/list_departments}"
-                       data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fas fa-building"></i></div>
-                        Department Management
-                    </a>
-                    <a class="nav-link collapsed" th:href="@{/list_employees}"
-                       data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                        Employee Management
-                    </a>
-                    <a class="nav-link collapsed" th:href="@{/list_projects}"
-                       data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fas fa-project-diagram"></i></div>
-                        Project Management
-                    </a>
-                    <a class="nav-link collapsed"  th:href="@{/edit_profile}"
-                       data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fas fa-user-edit"></i></div>
-                        Change Profile
-                    </a>
-                </div>
-            </div>
+                <th:block th:each="role: ${currentEmployee.getRoles()}">
+                    <th:block th:if="${role.getName().equals('ROLE_ADMIN')}">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Dashboard</div>
+                            <a class="nav-link collapsed" th:href="@{/list_departments}"
+                               data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-building"></i></div>
+                                Department Management
+                            </a>
+                            <a class="nav-link collapsed" th:href="@{/list_employees}"
+                               data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                Employee Management
+                            </a>
+                            <a class="nav-link collapsed" th:href="@{/list_projects}"
+                               data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-project-diagram"></i></div>
+                                Project Management
+                            </a>
+                            <a class="nav-link collapsed" th:href="@{/reset_password}"
+                               data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-lock"></i></div>
+                                Reset Password
+                            </a>
+                        </div>
+                    </th:block>
+                </th:block>
+
+                <th:block th:each="role: ${currentEmployee.getRoles()}">
+                    <th:block th:if="${role.getName().equals('ROLE_EMPLOYEE')}">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Dashboard</div>
+                            <a class="nav-link collapsed" th:href="@{/employee_profile/{id}(id=${currentEmployee.getEmployeeId()})}"
+                               data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                                Your Profile
+                            </a>
+                            <a class="nav-link collapsed" th:href="@{/employee_projects/{id}(id=${currentEmployee.getEmployeeId()})}"
+                               data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-project-diagram"></i></div>
+                                Your Project
+                            </a>
+                            <a class="nav-link collapsed"  th:href="@{/edit_profile}"
+                               data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user-edit"></i></div>
+                                Change Profile
+                            </a>
+                        </div>
+                    </th:block>
+                </th:block>
         </nav>
     </div>
     <div id="layoutSidenav_content">
@@ -74,14 +100,26 @@
                     <div class="col-lg-4">
                         <div class="card mb-4">
                             <div class="card-body text-center" style="height: 341px;">
-                                <a href="https://www.facebook.com/"><img
-                                        src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-                                        alt="avatar" class="rounded-circle img-fluid" style="width: 150px;"></a>
+<!--                                <a th:href="@{/upload_avatar}"><img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"-->
+<!--                                        alt="avatar" class="rounded-circle img-fluid" style="width: 150px;"></a>-->
+                                <th:block th:if="${currentEmployee.getAvatar() == null}">
+                                    <form th:action="@{/upload_avatar}" method="post" enctype="multipart/form-data" id="uploadAvatar">
+                                        <input id="input-file" type="file" name="file" accept="image/png, image/jpeg" />
+                                        <button class="btn btn-sm btn-outline-success float-right" type="submit">
+                                            Upload
+                                        </button>
+                                    </form>
+                                </th:block>
+
+                                <th:block th:if="${currentEmployee.getAvatar() != null}">
+                                    <img th:src="${currentEmployee.getAvatarImagePath()}" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                                </th:block>
+
                                 <h5 class="my-3" th:text="${employee.getFirstName()+' '+employee.getLastName()}"></h5>
                                 <p class="text-muted mb-1"
-                                   th:text="${employee.getDepartment().getDepartmentName()+' , '+employee.getPosition().getPositionName()}"></p>
+                                   th:text="${employee.getDepartment().getDepartmentName()+' ~ '+employee.getPosition().getPositionName()}"></p>
                                 <p class="text-muted mb-4"
-                                   th:text="${'From: '+employee.getStartWork()+' ~ To: '+ employee.getEndWork()}"></p>
+                                   th:text="${'From: '+#dates.format(employee.getStartWork(), 'MM/dd/yyyy')+' - To: '+ #dates.format(employee.getEndWork(), 'MM/dd/yyyy')}"></p>
                             </div>
                         </div>
                         <div class="card mb-4 mb-lg-0">
@@ -155,7 +193,8 @@
                                         </b>
                                     </div>
                                     <div class="col-sm-9">
-                                        <p class="text-muted mb-0" th:text="${employee.getDateOfBirth()}"></p>
+                                        <p class="text-muted mb-0"
+                                           th:text="${#dates.format(employee.getDateOfBirth(), 'MM/dd/yyyy')}"></p>
                                     </div>
                                 </div>
                                 <hr>
@@ -260,16 +299,16 @@
                                                 <li th:each="experience: ${experiences}">
                                                     <div class="row align-items-top">
                                                         <div class="col-md-3">
-                                                            <h6 class="mb-2" th:text="${experience.getStartWork()}+' ~ '+${experience.getEndWork()}"></h6>
+                                                            <h6 class="mb-2"><b>[[${#dates.format(experience.getStartWork(), 'MM/yyyy')}]] ~ [[${#dates.format(experience.getEndWork(), 'MM/yyyy')}]]</b></h6>
                                                         </div>
                                                         <div class="col-md-9">
                                                             <div class="media profile-media align-items-top">
                                                                 <div class="profile-dots border-primary mt-1">
                                                                 </div>
                                                                 <div class="ml-4">
-                                                                    <h6 class="mb-1" th:text="${experience.getCompanyName()}"></h6>
-                                                                    <p class="mb-0 font-size-14"
-                                                                       th:text="'Project: '+${experience.getName()}+', Language: '+${experience.getLanguage()}+', Framework: '+${experience.getFramework()}"></p>
+                                                                    <h6 class="mb-1"><b>[[${experience.getCompanyName()}]]</b></h6>
+                                                                    <p class="mb-0 font-size-14">
+                                                                        <b>Project: </b>[[${experience.getName()}]] - <b>Language: </b>[[${experience.getLanguage()}]]- <b>Framework: </b>[[${experience.getFramework()}]]</p>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -292,7 +331,6 @@
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
         crossorigin="anonymous"></script>
-<script src="js/datatables-simple-demo.js"></script>
 <script src="js/scripts.js"></script>
 </body>
 </html>

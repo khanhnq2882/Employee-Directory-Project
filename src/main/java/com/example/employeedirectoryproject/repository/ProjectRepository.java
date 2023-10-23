@@ -5,8 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
@@ -24,4 +26,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "OR p.framework LIKE %:searchText% " +
             "OR p.status.statusName LIKE %:searchText%")
     Page<Project> searchProjects(String searchText, Pageable pageable);
+
+    @Query(value = "SELECT p FROM Project AS p INNER JOIN p.employees AS e WHERE e.employeeId = :employeeId")
+    Set<Project> getProjectsByEmployee(@Param("employeeId") Long employeeId);
 }

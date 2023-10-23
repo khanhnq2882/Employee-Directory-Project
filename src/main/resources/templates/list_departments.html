@@ -27,7 +27,7 @@
                     th:text="${currentEmployee.getFirstName()} +' '+ ${currentEmployee.getLastName()}"></b>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" th:href="@{/edit_profile}">Edit Profile</a></li>
+                <li><a class="dropdown-item" th:href="@{/edit_profile}">Change Profile</a></li>
                 <li><a class="dropdown-item" th:href="@{/change_password}">Change Password</a></li>
                 <li>
                     <hr class="dropdown-divider"/>
@@ -58,10 +58,10 @@
                         <div class="sb-nav-link-icon"><i class="fas fa-project-diagram"></i></div>
                         Project Management
                     </a>
-                    <a class="nav-link collapsed" th:href="@{/edit_profile}"
+                    <a class="nav-link collapsed" th:href="@{/reset_password}"
                        data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fas fa-user-edit"></i></div>
-                        Change Profile
+                        <div class="sb-nav-link-icon"><i class="fas fa-lock"></i></div>
+                        Reset Password
                     </a>
                 </div>
             </div>
@@ -144,43 +144,45 @@
                             </tbody>
                         </table>
 
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item"><a class="page-link" th:if="${currentPage > 1}"
-                                                         th:href="@{'/list_departments/page/1?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">First</a>
-                                </li>
-                                <li class="page-item"><a class="page-link" th:unless="${currentPage > 1}"
-                                                         disabled>First</a></li>
-
-
-                                <li class="page-item"><a class="page-link" th:if="${currentPage > 1}"
-                                                         th:href="@{'/list_departments/page/'+${currentPage - 1}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}"><<</a>
-                                </li>
-                                <li class="page-item"><a class="page-link" th:unless="${currentPage > 1}"
-                                                         disabled><<</a></li>
-
-                                <th:block th:each="i: ${#numbers.sequence(1, totalPages)}">
-                                    <li class="page-item"><a class="page-link" th:if="${currentPage != i}"
-                                                             th:href="@{'/list_departments/page/'+${i}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">[[${i}]]</a>
+                        <th:block th:if="${departments.size() != 0}">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li class="page-item"><a class="page-link" th:if="${currentPage > 1}"
+                                                             th:href="@{'/list_departments/page/1?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">First</a>
                                     </li>
-                                    <li class="page-item active"><span class="page-link"
-                                                                       th:unless="${currentPage != i}">[[${i}]]</span>
+                                    <li class="page-item"><a class="page-link" th:unless="${currentPage > 1}"
+                                                             disabled>First</a></li>
+
+
+                                    <li class="page-item"><a class="page-link" th:if="${currentPage > 1}"
+                                                             th:href="@{'/list_departments/page/'+${currentPage - 1}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}"><<</a>
                                     </li>
-                                </th:block>
+                                    <li class="page-item"><a class="page-link" th:unless="${currentPage > 1}"
+                                                             disabled><<</a></li>
 
-                                <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}"
-                                                         th:href="@{'/list_departments/page/'+${currentPage + 1}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">>></a>
-                                </li>
-                                <li class="page-item"><a class="page-link" th:unless="${currentPage < totalPages}"
-                                                         disabled>>></a></li>
+                                    <th:block th:each="i: ${#numbers.sequence(1, totalPages)}">
+                                        <li class="page-item"><a class="page-link" th:if="${currentPage != i}"
+                                                                 th:href="@{'/list_departments/page/'+${i}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">[[${i}]]</a>
+                                        </li>
+                                        <li class="page-item active"><span class="page-link"
+                                                                           th:unless="${currentPage != i}">[[${i}]]</span>
+                                        </li>
+                                    </th:block>
 
-                                <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}"
-                                                         th:href="@{'/list_departments/page/'+${totalPages}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">Last</a>
-                                </li>
-                                <li class="page-item"><a class="page-link" th:unless="${currentPage < totalPages}"
-                                                         disabled>Last</a></li>
-                            </ul>
-                        </nav>
+                                    <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}"
+                                                             th:href="@{'/list_departments/page/'+${currentPage + 1}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">>></a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" th:unless="${currentPage < totalPages}"
+                                                             disabled>>></a></li>
+
+                                    <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}"
+                                                             th:href="@{'/list_departments/page/'+${totalPages}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">Last</a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" th:unless="${currentPage < totalPages}"
+                                                             disabled>Last</a></li>
+                                </ul>
+                            </nav>
+                        </th:block>
                     </div>
                 </div>
             </div>

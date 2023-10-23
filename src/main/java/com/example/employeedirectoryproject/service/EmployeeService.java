@@ -6,9 +6,13 @@ import com.example.employeedirectoryproject.model.Employee;
 import com.example.employeedirectoryproject.model.Experience;
 import com.example.employeedirectoryproject.model.Skill;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 
 public interface EmployeeService {
@@ -33,4 +37,10 @@ public interface EmployeeService {
     List<Certification> getEmployeeCertifications(Long employeeId);
     List<Experience> getEmployeeExperiences(Long employeeId);
     Page<Employee> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection, String searchText);
+    ByteArrayInputStream generateWord() throws IOException;
+    void exportToPdf(HttpServletResponse response) throws IOException;
+    void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException;
+    void updateAvatar(MultipartFile file);
+
+
 }

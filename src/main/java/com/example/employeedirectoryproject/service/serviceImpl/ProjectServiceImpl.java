@@ -24,11 +24,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -99,6 +99,11 @@ public class ProjectServiceImpl implements ProjectService {
             page = searchProjects(searchText, pageable);
         }
         return page;
+    }
+
+    @Override
+    public Set<Project> getProjectsByEmployee(Long employeeId) {
+        return projectRepository.getProjectsByEmployee(employeeId);
     }
 
     public void createCell(Row row, int columnCount, Object value, CellStyle cellStyle) {

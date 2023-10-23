@@ -29,6 +29,9 @@ public class Employee {
     private String lastName;
 
     @Column(nullable = false)
+    private String personalEmail;
+
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -47,6 +50,9 @@ public class Employee {
 
     @Column(nullable = false)
     private String address;
+
+    @Column(nullable = true)
+    private String avatar;
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -122,44 +128,10 @@ public class Employee {
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "roleId")})
     private List<Role> roles = new ArrayList<>();
 
-    public Employee(String firstName, String lastName, String email, String password,
-                    Boolean gender, Date dateOfBirth, String phoneNumber, String address,
-                    Date startWork, Date endWork, Double coefficientsSalary, Boolean status,
-                    Department department, Position position, List<Role> roles) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.gender = gender;
-        this.dateOfBirth = dateOfBirth;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.startWork = startWork;
-        this.endWork = endWork;
-        this.coefficientsSalary = coefficientsSalary;
-        this.status = status;
-        this.department = department;
-        this.position = position;
-        this.roles = roles;
+    @Transient
+    public String getAvatarImagePath() {
+        if (avatar == null || employeeId == null) return null;
+        return "/employee-avatar/" + employeeId + "/" + avatar;
     }
 
-    public Employee(String firstName, String lastName, String email, String password,
-                    Boolean gender, Date dateOfBirth, String phoneNumber, String address,
-                    Date startWork, Date endWork, Double coefficientsSalary, Boolean status,
-                    Department department, Position position) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.gender = gender;
-        this.dateOfBirth = dateOfBirth;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.startWork = startWork;
-        this.endWork = endWork;
-        this.coefficientsSalary = coefficientsSalary;
-        this.status = status;
-        this.department = department;
-        this.position = position;
-    }
 }

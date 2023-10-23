@@ -27,10 +27,10 @@
                     th:text="${currentEmployee.getFirstName()} +' '+ ${currentEmployee.getLastName()}"></b>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" th:href="@{/edit_profile}">Edit Profile</a></li>
+                <li><a class="dropdown-item" th:href="@{/edit_profile}">Change Profile</a></li>
                 <li><a class="dropdown-item" th:href="@{/change_password}">Change Password</a></li>
                 <li>
-                    <hr class="dropdown-divider"/>
+                    <hr class="dropdown-divider" />
                 </li>
                 <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
             </ul>
@@ -43,27 +43,25 @@
             <div class="sb-sidenav-menu">
                 <div class="nav">
                     <div class="sb-sidenav-menu-heading">Dashboard</div>
-                    <a class="nav-link collapsed" th:href="@{/list_departments}" data-bs-target="#collapseLayouts"
-                       aria-expanded="false" aria-controls="collapseLayouts">
+                    <a class="nav-link collapsed" th:href="@{/list_departments}"
+                       data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                         <div class="sb-nav-link-icon"><i class="fas fa-building"></i></div>
                         Department Management
                     </a>
-                    <a class="nav-link collapsed"
-                       th:href="@{/list_employees/page/1(sortField = 'employeeCode',sortDirection='desc')}"
-                       data-bs-target="#collapseLayouts"
-                       aria-expanded="false" aria-controls="collapseLayouts">
+                    <a class="nav-link collapsed" th:href="@{/list_employees}"
+                       data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                         <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                         Employee Management
                     </a>
-                    <a class="nav-link collapsed" th:href="@{/list_projects}" data-bs-target="#collapseLayouts"
-                       aria-expanded="false" aria-controls="collapseLayouts">
+                    <a class="nav-link collapsed" th:href="@{/list_projects}"
+                       data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                         <div class="sb-nav-link-icon"><i class="fas fa-project-diagram"></i></div>
                         Project Management
                     </a>
-                    <a class="nav-link collapsed" th:href="@{/edit_profile}" data-bs-target="#collapseLayouts"
-                       aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fas fa-user-edit"></i></div>
-                        Change Profile
+                    <a class="nav-link collapsed" th:href="@{/reset_password}"
+                       data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-lock"></i></div>
+                        Reset Password
                     </a>
                 </div>
             </div>
@@ -88,7 +86,7 @@
                                 </form>
                             </div>
                             <div style="width: 50%">
-                                <a class="btn btn-primary icon-link" th:href="@{/add_new_employee}" style="
+                                <a class="btn btn-info icon-link" th:href="@{/add_new_employee}" style="
                         float: right;
                         margin-right: 10px;
                         margin-bottom: 20px;
@@ -108,6 +106,29 @@
                                     </svg>
                                     Export To Excel
                                 </a>
+
+                                <a class="btn btn-primary icon-link" th:href="@{/employee_export_word}" style="
+                        float: right;
+                        margin-right: 10px;
+                        margin-bottom: 20px;
+                      ">
+                                    <svg class="fa fas fa-file-word" aria-hidden="true">
+                                        <use xlink:href="#box-seam"></use>
+                                    </svg>
+                                    Export To Word
+                                </a>
+
+                                <a class="btn btn-danger icon-link" th:href="@{/employee_export_pdf}" style="
+                        float: right;
+                        margin-right: 10px;
+                        margin-bottom: 20px;
+                      ">
+                                    <svg class="fa fas fa-file-pdf" aria-hidden="true">
+                                        <use xlink:href="#box-seam"></use>
+                                    </svg>
+                                    Export To PDF
+                                </a>
+
                             </div>
                         </div>
                         <table class="table table-striped custom-table">
@@ -151,8 +172,8 @@
                                 <td th:text="${employee.getEmail()}"></td>
                                 <td th:text="${employee.getDepartment().getDepartmentName()}"></td>
                                 <td th:text="${employee.getPosition().getPositionName()}"></td>
-                                <td th:text="${employee.getStartWork()}"></td>
-                                <td th:text="${employee.getEndWork()}"></td>
+                                <td th:text="${#dates.format(employee.getStartWork(), 'MM/dd/yyyy')}"></td>
+                                <td th:text="${#dates.format(employee.getEndWork(), 'MM/dd/yyyy')}"></td>
                                 <td th:text="${employee.getStatus() == true ? 'Active' : 'Inactive'}"></td>
                                 <td style="text-align: center;">
                                     <a class="btn btn-success icon-link"
@@ -178,33 +199,35 @@
                             </tbody>
                         </table>
 
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item"><a class="page-link" th:if="${currentPage > 1}"
-                                                         th:href="@{'/list_employees/page/1?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">First</a></li>
-                                <li class="page-item"><a class="page-link" th:unless="${currentPage > 1}" disabled>First</a></li>
+                        <th:block th:if="${employees.size() != 0}">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li class="page-item"><a class="page-link" th:if="${currentPage > 1}"
+                                                             th:href="@{'/list_employees/page/1?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">First</a></li>
+                                    <li class="page-item"><a class="page-link" th:unless="${currentPage > 1}" disabled>First</a></li>
 
 
-                                <li class="page-item"><a class="page-link" th:if="${currentPage > 1}"
-                                                         th:href="@{'/list_employees/page/'+${currentPage - 1}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}"><<</a></li>
-                                <li class="page-item"><a class="page-link" th:unless="${currentPage > 1}" disabled><<</a></li>
+                                    <li class="page-item"><a class="page-link" th:if="${currentPage > 1}"
+                                                             th:href="@{'/list_employees/page/'+${currentPage - 1}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}"><<</a></li>
+                                    <li class="page-item"><a class="page-link" th:unless="${currentPage > 1}" disabled><<</a></li>
 
-                                <th:block th:each="i: ${#numbers.sequence(1, totalPages)}">
-                                    <li class="page-item"><a class="page-link" th:if="${currentPage != i}"
-                                                             th:href="@{'/list_employees/page/'+${i}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">[[${i}]]</a></li>
-                                    <li class="page-item active"><span class="page-link"
-                                                                       th:unless="${currentPage != i}">[[${i}]]</span></li>
-                                </th:block>
+                                    <th:block th:each="i: ${#numbers.sequence(1, totalPages)}">
+                                        <li class="page-item"><a class="page-link" th:if="${currentPage != i}"
+                                                                 th:href="@{'/list_employees/page/'+${i}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">[[${i}]]</a></li>
+                                        <li class="page-item active"><span class="page-link"
+                                                                           th:unless="${currentPage != i}">[[${i}]]</span></li>
+                                    </th:block>
 
-                                <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}"
-                                                         th:href="@{'/list_employees/page/'+${currentPage + 1}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">>></a></li>
-                                <li class="page-item"><a class="page-link" th:unless="${currentPage < totalPages}" disabled>>></a></li>
+                                    <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}"
+                                                             th:href="@{'/list_employees/page/'+${currentPage + 1}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">>></a></li>
+                                    <li class="page-item"><a class="page-link" th:unless="${currentPage < totalPages}" disabled>>></a></li>
 
-                                <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}"
-                                                         th:href="@{'/list_employees/page/'+${totalPages}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">Last</a></li>
-                                <li class="page-item"><a class="page-link" th:unless="${currentPage < totalPages}" disabled>Last</a></li>
-                            </ul>
-                        </nav>
+                                    <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}"
+                                                             th:href="@{'/list_employees/page/'+${totalPages}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">Last</a></li>
+                                    <li class="page-item"><a class="page-link" th:unless="${currentPage < totalPages}" disabled>Last</a></li>
+                                </ul>
+                            </nav>
+                        </th:block>
 
                     </div>
                 </div>
