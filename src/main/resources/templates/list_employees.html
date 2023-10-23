@@ -86,7 +86,7 @@
                                 </form>
                             </div>
                             <div style="width: 50%">
-                                <a class="btn btn-primary icon-link" th:href="@{/add_new_employee}" style="
+                                <a class="btn btn-info icon-link" th:href="@{/add_new_employee}" style="
                         float: right;
                         margin-right: 10px;
                         margin-bottom: 20px;
@@ -107,15 +107,26 @@
                                     Export To Excel
                                 </a>
 
-                                <a class="btn btn-success icon-link" th:href="@{/employee_export_word}" style="
+                                <a class="btn btn-primary icon-link" th:href="@{/employee_export_word}" style="
                         float: right;
                         margin-right: 10px;
                         margin-bottom: 20px;
                       ">
-                                    <svg class="fa fas fa-file-excel" aria-hidden="true">
+                                    <svg class="fa fas fa-file-word" aria-hidden="true">
                                         <use xlink:href="#box-seam"></use>
                                     </svg>
                                     Export To Word
+                                </a>
+
+                                <a class="btn btn-danger icon-link" th:href="@{/employee_export_pdf}" style="
+                        float: right;
+                        margin-right: 10px;
+                        margin-bottom: 20px;
+                      ">
+                                    <svg class="fa fas fa-file-pdf" aria-hidden="true">
+                                        <use xlink:href="#box-seam"></use>
+                                    </svg>
+                                    Export To PDF
                                 </a>
 
                             </div>
@@ -161,8 +172,8 @@
                                 <td th:text="${employee.getEmail()}"></td>
                                 <td th:text="${employee.getDepartment().getDepartmentName()}"></td>
                                 <td th:text="${employee.getPosition().getPositionName()}"></td>
-                                <td th:text="${employee.getStartWork()}"></td>
-                                <td th:text="${employee.getEndWork()}"></td>
+                                <td th:text="${#dates.format(employee.getStartWork(), 'MM/dd/yyyy')}"></td>
+                                <td th:text="${#dates.format(employee.getEndWork(), 'MM/dd/yyyy')}"></td>
                                 <td th:text="${employee.getStatus() == true ? 'Active' : 'Inactive'}"></td>
                                 <td style="text-align: center;">
                                     <a class="btn btn-success icon-link"
@@ -188,33 +199,35 @@
                             </tbody>
                         </table>
 
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item"><a class="page-link" th:if="${currentPage > 1}"
-                                                         th:href="@{'/list_employees/page/1?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">First</a></li>
-                                <li class="page-item"><a class="page-link" th:unless="${currentPage > 1}" disabled>First</a></li>
+                        <th:block th:if="${employees.size() != 0}">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li class="page-item"><a class="page-link" th:if="${currentPage > 1}"
+                                                             th:href="@{'/list_employees/page/1?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">First</a></li>
+                                    <li class="page-item"><a class="page-link" th:unless="${currentPage > 1}" disabled>First</a></li>
 
 
-                                <li class="page-item"><a class="page-link" th:if="${currentPage > 1}"
-                                                         th:href="@{'/list_employees/page/'+${currentPage - 1}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}"><<</a></li>
-                                <li class="page-item"><a class="page-link" th:unless="${currentPage > 1}" disabled><<</a></li>
+                                    <li class="page-item"><a class="page-link" th:if="${currentPage > 1}"
+                                                             th:href="@{'/list_employees/page/'+${currentPage - 1}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}"><<</a></li>
+                                    <li class="page-item"><a class="page-link" th:unless="${currentPage > 1}" disabled><<</a></li>
 
-                                <th:block th:each="i: ${#numbers.sequence(1, totalPages)}">
-                                    <li class="page-item"><a class="page-link" th:if="${currentPage != i}"
-                                                             th:href="@{'/list_employees/page/'+${i}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">[[${i}]]</a></li>
-                                    <li class="page-item active"><span class="page-link"
-                                                                       th:unless="${currentPage != i}">[[${i}]]</span></li>
-                                </th:block>
+                                    <th:block th:each="i: ${#numbers.sequence(1, totalPages)}">
+                                        <li class="page-item"><a class="page-link" th:if="${currentPage != i}"
+                                                                 th:href="@{'/list_employees/page/'+${i}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">[[${i}]]</a></li>
+                                        <li class="page-item active"><span class="page-link"
+                                                                           th:unless="${currentPage != i}">[[${i}]]</span></li>
+                                    </th:block>
 
-                                <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}"
-                                                         th:href="@{'/list_employees/page/'+${currentPage + 1}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">>></a></li>
-                                <li class="page-item"><a class="page-link" th:unless="${currentPage < totalPages}" disabled>>></a></li>
+                                    <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}"
+                                                             th:href="@{'/list_employees/page/'+${currentPage + 1}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">>></a></li>
+                                    <li class="page-item"><a class="page-link" th:unless="${currentPage < totalPages}" disabled>>></a></li>
 
-                                <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}"
-                                                         th:href="@{'/list_employees/page/'+${totalPages}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">Last</a></li>
-                                <li class="page-item"><a class="page-link" th:unless="${currentPage < totalPages}" disabled>Last</a></li>
-                            </ul>
-                        </nav>
+                                    <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}"
+                                                             th:href="@{'/list_employees/page/'+${totalPages}+'?sortField='+${sortField}+'&sortDirection='+${sortDirection}}">Last</a></li>
+                                    <li class="page-item"><a class="page-link" th:unless="${currentPage < totalPages}" disabled>Last</a></li>
+                                </ul>
+                            </nav>
+                        </th:block>
 
                     </div>
                 </div>

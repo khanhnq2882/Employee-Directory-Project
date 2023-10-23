@@ -2,6 +2,7 @@ package com.example.employeedirectoryproject.controller;
 
 import com.example.employeedirectoryproject.dto.SaveProjectDTO;
 import com.example.employeedirectoryproject.mapper.ProjectMapper;
+import com.example.employeedirectoryproject.model.Employee;
 import com.example.employeedirectoryproject.model.Project;
 import com.example.employeedirectoryproject.repository.EmployeeRepository;
 import com.example.employeedirectoryproject.repository.StatusRepository;
@@ -21,6 +22,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class ProjectController {
@@ -109,6 +111,15 @@ public class ProjectController {
         List<Project> projects = projectService.getListProjects();
         ProjectServiceImpl excelExporter = new ProjectServiceImpl(projects);
         excelExporter.export(response);
+    }
+
+    @GetMapping("/employee_projects/{id}")
+    public String getProjectsByEmployee(@PathVariable("id") Long id, Model model) {
+        Employee currentEmployee = employeeService.getCurrentEmployee();
+        Set<Project> projects = projectService.getProjectsByEmployee(currentEmployee.getEmployeeId());
+        model.addAttribute("currentEmployee", currentEmployee);
+        model.addAttribute("projects", projects);
+        return "employee_projects";
     }
 
 }

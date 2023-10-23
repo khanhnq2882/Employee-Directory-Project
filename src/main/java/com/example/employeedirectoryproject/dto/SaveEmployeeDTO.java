@@ -13,9 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class SaveEmployeeDTO {
-    @NotBlank (message = "First name must not be blank")
     private String firstName;
-
     private String lastName;
     private String email;
     private Date dateOfBirth;

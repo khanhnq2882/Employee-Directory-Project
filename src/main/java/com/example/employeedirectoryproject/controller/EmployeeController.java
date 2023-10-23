@@ -20,7 +20,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -154,7 +158,7 @@ public class EmployeeController {
     }
     
     @GetMapping("/home")
-    public String home(Model model, Long id){
+    public String home(Model model){
         Employee currentEmployee = employeeService.getCurrentEmployee();
         if (currentEmployee.getRoles().stream().filter(role -> role.getName().equals(TbConstants.Roles.ADMIN)).findAny().isPresent()) {
             model.addAttribute("currentEmployee", currentEmployee);
@@ -165,5 +169,15 @@ public class EmployeeController {
         return "employee";
     }
 
+    @PostMapping("/upload_avatar")
+    public String uploadAvatar (@RequestParam("file") MultipartFile multipartFile) throws IOException {
+        Employee employee = employeeService.getCurrentEmployee();
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+        employee.setAvatar(fileName);
+        employeeRepository.save(employee);
+        String uploadDir = "employee-avatar/" + employee.getEmployeeId();
+        employeeService.saveFile(uploadDir, fileName, multipartFile);
+        return "redirect:/employee_profile";
+    }
 
 }

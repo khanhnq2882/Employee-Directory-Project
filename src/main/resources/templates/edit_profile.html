@@ -78,7 +78,7 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
                                 Your Profile
                             </a>
-                            <a class="nav-link collapsed" th:href="@{/list_projects}"
+                            <a class="nav-link collapsed" th:href="@{/employee_projects/{id}(id=${currentEmployee.getEmployeeId()})}"
                                data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-project-diagram"></i></div>
                                 Your Project
@@ -112,37 +112,36 @@
                                                 <input type="text" class="form-control" id="email" name="email"
                                                        th:field="*{email}" readonly>
                                             </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="email">Personal Email:</label>
+                                                <input type="text" class="form-control" id="personalEmail" name="personalEmail"
+                                                       th:field="*{personalEmail}" readonly>
+                                            </div>
+                                        </div>
 
+                                        <div class="row mb-3">
                                             <div class="form-group col-md-6">
                                                 <label for="firstName">First Name:</label>
                                                 <input type="text" class="form-control" id="firstName"
                                                        name="firstName" th:field="*{firstName}">
                                             </div>
-                                        </div>
-
-                                        <div class="row mb-3">
                                             <div class="form-group col-md-6">
                                                 <label for="lastName">Last Name:</label>
                                                 <input type="text" class="form-control" id="lastName"
                                                        name="lastName" th:field="*{lastName}">
                                             </div>
-                                            <div class="form-group col-md-6">
-                                                <label for="dateOfBirth">Date Of Birth:</label>
-                                                <input type="text" class="form-control" id="dateOfBirth"
-                                                       name="dateOfBirth" th:field="*{dateOfBirth}">
-                                            </div>
                                         </div>
 
                                         <div class="row mb-3">
                                             <div class="form-group col-md-6">
+                                                <label for="dateOfBirth">Date Of Birth:</label>
+                                                <input type="text" class="form-control" id="dateOfBirth"
+                                                       name="dateOfBirth" th:value="${#dates.format(currentEmployee.getDateOfBirth(), 'MM/dd/yyyy')}">
+                                            </div>
+                                            <div class="form-group col-md-6">
                                                 <label for="lastName">Address:</label>
                                                 <input type="text" class="form-control" id="address" name="address"
                                                        th:field="*{address}">
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                                <label for="lastName">Phone Number:</label>
-                                                <input type="text" class="form-control" id="phoneNumber"
-                                                       name="phoneNumber" th:field="*{phoneNumber}">
                                             </div>
                                         </div>
 
@@ -177,13 +176,13 @@
                                             <div class="form-group col-md-6">
                                                 <label for="startWork">Start Work:</label>
                                                 <input type="text" class="form-control" id="startWork"
-                                                       name="startWork" th:field="*{startWork}" readonly>
+                                                       name="startWork" th:value="${#dates.format(currentEmployee.getStartWork(), 'MM/dd/yyyy')}" readonly>
                                             </div>
 
                                             <div class="form-group col-md-6">
                                                 <label for="startWork">End Work:</label>
                                                 <input type="text" class="form-control" id="endWork" name="endWork"
-                                                       th:field="*{endWork}" readonly>
+                                                       th:value="${#dates.format(currentEmployee.getEndWork(), 'MM/dd/yyyy')}" readonly>
                                             </div>
                                         </div>
 

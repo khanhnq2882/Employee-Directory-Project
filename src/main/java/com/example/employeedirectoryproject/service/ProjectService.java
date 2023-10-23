@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ProjectService {
     void addNewProject(SaveProjectDTO saveProjectDTO);
@@ -17,4 +18,5 @@ public interface ProjectService {
     Page<Project> getAllProjects(Pageable pageable);
     Page<Project> searchProjects(String searchText, Pageable pageable);
     Page<Project> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection, String searchText);
+    Set<Project> getProjectsByEmployee(Long employeeId);
 }
