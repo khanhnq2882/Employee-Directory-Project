@@ -9,6 +9,8 @@ import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 
 public interface EmployeeService {
@@ -33,4 +35,5 @@ public interface EmployeeService {
     List<Certification> getEmployeeCertifications(Long employeeId);
     List<Experience> getEmployeeExperiences(Long employeeId);
     Page<Employee> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection, String searchText);
+    ByteArrayInputStream generateWord() throws IOException;
 }

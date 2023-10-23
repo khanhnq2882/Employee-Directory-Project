@@ -19,6 +19,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +30,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.*;
@@ -374,5 +378,90 @@ public class EmployeeServiceImpl implements EmployeeService {
         workbook.close();
         outputStream.close();
     }
+
+    @Override
+    public ByteArrayInputStream generateWord() throws IOException {
+        try (XWPFDocument doc = new XWPFDocument()) {
+            XWPFParagraph paragraph;
+
+            paragraph = doc.createParagraph();
+            paragraph.setAlignment(ParagraphAlignment.CENTER);
+            XWPFRun run = paragraph.createRun();
+            run.setBold(true);
+            run.setFontSize(22);
+            run.setText("List Employees");
+            run.setFontFamily("Times New Roman");
+
+//            XWPFTable table = doc.createTable(listEmployees().size(), 8);
+//            table.setWidth("100%");
+//
+//            XWPFParagraph p1 = table.getRow(0).getCell(0).getParagraphs().get(0);
+//            p1.setAlignment(ParagraphAlignment.CENTER);
+//            XWPFRun r1 = p1.createRun();
+//            r1.setBold(true);
+//            r1.setText("Employee Code");
+//
+//            XWPFParagraph p2 = table.getRow(0).getCell(1).getParagraphs().get(0);
+//            p2.setAlignment(ParagraphAlignment.CENTER);
+//            XWPFRun r2 = p2.createRun();
+//            r2.setBold(true);
+//            r2.setText("Full Name");
+//
+//            XWPFParagraph p3 = table.getRow(0).getCell(2).getParagraphs().get(0);
+//            p3.setAlignment(ParagraphAlignment.CENTER);
+//            XWPFRun r3 = p3.createRun();
+//            r3.setBold(true);
+//            r3.setText("Department");
+//
+//            XWPFParagraph p4 = table.getRow(0).getCell(3).getParagraphs().get(0);
+//            p4.setAlignment(ParagraphAlignment.CENTER);
+//            XWPFRun r4 = p4.createRun();
+//            r4.setBold(true);
+//            r4.setText("Position");
+//
+//            XWPFParagraph p5 = table.getRow(0).getCell(4).getParagraphs().get(0);
+//            p5.setAlignment(ParagraphAlignment.CENTER);
+//            XWPFRun r5 = p5.createRun();
+//            r5.setBold(true);
+//            r5.setText("Email");
+//
+//            XWPFParagraph p6 = table.getRow(0).getCell(5).getParagraphs().get(0);
+//            p6.setAlignment(ParagraphAlignment.CENTER);
+//            XWPFRun r6 = p6.createRun();
+//            r6.setBold(true);
+//            r6.setText("Start Work");
+//
+//            XWPFParagraph p7 = table.getRow(0).getCell(6).getParagraphs().get(0);
+//            p7.setAlignment(ParagraphAlignment.CENTER);
+//            XWPFRun r7 = p7.createRun();
+//            r7.setBold(true);
+//            r7.setText("End Work");
+//
+//            XWPFParagraph p8 = table.getRow(0).getCell(7).getParagraphs().get(0);
+//            p8.setAlignment(ParagraphAlignment.CENTER);
+//            XWPFRun r8 = p8.createRun();
+//            r8.setBold(true);
+//            r8.setText("Status");
+
+//            for(Employee employee: listEmployees()) {
+//                for(int i=1; i<=listEmployees().size(); i++) {
+//                    table.getRow(i).getCell(0).setText(employee.getEmployeeCode());
+//                    table.getRow(i).getCell(1).setText(employee.getFirstName() + " " + employee.getLastName());
+//                    table.getRow(i).getCell(2).setText(employee.getEmail());
+//                    table.getRow(i).getCell(3).setText(employee.getDepartment().getDepartmentName());
+//                    table.getRow(i).getCell(4).setText(employee.getPosition().getPositionName());
+//                    table.getRow(i).getCell(5).setText(employee.getStartWork().toString());
+//                    table.getRow(i).getCell(6).setText(employee.getEndWork().toString());
+//                    table.getRow(i).getCell(7).setText(employee.getStatus().toString());
+//                }
+//            }
+
+            ByteArrayOutputStream b = new ByteArrayOutputStream();
+            doc.write(b);
+            return new ByteArrayInputStream(b.toByteArray());
+        }
+    }
+
+
 
 }
