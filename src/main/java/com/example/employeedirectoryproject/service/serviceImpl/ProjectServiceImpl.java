@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,11 +25,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -102,7 +109,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Set<Project> getProjectsByEmployee(Long employeeId) {
+    public List<Project> getProjectsByEmployee(Long employeeId) {
         return projectRepository.getProjectsByEmployee(employeeId);
     }
 
@@ -137,9 +144,10 @@ public class ProjectServiceImpl implements ProjectService {
         createCell(row, 0, "Project Name", style);
         createCell(row, 1, "Language", style);
         createCell(row, 2, "Framework", style);
-        createCell(row, 3, "Start Date", style);
-        createCell(row, 4, "End Date", style);
-        createCell(row, 5, "Status", style);
+        createCell(row, 3, "Members", style);
+        createCell(row, 4, "Start Date", style);
+        createCell(row, 5, "End Date", style);
+        createCell(row, 6, "Status", style);
     }
 
     private void writeDataLines() {
@@ -148,12 +156,15 @@ public class ProjectServiceImpl implements ProjectService {
         XSSFFont font = workbook.createFont();
         font.setFontHeight(14);
         style.setFont(font);
+
         for (Project project: projectList) {
+            List<String> emailList = project.getEmployees().stream().map(employee -> employee.getEmail()).collect(Collectors.toList());
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
             createCell(row, columnCount++, project.getProjectName(), style);
             createCell(row, columnCount++, project.getLanguage(), style);
             createCell(row, columnCount++, project.getFramework(), style);
+            createCell(row, columnCount++, emailList.stream().map(Object::toString).collect(Collectors.joining(", ")), style);
             createCell(row, columnCount++, project.getStartDate(), style);
             createCell(row, columnCount++, project.getEndDate(), style);
             createCell(row, columnCount++, project.getStatus().getStatusName(), style);
@@ -167,5 +178,10 @@ public class ProjectServiceImpl implements ProjectService {
         workbook.write(outputStream);
         workbook.close();
         outputStream.close();
+    }
+
+    @Override
+    public ByteArrayInputStream generateWord() throws IOException {
+        return null;
     }
 }

@@ -26,14 +26,27 @@
                 <i class="fas fa-user fa-fw"></i><b
                     th:text="${currentEmployee.getFirstName()} +' '+ ${currentEmployee.getLastName()}"></b>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" th:href="@{/edit_profile}">Change Profile</a></li>
-                <li><a class="dropdown-item" th:href="@{/change_password}">Change Password</a></li>
-                <li>
-                    <hr class="dropdown-divider" />
-                </li>
-                <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
-            </ul>
+            <th:block th:each="role: ${currentEmployee.getRoles()}">
+                <th:block th:if="${role.getName().equals('ROLE_ADMIN')}">
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" th:href="@{/edit_profile}">Change Profile</a></li>
+                        <li><a class="dropdown-item" th:href="@{/change_password}">Change Password</a></li>
+                        <li>
+                            <hr class="dropdown-divider" />
+                        </li>
+                        <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
+                    </ul>
+                </th:block>
+                <th:block th:if="${role.getName().equals('ROLE_EMPLOYEE')}">
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" th:href="@{/change_password}">Change Password</a></li>
+                        <li>
+                            <hr class="dropdown-divider" />
+                        </li>
+                        <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
+                    </ul>
+                </th:block>
+            </th:block>
         </li>
     </ul>
 </nav>
@@ -100,20 +113,13 @@
                     <div class="col-lg-4">
                         <div class="card mb-4">
                             <div class="card-body text-center" style="height: 341px;">
-<!--                                <a th:href="@{/upload_avatar}"><img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"-->
-<!--                                        alt="avatar" class="rounded-circle img-fluid" style="width: 150px;"></a>-->
-                                <th:block th:if="${currentEmployee.getAvatar() == null}">
-                                    <form th:action="@{/upload_avatar}" method="post" enctype="multipart/form-data" id="uploadAvatar">
-                                        <input id="input-file" type="file" name="file" accept="image/png, image/jpeg" />
-                                        <button class="btn btn-sm btn-outline-success float-right" type="submit">
-                                            Upload
-                                        </button>
-                                    </form>
-                                </th:block>
 
-                                <th:block th:if="${currentEmployee.getAvatar() != null}">
-                                    <img th:src="${currentEmployee.getAvatarImagePath()}" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
-                                </th:block>
+                                <img th:src="${currentEmployee.getAvatarImagePath()}" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+
+                                <form th:action="@{/upload_avatar/{id}(id=${currentEmployee.getEmployeeId()})}" method="post" enctype="multipart/form-data" id="uploadAvatar">
+                                    <input id="input-file" type="file" name="file" accept="image/png, image/jpeg" />
+                                    <button class="btn btn-sm btn-outline-success float-right" type="submit" id="btn-upload" disabled>Upload</button>
+                                </form>
 
                                 <h5 class="my-3" th:text="${employee.getFirstName()+' '+employee.getLastName()}"></h5>
                                 <p class="text-muted mb-1"
@@ -274,14 +280,14 @@
                                                 <li th:each="certification: ${certifications}">
                                                     <div class="row align-items-top">
                                                         <div class="col-md-5">
-                                                            <h6 class="mb-2" th:text="${certification.getIssuedDate()} +' ~ '+${certification.getExpiredDate()}"></h6>
+                                                            <h6 class="mb-2"><b>[[${#dates.format(certification.getIssuedDate(), 'MM/yyyy')}]] ~ [[${#dates.format(certification.getExpiredDate(), 'MM/yyyy')}]]</b></h6>
                                                         </div>
                                                         <div class="col-md-7">
                                                             <div class="media profile-media align-items-top">
                                                                 <div class="profile-dots border-primary mt-1">
                                                                 </div>
                                                                 <div class="ml-4">
-                                                                    <h6 class="mb-1" th:text="${certification.getCertificationName()}"></h6>
+                                                                    <h6 class="mb-1"><b>[[${certification.getCertificationName()}]]</b></h6>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -308,7 +314,7 @@
                                                                 <div class="ml-4">
                                                                     <h6 class="mb-1"><b>[[${experience.getCompanyName()}]]</b></h6>
                                                                     <p class="mb-0 font-size-14">
-                                                                        <b>Project: </b>[[${experience.getName()}]] - <b>Language: </b>[[${experience.getLanguage()}]]- <b>Framework: </b>[[${experience.getFramework()}]]</p>
+                                                                        <b>Project: [[${experience.getName()}]] , Language: [[${experience.getLanguage()}]] , Framework: [[${experience.getFramework()}]]</b></p>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -332,5 +338,7 @@
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
         crossorigin="anonymous"></script>
 <script src="js/scripts.js"></script>
+<script src="/js/screens/employee-profile.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </body>
 </html>

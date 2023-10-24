@@ -86,12 +86,12 @@
                                 </form>
                             </div>
                             <div style="width: 50%">
-                                <a class="btn btn-primary icon-link" th:href="@{/add_new_project}" style="
+                                <a class="btn btn-info icon-link" th:href="@{/add_new_project}" style="
                         float: right;
                         margin-right: 10px;
                         margin-bottom: 20px;
                       ">
-                                    <svg class="fa fas fa-user-plus" aria-hidden="true">
+                                    <svg class="fa fas fa-project-diagram" aria-hidden="true">
                                         <use xlink:href="#box-seam"></use>
                                     </svg>
                                     Add Project
@@ -106,6 +106,29 @@
                                     </svg>
                                     Export To Excel
                                 </a>
+                                </a>
+
+                                <a class="btn btn-primary icon-link" href="#" style="
+                        float: right;
+                        margin-right: 10px;
+                        margin-bottom: 20px;
+                      ">
+                                    <svg class="fa fas fa-file-word" aria-hidden="true">
+                                        <use xlink:href="#box-seam"></use>
+                                    </svg>
+                                    Export To Word
+                                </a>
+
+                                <a class="btn btn-danger icon-link" href="#" style="
+                        float: right;
+                        margin-right: 10px;
+                        margin-bottom: 20px;
+                      ">
+                                    <svg class="fa fas fa-file-pdf" aria-hidden="true">
+                                        <use xlink:href="#box-seam"></use>
+                                    </svg>
+                                    Export To PDF
+                                </a>
                             </div>
                         </div>
                         <table class="table table-striped custom-table">
@@ -114,6 +137,7 @@
                                 <th>Project Name</th>
                                 <th>Language</th>
                                 <th>Framework</th>
+                                <th>Members</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
                                 <th>Status</th>
@@ -125,15 +149,24 @@
                                 <td th:text="${project.getProjectName()}"></td>
                                 <td th:text="${project.getLanguage()}"></td>
                                 <td th:text="${project.getFramework()}"></td>
+                                <td>
+                                    <label></label>
+                                    <button
+                                            class="btn btn-outline-secondary w-100 dropdown-toggle"
+                                            data-bs-auto-close="outside" type="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false" style="margin-top: -30px">
+                                    </button>
+                                    <ul class="dropdown-menu w-47">
+                                        <li th:each="employee: ${project.getEmployees()}">
+                                            <label class="form-check-label" th:text="${employee.getEmail() +' ('+employee.getPosition().getPositionName()+')'}"></label>
+                                        </li>
+                                    </ul>
+                                </td>
                                 <td th:text="${#dates.format(project.getStartDate(), 'MM/dd/yyyy')}"></td>
                                 <td th:text="${#dates.format(project.getEndDate(), 'MM/dd/yyyy')}"></td>
                                 <td th:text="${project.getStatus().getStatusName()}"></td>
                                 <td style="text-align: center;">
-                                    <a class="btn btn-success icon-link" href="#">
-                                        <svg class="fa fa-eye" aria-hidden="true">
-                                            <use xlink:href="#box-seam"></use>
-                                        </svg>
-                                    </a>
                                     <a class="btn btn-primary icon-link"
                                        th:href="@{/update_project/{id}(id=${project.getProjectId()})}">
                                         <svg class="fa fa-pencil" aria-hidden="true">

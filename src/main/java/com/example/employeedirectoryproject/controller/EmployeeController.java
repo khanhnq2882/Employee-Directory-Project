@@ -104,8 +104,8 @@ public class EmployeeController {
         return "edit_profile";
     }
 
-    @PostMapping("/edit_profile")
-    public String editProfile(HttpServletRequest request) throws Exception{
+    @PostMapping("/edit_profile/{id}")
+    public String editProfile(HttpServletRequest request, @PathVariable("id") Long id) throws Exception{
         Employee currentEmployee = employeeService.getCurrentEmployee();
         DateFormat df1 = new SimpleDateFormat("MM/dd/yyyy");
         currentEmployee.setFirstName(request.getParameter("firstName"));
@@ -115,7 +115,7 @@ public class EmployeeController {
         currentEmployee.setPhoneNumber(request.getParameter("phoneNumber"));
         currentEmployee.setAddress(request.getParameter("address"));
         employeeRepository.save(currentEmployee);
-        return "redirect:/employee_profile";
+        return "redirect:/employee_profile/{id}";
     }
 
     @GetMapping("/add_new_skill")
@@ -125,10 +125,10 @@ public class EmployeeController {
         return "add_new_skill";
     }
 
-    @PostMapping("/add_new_skill")
-    public String addNewSkill(@Valid @ModelAttribute("skillDto") SkillDTO skillDto) {
+    @PostMapping("/add_new_skill/{id}")
+    public String addNewSkill(@Valid @ModelAttribute("skillDto") SkillDTO skillDto, @PathVariable("id") Long id) {
         employeeService.addSkill(skillDto);
-        return "redirect:/edit_profile";
+        return "redirect:/employee_profile/{id}";
     }
 
     @GetMapping("/add_new_certification")
@@ -138,10 +138,10 @@ public class EmployeeController {
         return "add_new_certification";
     }
 
-    @PostMapping("/add_new_certification")
-    public String addNewCertification(@Valid @ModelAttribute("certificationDto") CertificationDTO certificationDto) {
+    @PostMapping("/add_new_certification/{id}")
+    public String addNewCertification(@Valid @ModelAttribute("certificationDto") CertificationDTO certificationDto, @PathVariable("id") Long id) {
         employeeService.addCertification(certificationDto);
-        return "redirect:/edit_profile";
+        return "redirect:/employee_profile/{id}";
     }
 
     @GetMapping("/add_new_experience")
@@ -151,10 +151,10 @@ public class EmployeeController {
         return "add_new_experience";
     }
 
-    @PostMapping("/add_new_experience")
-    public String addNewExperience(@Valid @ModelAttribute("experienceDto") ExperienceDTO experienceDto) {
+    @PostMapping("/add_new_experience/{id}")
+    public String addNewExperience(@Valid @ModelAttribute("experienceDto") ExperienceDTO experienceDto, @PathVariable("id") Long id) {
         employeeService.addExperience(experienceDto);
-        return "redirect:/edit_profile";
+        return "redirect:/employee_profile/{id}";
     }
     
     @GetMapping("/home")
@@ -169,15 +169,15 @@ public class EmployeeController {
         return "employee";
     }
 
-    @PostMapping("/upload_avatar")
-    public String uploadAvatar (@RequestParam("file") MultipartFile multipartFile) throws IOException {
+    @PostMapping("/upload_avatar/{id}")
+    public String uploadAvatar (@RequestParam("file") MultipartFile multipartFile, @PathVariable("id") Long id) throws IOException {
         Employee employee = employeeService.getCurrentEmployee();
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         employee.setAvatar(fileName);
         employeeRepository.save(employee);
-        String uploadDir = "employee-avatar/" + employee.getEmployeeId();
+        String uploadDir = "employee-avatar/" + id;
         employeeService.saveFile(uploadDir, fileName, multipartFile);
-        return "redirect:/employee_profile";
+        return "redirect:/employee_profile/{id}";
     }
 
 }

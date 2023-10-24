@@ -106,7 +106,7 @@
                                     <h3 class="text-center font-weight-light my-4">Add New Experience</h3>
                                 </div>
                                 <div class="card-body">
-                                    <form th:action="@{/add_new_experience}" method="post"
+                                    <form th:action="@{/add_new_experience/{id}(id=${currentEmployee.getEmployeeId()})}" method="post"
                                           th:object="${experienceDto}" id="frmAddExperience">
 
                                         <div class="row mb-3">
@@ -158,12 +158,10 @@
                                             </div>
                                         </div>
 
-                                        <div class="mt-4 mb-0">
-                                            <div class="d-grid">
-                                                <button type="submit"
-                                                        class="btn btn-info col-2">Save
-                                                </button>
-                                            </div>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <button type="submit" class="btn btn-info col-2" id="btnSaveExperience">Save</button>
+                                            <a class="btn btn-info col-2" th:href="@{/edit_profile}" style="margin-right: 560px">Back</a>
+                                        </div>
                                     </form>
                                 </div>
                             </div>

@@ -108,15 +108,19 @@ public class ProjectController {
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=list_projects_" + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
-        List<Project> projects = projectService.getListProjects();
-        ProjectServiceImpl excelExporter = new ProjectServiceImpl(projects);
+        ProjectServiceImpl excelExporter;
+        if (employeeService.getCurrentEmployee().getRoles().stream().filter(role -> role.getName().equals("ROLE_ADMIN")).findAny().isPresent()) {
+            excelExporter = new ProjectServiceImpl(projectService.getListProjects());
+        } else {
+            excelExporter = new ProjectServiceImpl(projectService.getProjectsByEmployee(employeeService.getCurrentEmployee().getEmployeeId()));
+        }
         excelExporter.export(response);
     }
 
     @GetMapping("/employee_projects/{id}")
     public String getProjectsByEmployee(@PathVariable("id") Long id, Model model) {
         Employee currentEmployee = employeeService.getCurrentEmployee();
-        Set<Project> projects = projectService.getProjectsByEmployee(currentEmployee.getEmployeeId());
+        List<Project> projects = projectService.getProjectsByEmployee(currentEmployee.getEmployeeId());
         model.addAttribute("currentEmployee", currentEmployee);
         model.addAttribute("projects", projects);
         return "employee_projects";

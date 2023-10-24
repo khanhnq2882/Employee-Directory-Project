@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -18,5 +20,6 @@ public interface ProjectService {
     Page<Project> getAllProjects(Pageable pageable);
     Page<Project> searchProjects(String searchText, Pageable pageable);
     Page<Project> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection, String searchText);
-    Set<Project> getProjectsByEmployee(Long employeeId);
+    List<Project> getProjectsByEmployee(Long employeeId);
+    ByteArrayInputStream generateWord() throws IOException;
 }

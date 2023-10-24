@@ -28,5 +28,5 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> searchProjects(String searchText, Pageable pageable);
 
     @Query(value = "SELECT p FROM Project AS p INNER JOIN p.employees AS e WHERE e.employeeId = :employeeId")
-    Set<Project> getProjectsByEmployee(@Param("employeeId") Long employeeId);
+    List<Project> getProjectsByEmployee(@Param("employeeId") Long employeeId);
 }
