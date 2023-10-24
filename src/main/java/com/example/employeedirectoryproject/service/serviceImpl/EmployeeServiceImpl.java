@@ -317,7 +317,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         EmailDTO emailDto = new EmailDTO();
         emailDto.setFrom("quockhanhnguyen2882@gmail.com");
         emailDto.setTo(saveEmployeeDTO.getPersonalEmail());
-        emailDto.setSubject("Company send information for new employee "+saveEmployeeDTO.getFirstName()+" "+saveEmployeeDTO.getLastName());
+        emailDto.setSubject("TECH CORP send information for new employee "+saveEmployeeDTO.getFirstName()+" "+saveEmployeeDTO.getLastName());
         Map<String, Object> properties = new HashMap<>();
         properties.put("email", saveEmployeeDTO.getEmail());
         properties.put("password", password);
@@ -513,17 +513,5 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new IOException("Could not save image file: " + fileName, ioe);
         }
     }
-
-    @Override
-    public void updateAvatar(MultipartFile file) {
-        try{
-
-
-        }catch (Exception e) {
-
-        }
-
-    }
-
 
 }

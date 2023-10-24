@@ -154,13 +154,10 @@
                                                               name="description" th:field="*{description}"></textarea>
                                                 </div>
                                             </div>
-
-                                            <div class="mt-4 mb-0">
-                                                <div class="d-grid">
-                                                    <button type="submit"
-                                                            class="btn btn-info col-2">Save
-                                                    </button>
-                                                </div>
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <button type="submit" class="btn btn-info col-2" id="btnSaveProject">Save</button>
+                                                <a class="btn btn-info col-2" th:href="@{/list_projects}" style="margin-right: 560px">Back To List</a>
+                                            </div>
                                         </form>
                                     </div>
                                 </div>

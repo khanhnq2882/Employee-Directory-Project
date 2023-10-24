@@ -40,7 +40,5 @@ public interface EmployeeService {
     ByteArrayInputStream generateWord() throws IOException;
     void exportToPdf(HttpServletResponse response) throws IOException;
     void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException;
-    void updateAvatar(MultipartFile file);
-
 
 }
