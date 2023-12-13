@@ -6,16 +6,14 @@ import com.example.employeedirectoryproject.mapper.EmployeeMapper;
 import com.example.employeedirectoryproject.model.Employee;
 import com.example.employeedirectoryproject.model.Role;
 import com.example.employeedirectoryproject.repository.DepartmentRepository;
-import com.example.employeedirectoryproject.repository.EmployeeRepository;
 import com.example.employeedirectoryproject.repository.PositionRepository;
-import com.example.employeedirectoryproject.service.EmailSenderService;
 import com.example.employeedirectoryproject.service.EmployeeService;
 import com.example.employeedirectoryproject.service.serviceImpl.EmployeeServiceImpl;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
@@ -31,24 +29,16 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
+@AllArgsConstructor
 public class AdminController {
-    private EmployeeRepository employeeRepository;
+
     private PositionRepository positionRepository;
     private DepartmentRepository departmentRepository;
     private EmployeeService employeeService;
-    private EmailSenderService emailSenderService;
 
-    @Autowired
-    public AdminController(PositionRepository positionRepository,
-                           DepartmentRepository departmentRepository,
-                           EmployeeService employeeService,
-                           EmailSenderService emailSenderService,
-                           EmployeeRepository employeeRepository) {
-        this.positionRepository = positionRepository;
-        this.departmentRepository = departmentRepository;
-        this.employeeService = employeeService;
-        this.emailSenderService = emailSenderService;
-        this.employeeRepository = employeeRepository;
+    @GetMapping("")
+    public String defaultPage() {
+        return "redirect:/login";
     }
 
     @RequestMapping("/login")

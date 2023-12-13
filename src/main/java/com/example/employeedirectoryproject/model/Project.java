@@ -5,10 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Getter
@@ -57,13 +55,13 @@ public class Project {
     @UpdateTimestamp
     private Date updatedDay;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "status_id", referencedColumnName = "statusId")
     private Status status;
 
     @ManyToMany(mappedBy = "projects")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Set<Employee> employees = new HashSet<>();
+    private List<Employee> employees;
 
 }

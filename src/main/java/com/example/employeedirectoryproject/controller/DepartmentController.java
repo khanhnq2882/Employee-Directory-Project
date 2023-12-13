@@ -3,30 +3,23 @@ package com.example.employeedirectoryproject.controller;
 import com.example.employeedirectoryproject.dto.SaveDepartmentDTO;
 import com.example.employeedirectoryproject.model.Department;
 import com.example.employeedirectoryproject.model.Employee;
-import com.example.employeedirectoryproject.model.Project;
 import com.example.employeedirectoryproject.service.DepartmentService;
 import com.example.employeedirectoryproject.service.EmployeeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @Controller
+@AllArgsConstructor
 public class DepartmentController {
 
     private DepartmentService departmentService;
     private EmployeeService employeeService;
-
-    @Autowired
-    public DepartmentController(DepartmentService departmentService, EmployeeService employeeService) {
-        this.departmentService = departmentService;
-        this.employeeService = employeeService;
-    }
 
     @GetMapping("/add_new_department")
     public String addDepartmentForm(Model model) {

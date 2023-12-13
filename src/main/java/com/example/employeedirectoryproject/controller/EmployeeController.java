@@ -17,35 +17,25 @@ import com.example.employeedirectoryproject.util.TbConstants;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Controller
+@AllArgsConstructor
 public class EmployeeController {
+
     private PositionRepository positionRepository;
     private DepartmentRepository departmentRepository;
     private EmployeeRepository employeeRepository;
     private EmployeeService employeeService;
-
-    @Autowired
-    public EmployeeController(PositionRepository positionRepository,
-                              DepartmentRepository departmentRepository,
-                              EmployeeRepository employeeRepository,
-                              EmployeeService employeeService) {
-        this.positionRepository = positionRepository;
-        this.departmentRepository = departmentRepository;
-        this.employeeRepository = employeeRepository;
-        this.employeeService = employeeService;
-    }
 
     @GetMapping("/change_password")
     public String changePasswordForm(Model model) {

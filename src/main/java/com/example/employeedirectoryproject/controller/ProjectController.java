@@ -12,7 +12,7 @@ import com.example.employeedirectoryproject.service.serviceImpl.ProjectServiceIm
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,25 +22,15 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Controller
+@AllArgsConstructor
 public class ProjectController {
+
     private EmployeeRepository employeeRepository;
     private StatusRepository statusRepository;
     private ProjectService projectService;
     private EmployeeService employeeService;
-
-    @Autowired
-    public ProjectController(EmployeeRepository employeeRepository,
-                             ProjectService projectService,
-                             StatusRepository statusRepository,
-                             EmployeeService employeeService) {
-        this.employeeRepository = employeeRepository;
-        this.projectService = projectService;
-        this.statusRepository = statusRepository;
-        this.employeeService = employeeService;
-    }
 
     @GetMapping("/add_new_project")
     public String addProjectForm(Model model) {
@@ -76,6 +66,12 @@ public class ProjectController {
         return "redirect:/list_projects";
     }
 
+    @GetMapping("/delete_project/{id}")
+    public String deleteProject(@PathVariable("id") Long id) {
+        projectService.deleteProject(id);
+        return "redirect:/list_projects";
+    }
+
     @GetMapping("/list_projects/page/{pageNo}")
     public String getListProjects(HttpServletRequest request,
                                    @PathVariable(value = "pageNo") int pageNo,
@@ -94,6 +90,7 @@ public class ProjectController {
         model.addAttribute("currentEmployee", employeeService.getCurrentEmployee());
         return "list_projects";
     }
+
 
     @GetMapping("/list_projects")
     public String defaultListProjects(HttpServletRequest request, Model model) {

@@ -20,6 +20,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -59,6 +60,7 @@ import com.lowagie.text.pdf.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
     private RoleRepository roleRepository;

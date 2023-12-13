@@ -6,9 +6,11 @@ import com.example.employeedirectoryproject.model.Employee;
 import com.example.employeedirectoryproject.model.Project;
 import com.example.employeedirectoryproject.repository.EmployeeRepository;
 import com.example.employeedirectoryproject.repository.ProjectRepository;
+import com.example.employeedirectoryproject.service.EmployeeService;
 import com.example.employeedirectoryproject.service.ProjectService;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -16,52 +18,46 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
+
     private ProjectRepository projectRepository;
     private EmployeeRepository employeeRepository;
-
+    private EmployeeService employeeService;
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
     private List<Project> projectList;
+
     public ProjectServiceImpl(List<Project> projectList) {
         this.projectList = projectList;
         workbook = new XSSFWorkbook();
     }
 
     @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository, EmployeeRepository employeeRepository) {
+    public ProjectServiceImpl(ProjectRepository projectRepository,
+                              EmployeeRepository employeeRepository,
+                              EmployeeService employeeService) {
         this.projectRepository = projectRepository;
         this.employeeRepository = employeeRepository;
+        this.employeeService = employeeService;
     }
 
     @Override
     public void addNewProject(SaveProjectDTO saveProjectDTO) {
         Project project = ProjectMapper.PROJECT_MAPPER.mapToProject(saveProjectDTO);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Employee currentEmployee = employeeRepository.findByEmail(authentication.getName());
-        project.setCreatedBy(currentEmployee.getFirstName()+" "+currentEmployee.getLastName());
+        project.setCreatedBy(employeeService.getCurrentEmployee().getFirstName()+" "+employeeService.getCurrentEmployee().getLastName());
         for (Employee employee: saveProjectDTO.getEmployees()) {
             employee.getProjects().add(project);
         }
@@ -82,7 +78,29 @@ public class ProjectServiceImpl implements ProjectService {
     public void updateProject(SaveProjectDTO saveProjectDTO, Long id) {
         Project project = projectRepository.findById(id).orElse(null);
         ProjectMapper.PROJECT_MAPPER.mapToUpdateProject(project, saveProjectDTO);
+        project.setUpdatedBy(employeeService.getCurrentEmployee().getFirstName()+" "+employeeService.getCurrentEmployee().getLastName());
+        project.getEmployees().stream().forEach(employee -> {
+            if (employee.getProjects().size() == 0) {
+                employee.setProjects(Arrays.asList(project));
+            } else {
+                employee.getProjects().stream().forEach(p -> {
+                    if (p.getProjectId().equals(project.getProjectId())) {
+                        projectRepository.deleteProjectMembers(project.getProjectId(), employee.getEmployeeId());
+                    }
+                    employee.getProjects().add(project);
+                });
+            }
+        });
         projectRepository.save(project);
+    }
+
+    @Override
+    public void deleteProject(Long id) {
+        Project project = projectRepository.findById(id).orElse(null);
+        for(Employee employee: project.getEmployees()) {
+            projectRepository.deleteProjectMembers(id, employee.getEmployeeId());
+        }
+        projectRepository.deleteById(id);
     }
 
     @Override

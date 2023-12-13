@@ -1,22 +1,19 @@
 package com.example.employeedirectoryproject.service;
 
 import com.example.employeedirectoryproject.dto.SaveProjectDTO;
-import com.example.employeedirectoryproject.model.Employee;
 import com.example.employeedirectoryproject.model.Project;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 public interface ProjectService {
     void addNewProject(SaveProjectDTO saveProjectDTO);
     List<Project> getListProjects();
     Project getProjectById(Long id);
     void updateProject(SaveProjectDTO saveProjectDTO, Long id);
+    void deleteProject(Long id);
     Page<Project> getAllProjects(Pageable pageable);
     Page<Project> searchProjects(String searchText, Pageable pageable);
     Page<Project> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection, String searchText);
